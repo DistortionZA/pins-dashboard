@@ -1,0 +1,83 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "sqlite"
+}
+
+
+model Garment {
+  id        String   @id @default(uuid())
+  code      String
+  altCode   String   @default("")
+  brandName String   @default("")
+  name      String
+  color     String   @default("")
+  type      GarmentType
+  basePrice Float
+  extraSizeCost Float?
+  tags      String   @default("")
+  
+  designs   Design[]
+}
+
+model GarmentMarkup {
+  id            String       @id @default(uuid())
+  garmentType   GarmentType
+  markupValue   Float
+}
+
+model PrintPrice {
+  id               String @id @default(uuid())
+  colorCount       Int
+  qtyMin           Int
+  qtyMax           Int
+  productionPrice  Float
+  pinsPrice        Float
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  vatRate   Float
+  createdAt DateTime @default(now())
+
+  designs   Design[]
+}
+
+model Design {
+  id         String   @id @default(uuid())
+  orderId    String
+  garmentId  String
+  quantity   Int
+
+  order      Order    @relation(fields: [orderId], references: [id])
+  garment    Garment  @relation(fields: [garmentId], references: [id])
+
+  prints     DesignPrint[]
+}
+
+model DesignPrint {
+  id          String @id @default(uuid())
+  designId    String
+  position    PrintPosition
+  colorCount  Int
+
+  design      Design @relation(fields: [designId], references: [id])
+}
+
+enum PrintPosition {
+  FRONT
+  BACK
+  LEFT_SLEEVE
+  RIGHT_SLEEVE
+  NECK
+}
+
+enum GarmentType {
+  TSHIRT
+  LONGSLEEVE
+  HOODIE
+}
