@@ -139,7 +139,7 @@ export default function CalculatorClient({
       const subtotalExclVat = b.baseCost + b.pinsCost + b.markupCost + b.pkMarkupCost
       const totalInclVat = subtotalExclVat * (1 + vatRate / 100)
 
-      body += `Item ${idx + 1}:\n${garmentCode}  ${garmentName} (${positionsText})\n`
+      body += `Item ${idx + 1}:\n\n${garmentCode}  ${garmentName} (${positionsText})\n`
       body += `${d.quantity} x ${CURRENCY}${unitExclVat.toFixed(2)} (excl vat) ea = ${CURRENCY}${totalInclVat.toFixed(2)}\n\n`
     })
 
