@@ -113,8 +113,10 @@ export default function CalculatorClient({
       const d = designs[idx]
       if (!d) return
       const garment = garments.find((g) => g.id === d.garmentId)
+
+      const garmentCode = garment?.code || ""
       const garmentName = garment?.name || "No garment"
-      const positionsText = Object.entries(d.positions).filter(([_, c]) => c > 0).map(([p, c]) => `${c} Col ${PRINT_POSITIONS.find((pos) => pos.value === p)?.label || p}`).join(", ")
+      const positionsText = Object.entries(d.positions).filter(([, c]) => c > 0).map(([p, c]) => `${c} Col ${PRINT_POSITIONS.find((pos) => pos.value === p)?.label || p}`).join(", ")
       
       const baseCostPerUnit = d.quantity > 0 ? b.baseCost / d.quantity : 0
       const markupCostPerUnit = d.quantity > 0 ? b.markupCost / d.quantity : 0
@@ -124,8 +126,8 @@ export default function CalculatorClient({
       const subtotalExclVat = b.baseCost + b.pinsCost + b.markupCost
       const totalInclVat = subtotalExclVat * (1 + vatRate / 100)
 
-      body += `${garmentName} (${positionsText})\n`
-      body += `${d.quantity} x ${CURRENCY}${unitExclVat.toFixed(2)} (excl vat) = ${CURRENCY}${totalInclVat.toFixed(2)}\n\n`
+      body += `${garmentCode}  ${garmentName} (${positionsText})\n`
+      body += `${d.quantity} x ${CURRENCY}${unitExclVat.toFixed(2)} (excl vat) ea = ${CURRENCY}${totalInclVat.toFixed(2)}\n\n`
     })
 
    await copyToClipboard(body)

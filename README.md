@@ -1,5 +1,41 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Database Setup
+
+This project now uses Prisma ORM with PostgreSQL.
+
+1. Create a PostgreSQL database or a Prisma Postgres instance.
+2. Set `DATABASE_URL` in `.env`.
+3. Apply the schema:
+
+```bash
+npx prisma migrate deploy
+```
+
+4. Seed the catalog and pricing data:
+
+```bash
+npx prisma db seed
+```
+
+For Vercel deployments, use:
+
+```bash
+npm run vercel-build
+```
+
+## Local Run Checklist
+
+Use this order:
+
+```bash
+npx prisma migrate deploy
+npx prisma db seed
+npm run dev
+```
+
+If the app fails on startup with a `DATABASE_URL` message, `.env` still has the placeholder value and needs your real PostgreSQL connection string.
+
 ## Getting Started
 
 First, run the development server:
