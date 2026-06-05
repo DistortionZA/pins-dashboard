@@ -16,7 +16,7 @@ export default function Home() {
           <p className="text-red-600 font-bold tracking-widest text-sm uppercase mb-2">Internal Tools</p>
           <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-4">
             Pins&amp;Knuckles <br/
-            >Dashboard
+            >Hub
           </h1>
           <p className="text-zinc-400 text-lg max-w-xl leading-relaxed">
             Welcome to the central hub. Access internal calculators, manage orders, and view directories.

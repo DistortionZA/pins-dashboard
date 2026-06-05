@@ -16,6 +16,17 @@ if (databaseUrl.startsWith("file:")) {
   )
 }
 
+const parsedDatabaseUrl = new URL(databaseUrl)
+
+if (
+  process.env.VERCEL === "1" &&
+  ["localhost", "127.0.0.1", "::1"].includes(parsedDatabaseUrl.hostname)
+) {
+  throw new Error(
+    "DATABASE_URL points to a local database. Set DATABASE_URL in Vercel to your Neon pooled PostgreSQL connection string."
+  )
+}
+
 const globalForPrisma = global as unknown as {
   prisma: PrismaClient | undefined
   pgPool: Pool | undefined

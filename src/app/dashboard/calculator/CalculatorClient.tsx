@@ -126,7 +126,7 @@ export default function CalculatorClient({
       const subtotalExclVat = b.baseCost + b.pinsCost + b.markupCost
       const totalInclVat = subtotalExclVat * (1 + vatRate / 100)
 
-      body += `${garmentCode}  ${garmentName} (${positionsText})\n`
+      body += `Item ${idx + 1}:\n${garmentCode}  ${garmentName} (${positionsText})\n`
       body += `${d.quantity} x ${CURRENCY}${unitExclVat.toFixed(2)} (excl vat) ea = ${CURRENCY}${totalInclVat.toFixed(2)}\n\n`
     })
 
@@ -141,6 +141,7 @@ export default function CalculatorClient({
           key={i}
           design={design}
           garments={garments}
+          itemNumber={i + 1}
           onChange={(updated) => updateDesign(i, updated)}
           onRemove={() => removeDesign(i)}
         />
@@ -155,7 +156,7 @@ export default function CalculatorClient({
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          Add Design
+          Add Item
         </button>
       </div>
 
@@ -207,7 +208,7 @@ export default function CalculatorClient({
               onClick={() => setIsBreakdownOpen(!isBreakdownOpen)}
               className="w-full px-6 py-4 flex items-center justify-between bg-[#111219] hover:bg-[#161722] text-zinc-400 hover:text-white transition-colors cursor-pointer border-none outline-none"
             >
-              <span className="text-xs font-bold uppercase tracking-widest">Quote & Production Breakdown</span>
+              <span className="text-xs font-bold uppercase tracking-widest">Breakdown</span>
               <svg
                 className={`w-4 h-4 text-zinc-400 flex-shrink-0 transition-transform duration-200 ${isBreakdownOpen ? "rotate-180" : ""}`}
                 xmlns="http://www.w3.org/2000/svg"
@@ -243,24 +244,24 @@ export default function CalculatorClient({
                         const pinsSubtotalExclVat =(b.baseCost + b.pinsCost + b.markupCost).toFixed(2)
 
                         return (
-                          <div key={idx} className="space-y-2 pb-3 border-b border-zinc-900 last:border-0 last:pb-0">
+                          <div key={idx} className="space-y-3 pb-3 border-b border-zinc-900 last:border-0 last:pb-0">
                             <div className="flex justify-between items-center text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
-                              <span>Design #{idx + 1} - {garment?.name || "No garment"}</span>
-                              <span className="font-mono text-zinc-400">{d.quantity} units</span>
+                              <span>Item #{idx + 1} - {garment?.name || "No garment"}</span>
+                              <span className="shrink-0 whitespace-nowrap font-mono text-zinc-400">{d.quantity} units</span>
                             </div>
                             
                             {/* Garment Base Supply Price */}
                             {garment && (
-                              <div className="flex justify-between items-center text-sm text-zinc-400">
-                                <span>Garment Base (Supply) Price</span>
-                                <span className="font-mono text-zinc-300">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                <span className="min-w-0 leading-snug">Garment Base (Supply) Price</span>
+                                <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
                               </div>
                             )}
 
                             {/* Garment Markup */}
                             {garment && (
-                              <div className="flex justify-between items-center text-sm text-zinc-400">
-                                <span>Garment Markup ({garment.type})</span>
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                <span className="min-w-0 leading-snug">Garment Markup ({garment.type})</span>
                                 <span className="font-mono text-zinc-300">
                                   {CURRENCY}{((garmentMarkups.find((m) => m.garmentType === garment.type)?.markupValue) || 0).toFixed(2)} / unit
                                 </span>
@@ -274,20 +275,20 @@ export default function CalculatorClient({
                               const priceLabel = unitPrices.isFixedPrice ? "fixed" : `${colorCount} col`
 
                               return (
-                                <div key={pos} className="flex justify-between items-center text-sm text-zinc-400">
-                                  <span>{posLabel} Pins ({priceLabel})</span>
-                                  <span className="font-mono text-zinc-300">{CURRENCY}{unitPrices.pinsPrice.toFixed(2)} / unit</span>
+                                <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                  <span className="min-w-0 leading-snug">{posLabel} Pins ({priceLabel})</span>
+                                  <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{unitPrices.pinsPrice.toFixed(2)} / unit</span>
                                 </div>
                               )
                             })}
                             
-                            <div className="flex justify-between items-center text-sm font-semibold">
-                              <span className="text-zinc-500">Total Unit Cost (excl VAT)</span>
-                              <span className="font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
+                              <span className="min-w-0 text-zinc-500 leading-snug">Total Unit Cost (excl VAT)</span>
+                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
                             </div>
-                            <div className="flex justify-between items-center text-sm font-semibold">
-                              <span className="text-zinc-500">Subtotal ({d.quantity} units, excl VAT)</span>
-                              <span className="font-mono text-white">{CURRENCY}{pinsSubtotalExclVat}</span>
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
+                              <span className="min-w-0 text-zinc-500 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
+                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-white">{CURRENCY}{pinsSubtotalExclVat}</span>
                             </div>
                           </div>
                         )
@@ -308,14 +309,14 @@ export default function CalculatorClient({
                         const totalUnitCost = baseCostPerUnit + prodCostPerUnit
 
                         return (
-                          <div key={idx} className="space-y-2 pb-3 border-b border-zinc-900 last:border-0 last:pb-0">
+                          <div key={idx} className="space-y-3 pb-3 border-b border-zinc-900 last:border-0 last:pb-0">
                             <div className="flex justify-between items-center text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
-                              <span>Design #{idx + 1} - {garment?.name || "No garment"}</span>
-                              <span className="font-mono text-zinc-400">{d.quantity} units</span>
+                              <span>Item #{idx + 1} - {garment?.name || "No garment"}</span>
+                              <span className="shrink-0 whitespace-nowrap font-mono text-zinc-400">{d.quantity} units</span>
                             </div>
                             {garment && (
-                              <div className="flex justify-between items-center text-sm text-zinc-400">
-                                <span>Garment Base (Supply) Price</span>
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                <span className="min-w-0 leading-snug">Garment Base (Supply) Price</span>
                                 <span className="font-mono text-zinc-300">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
                               </div>
                             )}
@@ -326,18 +327,18 @@ export default function CalculatorClient({
                               const priceLabel = unitPrices.isFixedPrice ? "fixed" : `${colorCount} col`
 
                               return (
-                                <div key={pos} className="flex justify-between items-center text-sm text-zinc-400">
-                                  <span>{posLabel} Print Production ({priceLabel})</span>
-                                  <span className="font-mono text-zinc-300">{CURRENCY}{unitPrices.productionPrice.toFixed(2)} / unit</span>
+                                <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                  <span>{posLabel} Print Print Production ({priceLabel})</span>
+                                  <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{unitPrices.productionPrice.toFixed(2)} / unit</span>
                                 </div>
                               )
                             })}
-                            <div className="flex justify-between items-center text-sm font-semibold">
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
                               <span className="text-zinc-500">Unit Cost (excl VAT)</span>
-                              <span className="font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
+                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
                             </div>
-                            <div className="flex justify-between items-center text-sm font-semibold">
-                              <span className="text-zinc-500">Subtotal ({d.quantity} units, excl VAT)</span>
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
+                              <span className="min-w-0 text-zinc-500 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
                               <span className="font-mono text-white">{CURRENCY}{(b.baseCost + b.productionCost).toFixed(2)}</span>
                             </div>
                           </div>
@@ -352,11 +353,11 @@ export default function CalculatorClient({
                 <div className="pt-4 border-t-2 border-zinc-800 space-y-2 text-xs font-semibold mt-6">
                   <div className="flex justify-between items-center text-zinc-400">
                     <span>Production Subtotal ({totalQty} units, excl VAT)</span>
-                    <span className="font-mono text-zinc-300">{CURRENCY}{productionSubtotalExclVat.toFixed(2)}</span>
+                    <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{productionSubtotalExclVat.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center text-zinc-400">
                     <span>Pins Subtotal ({totalQty} units, excl VAT)</span>
-                    <span className="font-mono text-zinc-300">{CURRENCY}{pinsSubtotalExclVat.toFixed(2)}</span>
+                    <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{pinsSubtotalExclVat.toFixed(2)}</span>
                   </div>
                 </div>
 

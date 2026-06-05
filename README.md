@@ -4,8 +4,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 This project now uses Prisma ORM with PostgreSQL.
 
-1. Create a PostgreSQL database or a Prisma Postgres instance.
+1. Create a PostgreSQL database or a Neon database.
 2. Set `DATABASE_URL` in `.env`.
+   - For Neon/Vercel, use the pooled Neon URL for `DATABASE_URL`.
+   - Set `DIRECT_DATABASE_URL` to the non-pooled Neon URL for Prisma migrations.
 3. Apply the schema:
 
 ```bash

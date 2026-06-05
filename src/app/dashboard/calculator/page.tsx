@@ -1,23 +1,13 @@
-import { prisma } from "@/lib/db"
 import CalculatorClient from "./CalculatorClient"
 import Link from "next/link"
 import { connection } from "next/server"
+import { getCalculatorReferenceData } from "./data"
 
 export default async function CalculatorPage() {
   await connection()
 
-  const garments = await prisma.garment.findMany({
-    orderBy: { name: 'asc' }
-  })
-  
-  const printPrices = await prisma.printPrice.findMany({
-    orderBy: [
-      { colorCount: 'asc' },
-      { qtyMin: 'asc' }
-    ]
-  })
-
-  const garmentMarkups = await prisma.garmentMarkup.findMany()
+  const { garments, printPrices, garmentMarkups } =
+    await getCalculatorReferenceData()
 
   return (
     <div className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto font-sans bg-transparent min-h-screen">

@@ -181,11 +181,13 @@ function GarmentSelector({
 export default function DesignCard({
   design,
   garments,
+  itemNumber,
   onChange,
   onRemove
 }: {
   design: Design
   garments: Garment[]
+  itemNumber?: number
   onChange: (d: Design) => void
   onRemove?: () => void
 }) {
@@ -222,7 +224,9 @@ export default function DesignCard({
           </svg>
         </button>
       )}
-       <label className="block text-lg font-bold text-zinc-300 mb-2">Design Info</label>
+      <label className="block text-lg font-bold text-zinc-300 mb-2">
+        {itemNumber ? `Item #${itemNumber}` : "Item"}
+      </label>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
