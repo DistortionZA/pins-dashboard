@@ -7,9 +7,8 @@ import {
 } from "@prisma/client"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { prisma } from "@/lib/db"
-import { getRefferalsTag } from "./data"
-
-const REFERRAL_BONUS_POINTS = 100
+import { REFERRAL_BONUS_POINTS } from "./constants"
+import { getReferralsTag } from "./data"
 
 type ActionResult = {
   ok: boolean
@@ -38,9 +37,9 @@ function normalizeNameKey(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
 }
 
-async function revalidateRefferalsViews() {
-  revalidateTag(getRefferalsTag(), "max")
-  revalidatePath("/dashboard/refferals")
+async function revalidateReferralsViews() {
+  revalidateTag(getReferralsTag(), "max")
+  revalidatePath("/dashboard/referrals")
 }
 
 async function generateUniqueReferralCode(name: string) {
@@ -133,7 +132,7 @@ export async function createCustomer(formData: FormData): Promise<ActionResult> 
       }
     })
 
-    await revalidateRefferalsViews()
+    await revalidateReferralsViews()
 
     return {
       ok: true,
@@ -229,7 +228,7 @@ export async function createReferral(formData: FormData): Promise<ActionResult> 
       })
     })
 
-    await revalidateRefferalsViews()
+    await revalidateReferralsViews()
 
     return {
       ok: true,
@@ -305,7 +304,7 @@ export async function adjustLoyaltyPoints(formData: FormData): Promise<ActionRes
       })
     })
 
-    await revalidateRefferalsViews()
+    await revalidateReferralsViews()
 
     return { ok: true, message: "Loyalty points updated." }
   } catch (error) {
@@ -384,7 +383,7 @@ export async function updateReferralStatus(formData: FormData): Promise<ActionRe
       }
     })
 
-    await revalidateRefferalsViews()
+    await revalidateReferralsViews()
 
     return {
       ok: true,
@@ -401,5 +400,3 @@ export async function updateReferralStatus(formData: FormData): Promise<ActionRe
     }
   }
 }
-
-export { REFERRAL_BONUS_POINTS }

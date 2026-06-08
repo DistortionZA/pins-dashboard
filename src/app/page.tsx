@@ -203,8 +203,8 @@ export default function Home() {
           />
 
           <HubCard
-            href="/dashboard/refferals"
-            title="Refferals"
+            href="/dashboard/referrals"
+            title="Referrals"
             description="Track referral codes, customer links, loyalty rewards, and status updates."
             badge="Open Tool"
             active

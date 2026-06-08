@@ -1,12 +1,30 @@
 import { unstable_cache } from "next/cache"
+import type { Garment } from "@prisma/client"
+
 import { prisma } from "@/lib/db"
 
 const GARMENT_DIRECTORY_TAG = "garment-directory"
 
-async function loadGarmentDirectoryData() {
-  return prisma.garment.findMany({
-    orderBy: { name: "asc" }
-  })
+export type GarmentDirectoryItem = Garment & {
+  connectedMarkupValue: number | null
+}
+
+async function loadGarmentDirectoryData(): Promise<GarmentDirectoryItem[]> {
+  const [garments, garmentMarkups] = await Promise.all([
+    prisma.garment.findMany({
+      orderBy: { name: "asc" }
+    }),
+    prisma.garmentMarkup.findMany()
+  ])
+
+  const markupByType = new Map(
+    garmentMarkups.map((markup) => [markup.garmentType, markup.markupValue])
+  )
+
+  return garments.map((garment) => ({
+    ...garment,
+    connectedMarkupValue: markupByType.get(garment.type) ?? null
+  }))
 }
 
 export const getGarmentDirectoryData = unstable_cache(

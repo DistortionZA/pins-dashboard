@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import type { Garment } from "@prisma/client"
 import { addGarment, updateGarmentDetails, deleteGarment } from "./actions"
+import type { GarmentDirectoryItem } from "./data"
 
 function getTagList(tags?: string) {
   return (tags ?? "")
@@ -19,12 +19,12 @@ function normalizeSearch(value: string) {
 export default function GarmentDirectoryClient({
   initialGarments
 }: {
-  initialGarments: Garment[]
+  initialGarments: GarmentDirectoryItem[]
 }) {
   const router = useRouter()
   const [search, setSearch] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingGarment, setEditingGarment] = useState<Garment | null>(null)
+  const [editingGarment, setEditingGarment] = useState<GarmentDirectoryItem | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUpdatingDetails, setIsUpdatingDetails] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -147,8 +147,9 @@ export default function GarmentDirectoryClient({
                 <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Brand</th>
                 <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Name</th>
                 <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Color</th>
-                <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Type</th>
-                <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Tags</th>
+                  <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Type</th>
+                  <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Markup</th>
+                  <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Tags</th>
                 <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Base Price</th>
                 <th className="p-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">Extra Size Cost</th>
               </tr>
@@ -156,7 +157,7 @@ export default function GarmentDirectoryClient({
             <tbody className="divide-y divide-zinc-800/50">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="p-8 text-center text-zinc-500">
+                    <td colSpan={11} className="p-8 text-center text-zinc-500">
                     No garments found matching &quot;{search}&quot;
                   </td>
                 </tr>
@@ -183,6 +184,9 @@ export default function GarmentDirectoryClient({
                     <td className="p-4 font-medium text-white">{g.name}</td>
                     <td className="p-4 text-sm text-zinc-400">{g.color || "-"}</td>
                     <td className="p-4 text-sm text-zinc-400">{g.type}</td>
+                    <td className="p-4 text-sm font-medium text-zinc-300">
+                      {g.connectedMarkupValue !== null ? `${CURRENCY}${g.connectedMarkupValue.toFixed(2)}` : "-"}
+                    </td>
                     <td className="p-4 min-w-56">
                       <div className="flex items-center gap-2">
                         <div className="flex flex-wrap gap-1.5">

@@ -4,7 +4,7 @@ import PkTaxCalculatorClient from "./PkTaxCalculatorClient"
 
 export default function PkTaxPage() {
   return (
-    <div className="min-h-screen max-w-7xl bg-transparent p-6 font-sans md:p-8 lg:p-10">
+    <div className="mx-auto min-h-screen max-w-7xl bg-transparent p-6 font-sans md:p-8 lg:p-10">
       <Link
         href="/"
         className="mb-6 inline-flex items-center text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-100"
@@ -28,7 +28,8 @@ export default function PkTaxPage() {
         <p className="text-sm font-bold uppercase tracking-[0.25em] text-red-500">Sales Tools</p>
         <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">PK Tax Calculator</h1>
         <p className="max-w-3xl text-zinc-400">
-          Manual monthly bonus pool calculator using Netsuite and Snuggle report totals.
+          Manual-entry monthly calculator for PK Tax and Snuggle pool distribution using the
+          confirmed Netsuite and Monday report process.
         </p>
       </div>
 

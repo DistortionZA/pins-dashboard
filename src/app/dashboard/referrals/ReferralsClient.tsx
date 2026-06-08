@@ -5,13 +5,13 @@ import type { LoyaltyTransactionType, ReferralStatus } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import {
-  REFERRAL_BONUS_POINTS,
   adjustLoyaltyPoints,
   createCustomer,
   createReferral,
   updateReferralStatus
 } from "./actions"
-import type { RefferalsDashboardData } from "./data"
+import { REFERRAL_BONUS_POINTS } from "./constants"
+import type { ReferralsDashboardData } from "./data"
 
 const REFERRAL_STATUSES: ReferralStatus[] = ["PENDING", "CONVERTED", "REWARDED", "CANCELLED"]
 const LOYALTY_TYPES: LoyaltyTransactionType[] = ["ADJUSTED", "EARNED", "REDEEMED"]
@@ -28,7 +28,7 @@ function getReferralLink(code: string) {
   return `/ref/${code}`
 }
 
-function getSearchableText(customer: RefferalsDashboardData["customers"][number]) {
+function getSearchableText(customer: ReferralsDashboardData["customers"][number]) {
   return [customer.name, customer.email, customer.phone, customer.referralCode]
     .filter(Boolean)
     .join(" ")
@@ -54,10 +54,10 @@ async function copyToClipboard(text: string) {
   document.body.removeChild(textArea)
 }
 
-export default function RefferalsClient({
+export default function ReferralsClient({
   initialData
 }: {
-  initialData: RefferalsDashboardData
+  initialData: ReferralsDashboardData
 }) {
   const router = useRouter()
   const [search, setSearch] = useState("")
@@ -88,7 +88,7 @@ export default function RefferalsClient({
               Setup Required
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-              Refferals database tables are missing
+              Referrals database tables are missing
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400">
               {initialData.setupIssue}

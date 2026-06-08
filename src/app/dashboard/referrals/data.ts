@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client"
 import { unstable_cache } from "next/cache"
 import { prisma } from "@/lib/db"
 
-const REFFERALS_TAG = "refferals"
+const REFERRALS_TAG = "referrals"
 
 function hasReferralDelegates() {
   const client = prisma as typeof prisma & {
@@ -22,7 +22,7 @@ function hasReferralDelegates() {
   )
 }
 
-async function loadRefferalsData() {
+async function loadReferralsData() {
   if (!hasReferralDelegates()) {
     return {
       customers: [],
@@ -167,12 +167,12 @@ async function loadRefferalsData() {
   }
 }
 
-export const getRefferalsData = unstable_cache(loadRefferalsData, ["refferals-data"], {
-  tags: [REFFERALS_TAG]
+export const getReferralsData = unstable_cache(loadReferralsData, ["referrals-data"], {
+  tags: [REFERRALS_TAG]
 })
 
-export function getRefferalsTag() {
-  return REFFERALS_TAG
+export function getReferralsTag() {
+  return REFERRALS_TAG
 }
 
-export type RefferalsDashboardData = Awaited<ReturnType<typeof loadRefferalsData>>
+export type ReferralsDashboardData = Awaited<ReturnType<typeof loadReferralsData>>

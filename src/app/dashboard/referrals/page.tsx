@@ -1,11 +1,11 @@
 import Link from "next/link"
 import { connection } from "next/server"
-import RefferalsClient from "./RefferalsClient"
-import { getRefferalsData } from "./data"
+import ReferralsClient from "./ReferralsClient"
+import { getReferralsData } from "./data"
 
-export default async function RefferalsPage() {
+export default async function ReferralsPage() {
   await connection()
-  const data = await getRefferalsData()
+  const data = await getReferralsData()
 
   return (
     <div className="min-h-screen mx-auto max-w-7xl bg-transparent p-6 font-sans md:p-8 lg:p-10">
@@ -30,14 +30,14 @@ export default async function RefferalsPage() {
 
       <div className="mb-8 flex flex-col gap-3">
         <p className="text-sm font-bold uppercase tracking-[0.25em] text-red-500">Sales Tools</p>
-        <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">Refferals</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">Referrals</h1>
         <p className="max-w-3xl text-zinc-400">
           Track referral codes, log referred customers, monitor statuses, and maintain loyalty
           points without keeping the system in your head.
         </p>
       </div>
 
-      <RefferalsClient initialData={data} />
+      <ReferralsClient initialData={data} />
     </div>
   )
 }
