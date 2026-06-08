@@ -227,11 +227,6 @@ export default function CalculatorClient({
       `Delivery Time: ${selectedDeliveryRate.deliveryTime}`,
       `Boxes: ${deliveryBoxCount}`,
       `Cost Per Box: ${CURRENCY}${selectedDeliveryRate.cost} excl. VAT`,
-      ...(deliveryMarkupEnabled
-        ? [`Delivery Markup: ${CURRENCY}${deliveryMarkupExclVat.toFixed(2)} excl. VAT`]
-        : []),
-      `Delivery Subtotal Excl. VAT: ${CURRENCY}${deliverySubtotalExclVat.toFixed(2)}`,
-      `VAT (${vatRate}%): ${CURRENCY}${deliveryVatAmount.toFixed(2)}`,
       `Total Delivery Cost Incl. VAT: ${CURRENCY}${deliveryTotalInclVat.toFixed(2)}`
     ].join("\n")
 
