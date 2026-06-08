@@ -1,8 +1,62 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# pins-dashboard AGENTS.md
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+## Core Rules
+- This repo is a Next.js App Router app on Next `16`. Check `node_modules/next/dist/docs/` before using framework behavior you are not sure about.
+- Prefer `rtk`-prefixed shell commands when available. If `rtk` is missing, use the raw command.
+- Keep changes small and local. Do not refactor working calculator pricing logic unless explicitly asked.
+- Preserve the existing dark internal-tool UI with red accents and stable card heights.
+
+## Build / Check Commands
+- Dev: `npm run dev`
+- Build: `npm run build`
+- Vercel build equivalent: `npm run vercel-build`
+- Lint: `npm run lint`
+- Typecheck: `./node_modules/.bin/tsc --noEmit`
+- Prisma generate: `./node_modules/.bin/prisma generate`
+- Prisma validate: `./node_modules/.bin/prisma validate`
+- Prisma format: `./node_modules/.bin/prisma format --schema prisma/schema.prisma`
+- Deploy migrations: `npm run migrate:deploy`
+
+## Prisma / Neon / Vercel Rules
+- Database is PostgreSQL only. Do not reintroduce SQLite config.
+- `src/lib/db.ts` expects `DATABASE_URL` and rejects `file:` URLs.
+- On Vercel, `DATABASE_URL` must be the Neon pooled URL and must not point to localhost.
+- Use `DIRECT_DATABASE_URL` for direct migration access when available.
+- Do not put credentials, URLs with secrets, or copied `.env` values into code, docs, commits, or prompts.
+- Do not run destructive Prisma commands against shared environments.
+- Do not seed or overwrite production data.
+- If schema changes are made, update `prisma/schema.prisma`, generate Prisma client, and only create/apply migrations when explicitly appropriate.
+
+## UI Rules
+- Keep wording consistent with existing navigation: use `Back to Hub`.
+- Match current styling: dark panels, zinc borders, red highlights, compact controls.
+- Avoid layout shift in existing calculator surfaces. The pricing container must stay mounted/stable.
+- Keep forms responsive and practical; favor simple modals/cards over new design systems.
+- The Hub card label must remain spelled `Refferals` for now.
+
+## Calculator Rules
+- Relevant files: `src/app/dashboard/calculator/CalculatorClient.tsx`, `src/components/DesignCard.tsx`.
+- VAT is currently hardcoded at `27%`. Reuse that rate consistently unless asked to centralize it.
+- Do not break existing quote calculations for garment pricing, print pricing, production cost, pins price, PK markup, VAT, or final totals.
+- `PK Markup` is per-unit and feeds the customer price before VAT.
+- Delivery helper logic is a sales helper inside the calculator and must not affect main calculator totals.
+- Keep copy behavior explicit: customer-facing copy should clearly indicate whether values are incl./excl. VAT.
+
+## Refferals Rules
+- Route lives under `src/app/dashboard/refferals/`.
+- Current feature uses Prisma models `Customer`, `Referral`, and `LoyaltyTransaction`.
+- Keep the route resilient: if Prisma client or tables are missing, show a setup state instead of crashing.
+- Loyalty changes must be logged through `LoyaltyTransaction`; do not mutate points silently.
+- Referral reward logic currently awards the bonus when status becomes `REWARDED`.
+- `/ref/[code]` is QR-ready structure only; do not add real QR generation unless requested.
+
+## Repo-Specific Notes
+- Cached data loaders live next to routes, e.g. `calculator/data.ts`, `garments/data.ts`, `refferals/data.ts`.
+- Server mutations should use server actions where the repo already does.
+- Existing active Hub routes:
+  - `/dashboard/calculator`
+  - `/dashboard/garments`
+  - `/dashboard/refferals`
 
 
 <!-- headroom:rtk-instructions -->

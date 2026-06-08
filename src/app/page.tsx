@@ -179,9 +179,11 @@ export default function Home() {
           />
 
           <HubCard
+            href="/dashboard/pk-tax"
             title="PK Tax"
-            description="Placeholder for internal tax tools and tax-related calculations."
-            badge="Coming Soon"
+            description="Calculate the monthly PK Tax pool, weighted performance, and payout splits."
+            badge="Open Tool"
+            active
             icon={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
