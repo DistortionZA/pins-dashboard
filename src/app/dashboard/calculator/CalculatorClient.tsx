@@ -10,6 +10,44 @@ import DesignCard, {
 } from "@/components/DesignCard"
 import type { Garment, GarmentMarkup, PrintPrice } from "@prisma/client"
 
+const DELIVERY_RATES = [
+  { country: "Austria", cost: 25, deliveryTime: "1 day" },
+  { country: "Czechia", cost: 25, deliveryTime: "2 days" },
+  { country: "Germany", cost: 25, deliveryTime: "2 days" },
+  { country: "Romania", cost: 25, deliveryTime: "2 days" },
+  { country: "Slovenia", cost: 25, deliveryTime: "1 day" },
+  { country: "Croatia", cost: 30, deliveryTime: "3 days" },
+  { country: "Slovakia", cost: 30, deliveryTime: "2 days" },
+  { country: "Italy", cost: 40, deliveryTime: "3-4 days" },
+  { country: "France", cost: 45, deliveryTime: "3 days" },
+  { country: "Poland", cost: 45, deliveryTime: "2 days" },
+  { country: "Netherlands", cost: 45, deliveryTime: "2 days" },
+  { country: "Greece", cost: 50, deliveryTime: "6 days" },
+  { country: "Portugal", cost: 50, deliveryTime: "4 days" },
+  { country: "Spain", cost: 50, deliveryTime: "3 days" },
+  { country: "Belgium", cost: 55, deliveryTime: "2 days" },
+  { country: "Bulgaria", cost: 55, deliveryTime: "3 days" },
+  { country: "Denmark", cost: 55, deliveryTime: "3 days" },
+  { country: "Estonia", cost: 55, deliveryTime: "4 days" },
+  { country: "Latvia", cost: 55, deliveryTime: "3 days" },
+  { country: "Lithuania", cost: 55, deliveryTime: "3 days" },
+  { country: "Luxembourg", cost: 55, deliveryTime: "2 days" },
+  { country: "Monaco", cost: 55, deliveryTime: "3 days" },
+  { country: "Sweden", cost: 55, deliveryTime: "3 days" },
+  { country: "England", cost: 65, deliveryTime: "4 days" },
+  { country: "Ireland", cost: 65, deliveryTime: "5 days" }
+] as const
+
+const BOX_CAPACITY_TOOLTIP = [
+  "Approximate Box Capacities:",
+  "- 100 T-Shirts",
+  "- 20-25 Hoodies",
+  "- 60 Long Sleeves",
+  "- 150 Beanies",
+  "- 100-150 Caps",
+  "- 100-150 Tote Bags"
+].join("\n")
+
 export default function CalculatorClient({
   garments,
   printPrices,
@@ -29,6 +67,9 @@ export default function CalculatorClient({
   ])
 
   const [isBreakdownOpen, setIsBreakdownOpen] = useState(false)
+  const [isDeliveryHelperEnabled, setIsDeliveryHelperEnabled] = useState(false)
+  const [deliveryCountry, setDeliveryCountry] = useState("Germany")
+  const [deliveryBoxCount, setDeliveryBoxCount] = useState(1)
   const vatRate = 27 // Hardcoded VAT Rate at 27%
   const CURRENCY = "€"
 
@@ -113,6 +154,14 @@ export default function CalculatorClient({
     return designs.some((d) => d.garmentId !== undefined && d.garmentId !== "")
   }, [designs])
 
+  const selectedDeliveryRate = useMemo(() => {
+    return DELIVERY_RATES.find((rate) => rate.country === deliveryCountry) ?? DELIVERY_RATES[0]
+  }, [deliveryCountry])
+
+  const deliveryTotalCost = useMemo(() => {
+    return deliveryBoxCount * selectedDeliveryRate.cost
+  }, [deliveryBoxCount, selectedDeliveryRate])
+
   const displayProductionSubtotalExclVat = hasGarmentSelected ? productionSubtotalExclVat : 0
   const displayPinsSubtotalExclVat = hasGarmentSelected ? pinsSubtotalExclVat : 0
   const displayPinsTotalInclVat = hasGarmentSelected ? pinsTotalInclVat : 0
@@ -143,8 +192,23 @@ export default function CalculatorClient({
       body += `${d.quantity} x ${CURRENCY}${unitExclVat.toFixed(2)} (excl vat) ea = ${CURRENCY}${totalInclVat.toFixed(2)}\n\n`
     })
 
-   await copyToClipboard(body)
+    await copyToClipboard(body)
     toast.success("Quote copied to clipboard")
+  }
+
+  const handleDeliveryCopyClick = async () => {
+    if (!isDeliveryHelperEnabled) return
+
+    const deliveryInfo = [
+      `Delivery Country: ${selectedDeliveryRate.country}`,
+      `Delivery Time: ${selectedDeliveryRate.deliveryTime}`,
+      `Boxes: ${deliveryBoxCount}`,
+      `Cost Per Box: ${CURRENCY}${selectedDeliveryRate.cost}`,
+      `Total Delivery Cost: ${CURRENCY}${deliveryTotalCost}`
+    ].join("\n")
+
+    await copyToClipboard(deliveryInfo)
+    toast.success("Delivery info copied to clipboard")
   }
 
   return (
@@ -171,6 +235,139 @@ export default function CalculatorClient({
           </svg>
           Add Item
         </button>
+      </div>
+
+      <div className="mt-6 bg-[#0b0c10] border border-red-500/20 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(239,68,68,0.08)]">
+        <div className="px-6 py-4 bg-[#111219] flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-3 text-sm font-semibold text-zinc-200">
+              <input
+                type="checkbox"
+                checked={isDeliveryHelperEnabled}
+                onChange={(e) => setIsDeliveryHelperEnabled(e.target.checked)}
+                className="h-4 w-4 rounded border-zinc-700 bg-[#0b0c10] text-red-500 focus:ring-red-500/50"
+              />
+              <span>Delivery Costs</span>
+            </label>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-red-400/80">
+              Sales Helper
+            </span>
+          </div>
+
+          <button
+            type="button"
+            title={BOX_CAPACITY_TOOLTIP}
+            className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+          >
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[11px] text-red-400">
+              i
+            </span>
+            Box Capacity Guide
+          </button>
+        </div>
+
+        {isDeliveryHelperEnabled && (
+          <div className="border-t border-red-500/10 px-6 py-5">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    Delivery Area
+                  </label>
+                  <select
+                    value={deliveryCountry}
+                    onChange={(e) => setDeliveryCountry(e.target.value)}
+                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] p-2.5 text-white outline-none transition-shadow focus:border-red-500/50 focus:ring-2 focus:ring-red-500/50"
+                  >
+                    {DELIVERY_RATES.map((rate) => (
+                      <option key={rate.country} value={rate.country}>
+                        {rate.country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    Number of Boxes
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    value={deliveryBoxCount}
+                    onChange={(e) => setDeliveryBoxCount(Math.max(1, Number(e.target.value) || 1))}
+                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] p-2.5 text-white outline-none transition-shadow focus:border-red-500/50 focus:ring-2 focus:ring-red-500/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    Cost Per Box
+                  </label>
+                  <div className="rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-sm font-semibold text-zinc-200">
+                    {CURRENCY}{selectedDeliveryRate.cost}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    Delivery Time
+                  </label>
+                  <div className="rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-sm font-semibold text-zinc-200">
+                    {selectedDeliveryRate.deliveryTime}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                    Total Delivery Cost
+                  </label>
+                  <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2.5 text-sm font-bold text-red-300">
+                    {CURRENCY}{deliveryTotalCost}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-zinc-800 bg-[#0f1016] p-4">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <p className="text-xs font-black uppercase tracking-widest text-zinc-500">
+                    Delivery Summary
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleDeliveryCopyClick}
+                    className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-600/20 hover:border-red-500/40"
+                  >
+                    Copy Delivery Info
+                  </button>
+                </div>
+
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                    <span>Selected Country</span>
+                    <span className="font-mono text-zinc-200">{selectedDeliveryRate.country}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                    <span>Delivery Time</span>
+                    <span className="font-mono text-zinc-200">{selectedDeliveryRate.deliveryTime}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                    <span>Cost Per Box</span>
+                    <span className="font-mono text-zinc-200">{CURRENCY}{selectedDeliveryRate.cost}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                    <span>Number of Boxes</span>
+                    <span className="font-mono text-zinc-200">{deliveryBoxCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4 border-t border-zinc-800 pt-3 text-zinc-300">
+                    <span className="font-semibold">Total Delivery Cost</span>
+                    <span className="font-mono font-bold text-red-300">{CURRENCY}{deliveryTotalCost}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Pricing Container - always mounted so selecting a garment does not shift layout */}

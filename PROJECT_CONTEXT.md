@@ -1,17 +1,19 @@
 # Pins Dashboard Project Context
 
-This document is intended as high-signal context for AI assistants or collaborators working on this repository.
-
 ## Project Summary
 
-`pins-dashboard` is an internal dashboard for Pins&Knuckles merchandise pricing and garment catalog management.
+`pins-dashboard` is an internal Pins&Knuckles dashboard for merchandise pricing and garment catalog management.
 
-The app currently has two main tools:
+Current hub sections:
 
-- Pricing calculator: builds quotes from garment base cost, print position, color count, quantity tier, garment markup, and VAT.
-- Garment directory: searchable garment catalog with add, edit, and delete workflows.
+- `Pricing Calculator`: live quote calculator.
+- `Garment Directory`: searchable garment catalog with add, edit, and delete workflows.
+- `Order Management`: placeholder.
+- `PK Tax`: placeholder.
+- `Refferals`: placeholder. The label is intentionally spelled this way in the Hub UI.
+- `US Calculator`: placeholder.
 
-The project is a Next.js App Router application using Prisma with PostgreSQL. It is being prepared for Vercel deployment with Neon Postgres.
+The app is a Next.js App Router project using Prisma with PostgreSQL, prepared for Vercel deployment with Neon Postgres.
 
 ## Tech Stack
 
@@ -29,52 +31,56 @@ Important package scripts:
 npm run dev
 npm run build
 npm run vercel-build
+npm run migrate:deploy
 npm run lint
 npx prisma validate
-npx prisma migrate deploy
 npx prisma db seed
 ```
 
-`npm run vercel-build` runs:
+Current script behavior:
 
 ```bash
-prisma generate && prisma migrate deploy && next build
+npm run build         # prisma generate && next build
+npm run vercel-build # prisma generate && next build
+npm run migrate:deploy # prisma migrate deploy
 ```
+
+Migrations are intentionally not run inside the Vercel build command. Run `npm run migrate:deploy` separately when the Neon database is reachable.
 
 ## Repository Structure
 
 ```text
 src/app/
-  page.tsx
+  page.tsx                         # Hub page
   layout.tsx
   globals.css
   dashboard/
+    loading.tsx                    # Shared dashboard route loading fallback
     calculator/
       page.tsx
+      loading.tsx
+      data.ts                      # Cached calculator reference data
       CalculatorClient.tsx
     garments/
       page.tsx
+      loading.tsx
+      data.ts                      # Cached garment directory data
+      actions.ts                   # Server actions and cache invalidation
       GarmentDirectoryClient.tsx
-      actions.ts
-
 src/components/
-  DesignCard.tsx
-
+  DesignCard.tsx                   # Calculator item card and pricing helper types
 src/lib/
-  db.ts
-
+  db.ts                            # Prisma + pg adapter setup
 prisma/
   schema.prisma
-  config via ../prisma.config.ts
-  migrations/
-    0_init/migration.sql
+  migrations/0_init/migration.sql
   seed.ts
   seed-data.ts
 ```
 
 ## Data Model
 
-The Prisma schema models:
+Prisma models:
 
 - `Garment`: catalog item with code, alt code, brand, name, color, type, base price, optional extra size cost, and search tags.
 - `GarmentMarkup`: per-garment-type markup value.
@@ -88,64 +94,124 @@ Enums:
 - `GarmentType`: `TSHIRT`, `LONGSLEEVE`, `HOODIE`
 - `PrintPosition`: `FRONT`, `BACK`, `LEFT_SLEEVE`, `RIGHT_SLEEVE`, `NECK`
 
-The seed data creates the garment catalog, garment markups, and print price tiers.
+Seed data creates the garment catalog, garment markups, and print price tiers.
+
+Expected seeded counts:
+
+```text
+Garment: 47
+GarmentMarkup: 3
+PrintPrice: 45
+```
 
 ## Pricing Calculator Behavior
 
-Relevant files:
+Server page:
 
 - `src/app/dashboard/calculator/page.tsx`
-- `src/app/dashboard/calculator/CalculatorClient.tsx`
-- `src/components/DesignCard.tsx`
+- Calls `connection()` so the page is dynamic.
+- Loads cached reference data through `getCalculatorReferenceData()` in `calculator/data.ts`.
 
-The calculator page is a server component that loads:
+Client behavior:
 
-- all garments
-- all print price tiers
-- all garment type markups
-
-The client component manages one or more designs in local React state.
-
-Pricing rules:
-
-- Each design has a quantity, selected garment, and one or more print positions.
-- Print prices are selected by matching `colorCount`, `qtyMin`, and `qtyMax`.
-- Neck prints use a fixed unit price of `0.7`.
-- Garment base cost is multiplied by quantity.
-- Garment markup is selected from `GarmentMarkup` by garment type and multiplied by quantity.
+- `CalculatorClient.tsx` keeps calculator items in React state.
+- Each item is rendered by `DesignCard.tsx`.
 - VAT is currently hardcoded at `27%`.
-- The UI shows both production cost and Pins customer price.
-- The quote copy action formats a customer-facing text quote.
+- Neck prints use fixed unit price `0.7`.
+- Print prices match `colorCount`, `qtyMin`, and `qtyMax`.
+- Garment base cost is garment base price times quantity.
+- Garment markup is the garment type markup times quantity.
+
+Pins Price includes:
+
+- garment base cost
+- Pins print cost
+- garment markup
+- optional PK Markup
+- VAT applied to the subtotal
+
+Production Cost includes:
+
+- garment base cost
+- production print cost
+
+Production Cost does not include garment markup or PK Markup.
+
+### PK Markup
+
+Each calculator item has an optional `PK Markup` checkbox.
+
+- The PK Markup amount is entered per unit.
+- The textbox only appears when the checkbox is ticked.
+- Negative values are allowed so sales can apply a markdown.
+- PK Markup affects only Pins Price, not Production Cost.
+- The Pins breakdown shows PK Markup as its own line when enabled.
+- The copied quote includes PK Markup through the final per-unit Pins price.
+
+### Calculator Layout
+
+The calculator item card and pricing container should not shift size when a garment is selected.
+
+Current layout rules:
+
+- `CalculatorClient` root is `w-full max-w-4xl`.
+- `DesignCard` is `w-full min-h-[380px]`.
+- The pricing container is always mounted with `min-h-[360px]`.
+- Empty pricing state shows zero totals until a garment is selected.
+- `handleCopyClick` returns early if no garment is selected.
+
+Do not reintroduce conditional rendering that removes the whole pricing container, because it causes layout shift.
 
 ## Garment Directory Behavior
 
-Relevant files:
+Server page:
 
 - `src/app/dashboard/garments/page.tsx`
-- `src/app/dashboard/garments/GarmentDirectoryClient.tsx`
-- `src/app/dashboard/garments/actions.ts`
+- Calls `connection()` so the page is dynamic.
+- Loads cached garment directory data through `getGarmentDirectoryData()` in `garments/data.ts`.
 
-The directory page loads all garments from Prisma and passes them to the client component.
+Client behavior:
 
-Features:
+- `GarmentDirectoryClient.tsx` renders the searchable table.
+- Search is client-side and memoized with `useMemo`.
+- Add/edit/delete are server actions in `garments/actions.ts`.
+- Server actions invalidate both:
+  - garment directory cache tag
+  - calculator reference cache tag
 
-- Search by name, code, alt code, brand, color, and tags.
-- Add garment modal.
-- Edit garment detail workflow.
-- Delete garment workflow.
-- Server actions mutate Prisma and revalidate both `/dashboard/garments` and `/dashboard/calculator`.
+Route loading:
 
-## Database and Prisma Setup
+- `src/app/dashboard/garments/loading.tsx` gives immediate feedback while the directory loads.
+- `src/app/dashboard/loading.tsx` is a shared fallback for dashboard sections that load data.
 
-The app now uses PostgreSQL, not SQLite.
+## Hub Page
 
-Runtime database access is in:
+`src/app/page.tsx` is the Hub.
 
-```text
-src/lib/db.ts
-```
+Active links:
 
-It:
+- Pricing Calculator: `/dashboard/calculator`
+- Garment Directory: `/dashboard/garments`
+
+Placeholder cards:
+
+- Order Management
+- PK Tax
+- Refferals
+- US Calculator
+
+Placeholder cards are inactive and display `Coming Soon`.
+
+## Styling Notes
+
+- The UI uses dark, restrained operational-tool styling.
+- The root layout does not use `next/font/google`; this avoids build failures when external font fetching is blocked.
+- Global CSS already provides the font fallback stack.
+- Back navigation text should say `Back to Hub`, not `Back to Dashboard`.
+
+## Database Setup
+
+`src/lib/db.ts`:
 
 - requires `DATABASE_URL`
 - rejects old SQLite `file:` URLs
@@ -154,11 +220,7 @@ It:
 - passes that pool to Prisma via `PrismaPg`
 - caches the Prisma client and pool globally during development
 
-Prisma CLI config is in:
-
-```text
-prisma.config.ts
-```
+Prisma CLI config is in `prisma.config.ts`.
 
 It:
 
@@ -166,7 +228,7 @@ It:
 - points Prisma to `prisma/schema.prisma`
 - uses `prisma/migrations`
 - configures the seed command as `npx ts-node --project tsconfig.seed.json prisma/seed.ts`
-- chooses the migration database URL with this order:
+- chooses the migration database URL in this order:
   - `DIRECT_DATABASE_URL`, if set
   - otherwise derive a direct Neon URL from `DATABASE_URL` by removing `-pooler` from the host
 
@@ -183,7 +245,7 @@ Use the pooled Neon URL for `DATABASE_URL`. It normally contains `-pooler` in th
 
 Use the direct Neon URL for `DIRECT_DATABASE_URL`. It normally does not contain `-pooler`.
 
-Do not use `localhost` in Vercel environment variables. Vercel cannot reach a database running on a developer machine. The code now throws a clearer error if `VERCEL=1` and a localhost database URL is configured.
+Do not use `localhost` in Vercel environment variables.
 
 Do not paste real database credentials into documentation or prompts. If a credential is exposed, rotate the Neon password and update Vercel.
 
@@ -201,9 +263,19 @@ The build command is:
 npm run vercel-build
 ```
 
-This runs Prisma generation, applies pending migrations, then builds Next.js.
+That command currently runs:
 
-The seed command is not run automatically during Vercel deploy. That is intentional because the seed script deletes and recreates catalog/pricing rows.
+```bash
+prisma generate && next build
+```
+
+Deploy migrations separately when the database is reachable:
+
+```bash
+npm run migrate:deploy
+```
+
+Seed command is not run automatically during Vercel deploy.
 
 For a new production database:
 
@@ -211,17 +283,17 @@ For a new production database:
 npx prisma db seed
 ```
 
-Only run this against production when it is safe to overwrite seeded catalog/pricing data.
+Only run seed against production when it is safe to overwrite seeded catalog/pricing data.
 
 ## Migration History
 
-The current active migration is:
+Current active migration:
 
 ```text
 prisma/migrations/0_init/migration.sql
 ```
 
-Old SQLite migrations were archived under:
+Old SQLite migrations are archived under:
 
 ```text
 prisma/sqlite-migrations-archive/
@@ -236,10 +308,40 @@ Before deploying or handing the project to another assistant, run:
 ```bash
 npx prisma validate
 npm run lint
+npx tsc --noEmit
 npm run vercel-build
 ```
 
-When using Neon, confirm the database contains seeded catalog data:
+Notes:
+
+- In this sandbox, `npm run vercel-build` can fail because Turbopack tries to bind a local worker port and the sandbox denies it. This is not the same as the Neon `P1001` error.
+- Previously, `next/font/google` could fail local builds when network access was blocked. The project no longer depends on Google font fetching.
+
+## Operational Issues
+
+### Prisma P1001 on Vercel
+
+If Vercel logs show:
+
+```text
+Error: P1001: Can't reach database server at `...neon.tech:5432`
+```
+
+check:
+
+- `DATABASE_URL` is set in the correct Vercel environment.
+- `DIRECT_DATABASE_URL` is set if running migrations.
+- Neon project, branch, and endpoint are active.
+- The connection string includes `sslmode=require`.
+- The deploy is not trying to connect to a deleted or paused endpoint.
+
+The Vercel build no longer runs `prisma migrate deploy`, so P1001 during `npm run vercel-build` should not occur unless another build-time code path touches the database.
+
+### App Loads but No Garments Appear
+
+Usually means the database is migrated but not seeded.
+
+Confirm seeded counts:
 
 ```text
 Garment: 47
@@ -247,52 +349,8 @@ GarmentMarkup: 3
 PrintPrice: 45
 ```
 
-If the app loads but no garments appear, the database is usually migrated but not seeded.
-
-## Known Operational Issues
-
-### Prisma P1001 on Vercel
-
-If Vercel logs show:
-
-```text
-Error: P1001: Can't reach database server at `localhost:5432`
-```
-
-then one of the Vercel environment variables still points to a local database. Fix Vercel env vars:
-
-- `DATABASE_URL`: Neon pooled URL
-- `DIRECT_DATABASE_URL`: Neon direct URL
-
-Redeploy after changing env vars.
-
-### Prisma Advisory Lock Timeout on Neon
-
-If `prisma migrate deploy` times out acquiring an advisory lock, make sure migrations are using the direct Neon URL, not the pooled URL.
-
-This repo handles that in `prisma.config.ts`, but Vercel should still have `DIRECT_DATABASE_URL` set explicitly.
-
-### Missing `@swc/helpers...` in `.next/dev`
-
-This can happen after dependency changes due to stale Turbopack dev cache.
-
-Fix:
+Run seed only when safe:
 
 ```bash
-rm -rf .next
-npm run dev
+npx prisma db seed
 ```
-
-## Design and UI Notes
-
-The app uses a dark internal-tool aesthetic with red accents. The dashboard home page links to the calculator and garment directory.
-
-This is not a marketing site. UI work should prioritize utility, fast scanning, and safe data editing.
-
-## Current Cautions for Future Changes
-
-- Do not put real database credentials in committed files.
-- Do not auto-run the seed script during Vercel deploy unless the destructive behavior is changed.
-- Keep `prisma` in production dependencies because Vercel runs migrations during build.
-- Keep `@prisma/adapter-pg` and `pg`; Prisma 7 requires a driver adapter for this setup.
-- If Next.js APIs are changed, read the local Next docs in `node_modules/next/dist/docs/` first because this project uses Next 16.
