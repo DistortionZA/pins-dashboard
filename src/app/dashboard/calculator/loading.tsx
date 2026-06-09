@@ -1,6 +1,10 @@
 export default function Loading() {
   return (
-    <div className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto font-sans bg-transparent min-h-screen">
+    <div
+      className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto font-sans bg-transparent min-h-screen"
+      aria-label="Loading EU Price Calculator"
+    >
+      <span className="sr-only">Loading EU Price Calculator...</span>
       <div className="h-5 w-32 rounded bg-zinc-800 mb-6" />
       <div className="h-9 w-64 rounded bg-zinc-800 mb-8" />
 

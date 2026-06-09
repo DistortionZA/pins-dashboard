@@ -1,7 +1,14 @@
+import type { Metadata } from "next"
 import CalculatorClient from "./CalculatorClient"
 import Link from "next/link"
 import { connection } from "next/server"
 import { getCalculatorReferenceData } from "./data"
+
+export const metadata: Metadata = {
+  title: "EU Price Calculator | Pins Dashboard",
+  description:
+    "Run the EU Price Calculator to compare production cost, pins pricing, and customer quotes.",
+}
 
 export default async function CalculatorPage() {
   await connection()
@@ -16,9 +23,10 @@ export default async function CalculatorPage() {
         Back to Hub
       </Link>
       <h1 className="text-3xl font-bold tracking-tight text-white mb-8">
-        Price Calculator
+        EU Price Calculator
       </h1>
-      
+
+      {/* Keep the current live calculator mounted on /dashboard/calculator until regional routes are introduced. */}
       <CalculatorClient garments={garments} printPrices={printPrices} garmentMarkups={garmentMarkups} />
     </div>
   )

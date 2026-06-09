@@ -1,6 +1,6 @@
 "use client"
 import { toast } from "sonner"
-import { useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import DesignCard, {
   type Design,
   calculateDesignCosts,
@@ -38,15 +38,14 @@ const DELIVERY_RATES = [
   { country: "Ireland", cost: 65, deliveryTime: "5 days" }
 ] as const
 
-const BOX_CAPACITY_TOOLTIP = [
-  "Approximate Box Capacities:",
-  "- 100 T-Shirts",
-  "- 20-25 Hoodies",
-  "- 60 Long Sleeves",
-  "- 150 Beanies",
-  "- 100-150 Caps",
-  "- 100-150 Tote Bags"
-].join("\n")
+const BOX_CAPACITY_GUIDE_ITEMS = [
+  { label: "T-Shirts", capacity: "100 per box" },
+  { label: "Hoodies", capacity: "20-25 per box" },
+  { label: "Long Sleeves", capacity: "60 per box" },
+  { label: "Beanies", capacity: "150 per box" },
+  { label: "Caps", capacity: "100-150 per box" },
+  { label: "Tote Bags", capacity: "100-150 per box" }
+]
 
 export default function CalculatorClient({
   garments,
@@ -68,12 +67,80 @@ export default function CalculatorClient({
 
   const [isBreakdownOpen, setIsBreakdownOpen] = useState(false)
   const [isDeliveryHelperEnabled, setIsDeliveryHelperEnabled] = useState(false)
+  const [isBoxCapacityGuideOpen, setIsBoxCapacityGuideOpen] = useState(false)
   const [deliveryCountry, setDeliveryCountry] = useState("Germany")
   const [deliveryBoxCount, setDeliveryBoxCount] = useState(1)
   const [deliveryMarkupEnabled, setDeliveryMarkupEnabled] = useState(false)
   const [deliveryMarkupInput, setDeliveryMarkupInput] = useState("0")
+  const boxCapacityGuideTitleId = useId()
+  const boxCapacityGuideDialogRef = useRef<HTMLDivElement>(null)
+  const boxCapacityGuideTriggerRef = useRef<HTMLButtonElement>(null)
+  // EU pricing implementation. Extract shared calculator helpers from here once additional regional calculators are added.
   const vatRate = 27 // Hardcoded VAT Rate at 27%
   const CURRENCY = "€"
+
+  useEffect(() => {
+    if (!isBoxCapacityGuideOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    const triggerElement = boxCapacityGuideTriggerRef.current
+    document.body.style.overflow = "hidden"
+
+    const getFocusableElements = () => {
+      const dialog = boxCapacityGuideDialogRef.current
+      if (!dialog) {
+        return []
+      }
+
+      return Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true")
+    }
+
+    getFocusableElements()[0]?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        setIsBoxCapacityGuideOpen(false)
+        return
+      }
+
+      if (event.key !== "Tab") {
+        return
+      }
+
+      const focusableElements = getFocusableElements()
+      if (focusableElements.length === 0) {
+        event.preventDefault()
+        return
+      }
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+      const activeElement = document.activeElement
+
+      if (event.shiftKey && activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      } else if (!event.shiftKey && activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", handleKeyDown)
+      triggerElement?.focus()
+    }
+  }, [isBoxCapacityGuideOpen])
 
   function addDesign() {
     setDesigns([
@@ -188,11 +255,12 @@ export default function CalculatorClient({
   const displayProductionSubtotalExclVat = hasGarmentSelected ? productionSubtotalExclVat : 0
   const displayPinsSubtotalExclVat = hasGarmentSelected ? pinsSubtotalExclVat : 0
   const displayPinsTotalInclVat = hasGarmentSelected ? pinsTotalInclVat : 0
+  const displayPinsProfit = hasGarmentSelected ?  pinsSubtotalExclVat - productionSubtotalExclVat : 0
 
   const handleCopyClick = async () => {
     if (!hasGarmentSelected) return
 
-    let body = "\n\n"
+    let body = "EU Price Calculator Quote\n\n"
     breakdowns.forEach((b, idx) => {
       const d = designs[idx]
       if (!d) return
@@ -216,13 +284,15 @@ export default function CalculatorClient({
     })
 
     await copyToClipboard(body)
-    toast.success("Quote copied to clipboard")
+    toast.success("EU Price Calculator quote copied to clipboard")
   }
 
   const handleDeliveryCopyClick = async () => {
     if (!isDeliveryHelperEnabled) return
 
     const deliveryInfo = [
+      "EU Price Calculator Delivery Helper",
+      "",
       `Delivery Country: ${selectedDeliveryRate.country}`,
       `Delivery Time: ${selectedDeliveryRate.deliveryTime}`,
       `Boxes: ${deliveryBoxCount}`,
@@ -231,7 +301,7 @@ export default function CalculatorClient({
     ].join("\n")
 
     await copyToClipboard(deliveryInfo)
-    toast.success("Delivery info copied to clipboard")
+    toast.success("EU Price Calculator delivery info copied to clipboard")
   }
 
   return (
@@ -277,9 +347,10 @@ export default function CalculatorClient({
             </span>
           </div>
 
-          <button
-            type="button"
-            title={BOX_CAPACITY_TOOLTIP}
+<button
+ref={boxCapacityGuideTriggerRef}
+type="button"
+onClick={() => setIsBoxCapacityGuideOpen(true)}
             className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[11px] text-red-400">
@@ -427,6 +498,84 @@ export default function CalculatorClient({
         )}
       </div>
 
+      {isBoxCapacityGuideOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6 backdrop-blur-sm"
+          onClick={() => setIsBoxCapacityGuideOpen(false)}
+        >
+          <div
+            ref={boxCapacityGuideDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={boxCapacityGuideTitleId}
+            className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0c10] shadow-[0_0_40px_rgba(0,0,0,0.45)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-800 bg-[#111219] px-5 py-4 sm:px-6">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400/80">
+                  Sales Reference
+                </p>
+                <h2 id={boxCapacityGuideTitleId} className="text-lg font-bold text-white sm:text-xl">
+                  Box Capacity Guide
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsBoxCapacityGuideOpen(false)}
+                className="rounded-full border border-zinc-700 p-2 text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+                aria-label="Close Box Capacity Guide"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4">
+                <p className="text-sm leading-6 text-zinc-300">
+                  Use this guide as a quick packing reference when estimating delivery box counts. Capacities are approximate and can vary with garment thickness, folding, and mixed-product orders.
+                </p>
+              </div>
+
+              <div className="mt-5 space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                    Approximate Capacities
+                  </h3>
+                  <span className="text-[11px] font-medium text-zinc-500">Per standard box</span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {BOX_CAPACITY_GUIDE_ITEMS.map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3 shadow-[0_0_18px_rgba(239,68,68,0.04)]"
+                    >
+                      <p className="text-sm font-semibold text-white">{item.label}</p>
+                      <p className="mt-1 text-sm text-red-300">{item.capacity}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Pricing Container - always mounted so selecting a garment does not shift layout */}
       <div className={`mt-8 min-h-[360px] p-6 bg-zinc-100/30 dark:bg-zinc-900/10 border border-zinc-200/60 dark:border-zinc-800/80 rounded-2xl ${hasGarmentSelected ? "" : "opacity-60"}`}>
           
@@ -434,9 +583,9 @@ export default function CalculatorClient({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Pins Price Card (Customer Quote) */}
-            <div 
+            <div
               onClick={handleCopyClick}
-              className="bg-[#0b0c10] border border-blue-500/30 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.06)] hover:shadow-[0_0_25px_rgba(59,130,246,0.12)] hover:border-blue-500/50 cursor-pointer"
+              className="md:order-2 bg-[#0b0c10] border border-blue-500/30 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.06)] hover:shadow-[0_0_25px_rgba(59,130,246,0.12)] hover:border-blue-500/50 cursor-pointer"
             >
               <div className="p-6 flex-grow">
                 <div className="flex items-center justify-between mb-2">
@@ -452,7 +601,7 @@ export default function CalculatorClient({
             </div>
 
             {/* Production Costs Card (Sales Team Reference - Excl VAT only) */}
-            <div className="bg-[#0b0c10] border border-zinc-800 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_25px_rgba(255,255,255,0.04)] hover:border-zinc-700">
+            <div className="md:order-1 bg-[#0b0c10] border border-zinc-800 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_25px_rgba(255,255,255,0.04)] hover:border-zinc-700">
               <div className="p-6 flex-grow">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">PRODUCTION COSTS</p>
@@ -495,7 +644,7 @@ export default function CalculatorClient({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   
                   {/* PINS PRICE BREAKDOWN SECTION */}
-                  <div>
+                  <div className="md:order-2">
                     <h3 className="text-xs font-black text-sky-400 uppercase tracking-widest mb-3 pb-1 border-b border-sky-500/20">Pins Price Breakdown</h3>
                     <div className="space-y-4">
                       {breakdowns.map((b, idx) => {
@@ -571,7 +720,7 @@ export default function CalculatorClient({
                   </div>
 
                   {/* PRODUCTION COSTS BREAKDOWN SECTION */}
-                  <div>
+                  <div className="md:order-1">
                     <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-3 pb-1 border-b border-zinc-800">Production Cost Breakdown</h3>
                     <div className="space-y-4">
                       {breakdowns.map((b, idx) => {
@@ -632,6 +781,10 @@ export default function CalculatorClient({
                   <div className="flex justify-between items-center text-zinc-400">
                     <span>Pins Subtotal ({totalQty} units, excl VAT)</span>
                     <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{displayPinsSubtotalExclVat.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-zinc-400">
+                    <span>Pins Profit ({totalQty} units, excl VAT)</span>
+                  <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-sky-300">{CURRENCY}{displayPinsProfit.toFixed(2)}</span>
                   </div>
                 </div>
 

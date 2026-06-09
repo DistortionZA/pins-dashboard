@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db"
 
 const CALCULATOR_REFERENCE_TAG = "calculator-reference"
 
+// Shared reference data for the current EU calculator route. Future regional calculators can
+// reuse this loader or split out region-specific reference sources as pricing diverges.
 async function loadCalculatorReferenceData() {
   const [garments, printPrices, garmentMarkups] = await Promise.all([
     prisma.garment.findMany({
