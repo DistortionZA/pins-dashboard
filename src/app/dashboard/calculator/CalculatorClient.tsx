@@ -347,11 +347,11 @@ export default function CalculatorClient({
             </span>
           </div>
 
-<button
-ref={boxCapacityGuideTriggerRef}
-type="button"
-onClick={() => setIsBoxCapacityGuideOpen(true)}
-            className="inline-flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+          <button
+            ref={boxCapacityGuideTriggerRef}
+            type="button"
+            onClick={() => setIsBoxCapacityGuideOpen(true)}
+            className="inline-flex items-center gap-2 self-start rounded-full border border-zinc-800 bg-[#101116] px-3 py-2 text-xs font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
           >
             <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[11px] text-red-400">
               i
