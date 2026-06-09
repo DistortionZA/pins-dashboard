@@ -297,7 +297,7 @@ export default function CalculatorClient({
       `Delivery Country: ${selectedDeliveryRate.country}`,
       `Delivery Time: ${selectedDeliveryRate.deliveryTime}`,
       `Boxes: ${deliveryBoxCount}`,
-      `Cost Per Box: ${CURRENCY}${selectedDeliveryRate.cost} excl. VAT`,
+      `Cost Per Box: ${CURRENCY}${deliverySubtotalExclVat.toFixed(2)} excl. VAT`,
       `Total Delivery Cost Incl. VAT: ${CURRENCY}${deliveryTotalInclVat.toFixed(2)}`
     ].join("\n")
 
