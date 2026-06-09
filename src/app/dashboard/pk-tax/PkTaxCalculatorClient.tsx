@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 
 export type AccountManagerEligibility =
@@ -38,7 +38,6 @@ export type AccountManagerResult = {
   separatePkTaxPayoutGbp: number
   totalGbp: number
   totalZar: number
-  note?: string
 }
 
 type MetricTotals = {
@@ -77,6 +76,14 @@ type PoolBreakdown = {
   remainingDifference: number
 }
 
+type AccordionSectionProps = {
+  title: string
+  description?: string
+  isOpen: boolean
+  onToggle: () => void
+  children: React.ReactNode
+}
+
 const COMPANY_PROFIT_WEIGHT = 0.4
 const SNUGGLE_PROFIT_WEIGHT = 0.25
 const PK_TAX_WEIGHT = 0.2
@@ -90,11 +97,22 @@ const ELIGIBILITY_LABELS: Record<AccountManagerEligibility, string> = {
   excluded: "Excluded",
 }
 
+const ALLOCATION_RULES = [
+  "Contribution percentages include Bux, Hardus, Justin, Seth, Shannon, and Johan.",
+  "The shared sales team pool is made from 40% of PK Tax from Bux, Hardus, Justin, Seth, and Shannon.",
+  "Johan’s PK Tax is kept separate.",
+  "Johan receives 40% of his own PK Tax.",
+  "7% of Snuggle profit is added to the shared pool.",
+  "Only Bux, Hardus, Justin, and Seth split the shared pool.",
+  "Shannon and Johan’s calculated shared-pool shares are redistributed across eligible sales team members.",
+  "EPCC, Admin, Marketing, and Operations allocations are calculated from total Netsuite PK Tax, not from the Snuggle pool.",
+] as const
+
 const REPORT_SOURCES = [
   {
     title: "Netsuite PK Tax Report",
     description:
-      "Enter PK Tax per person. Shannon and Johan are included in PK Tax contribution percentages. Johan’s PK Tax is paid separately at 40%, while Shannon’s PK Tax is included in the shared pool.",
+      "Enter PK Tax per person. Shannon and Johan are included in PK Tax contribution percentages. Johan is paid separately at 40%, while Shannon’s PK Tax is included in the shared pool.",
   },
   {
     title: "Netsuite Profit Report",
@@ -110,6 +128,51 @@ const REPORT_SOURCES = [
     description: "Enter number of orders processed per person.",
   },
 ] as const
+
+const CHECKS_GUIDE = [
+  "Total final shared pool payout to Bux, Hardus, Justin, and Seth should equal the total shared sales team pool, allowing for small rounding differences.",
+  "Johan’s separate payout is excluded from the shared pool payout check.",
+  "If all four metric totals are above zero, total weighted score for included contributors should equal 100%.",
+  "If one or more metric totals are zero, that metric weighting cannot be distributed.",
+] as const
+
+function AccordionSection({
+  title,
+  description,
+  isOpen,
+  onToggle,
+  children,
+}: AccordionSectionProps) {
+  return (
+    <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10]">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[#111219]"
+        aria-expanded={isOpen}
+      >
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">{title}</p>
+          {description ? <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p> : null}
+        </div>
+        <svg
+          className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+
+      {isOpen ? <div className="border-t border-zinc-800 px-6 py-6">{children}</div> : null}
+    </section>
+  )
+}
 
 function createDefaultRows(): AccountManagerMonthlyInput[] {
   return [
@@ -239,12 +302,81 @@ function isNonRecipientRow(row: AccountManagerResult) {
 export default function PkTaxCalculatorClient() {
   const [monthLabel, setMonthLabel] = useState("")
   const [exchangeRate, setExchangeRate] = useState(DEFAULT_EXCHANGE_RATE)
+  const [defaultCompanyProfit, setDefaultCompanyProfit] = useState("")
+  const [isGuideOpen, setIsGuideOpen] = useState(false)
+  const [isInputsOpen, setIsInputsOpen] = useState(false)
+  const [isResultsOpen, setIsResultsOpen] = useState(false)
+  const [isBreakdownOpen, setIsBreakdownOpen] = useState(false)
+  const [isTotalsOpen, setIsTotalsOpen] = useState(false)
   const [rows, setRows] = useState<AccountManagerMonthlyInput[]>(createDefaultRows())
   const [nextRowId, setNextRowId] = useState(7)
+
+  const guideTitleId = useId()
+  const guideDialogRef = useRef<HTMLDivElement>(null)
+  const guideTriggerRef = useRef<HTMLButtonElement>(null)
 
   const exchangeRateValue = parseCurrencyInput(exchangeRate) || 21
   const includedRows = useMemo(() => rows.filter(isIncludedRow), [rows])
   const sharedPoolBaseRows = useMemo(() => includedRows.filter(isSharedPoolBaseRow), [includedRows])
+
+  useEffect(() => {
+    if (!isGuideOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    const triggerElement = guideTriggerRef.current
+    document.body.style.overflow = "hidden"
+
+    const getFocusableElements = () => {
+      const dialog = guideDialogRef.current
+      if (!dialog) return []
+
+      return Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => !element.hasAttribute("disabled") && element.getAttribute("aria-hidden") !== "true")
+    }
+
+    getFocusableElements()[0]?.focus()
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        setIsGuideOpen(false)
+        return
+      }
+
+      if (event.key !== "Tab") return
+
+      const focusableElements = getFocusableElements()
+      if (focusableElements.length === 0) {
+        event.preventDefault()
+        return
+      }
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+      const activeElement = document.activeElement
+
+      if (event.shiftKey && activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      } else if (!event.shiftKey && activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", handleKeyDown)
+      triggerElement?.focus()
+    }
+  }, [isGuideOpen])
 
   const totals = useMemo<MetricTotals>(
     () =>
@@ -328,11 +460,6 @@ export default function PkTaxCalculatorClient() {
         separatePkTaxPayoutGbp,
         totalGbp: separatePkTaxPayoutGbp,
         totalZar: separatePkTaxPayoutGbp * exchangeRateValue,
-        note: isContributionOnlyPoolIncluded(row)
-          ? "Contribution only — redistributed"
-          : isJohanSeparate(row)
-            ? "Johan separate payout"
-            : undefined,
       }
     })
 
@@ -444,6 +571,14 @@ export default function PkTaxCalculatorClient() {
     )
   }
 
+  function applyCompanyProfitToAll() {
+    const appliedValue = clampNumberInput(defaultCompanyProfit) || "0"
+    setRows((currentRows) =>
+      currentRows.map((row) => (row.eligibility === "excluded" ? row : { ...row, companyProfit: appliedValue }))
+    )
+    toast.success("Company profit applied to all non-excluded rows.")
+  }
+
   function addRow() {
     setRows((currentRows) => [...currentRows, createRow(nextRowId)])
     setNextRowId((currentId) => currentId + 1)
@@ -456,6 +591,7 @@ export default function PkTaxCalculatorClient() {
   function resetCalculator() {
     setMonthLabel("")
     setExchangeRate(DEFAULT_EXCHANGE_RATE)
+    setDefaultCompanyProfit("")
     setRows(createDefaultRows())
     setNextRowId(7)
     toast.success("PK Tax calculator reset.")
@@ -472,16 +608,13 @@ export default function PkTaxCalculatorClient() {
       `- Admin / bank fees (10%): ${formatCurrencyGbp(breakdown.adminBankFees)}`,
       `- Marketing (5%): ${formatCurrencyGbp(breakdown.marketing)}`,
       `- Operations (5%): ${formatCurrencyGbp(breakdown.operations)}`,
-      `- Johan PK Tax: ${formatCurrencyGbp(breakdown.johanPkTax)}`,
-      `- Johan separate payout (40%): ${formatCurrencyGbp(breakdown.johanSeparatePayout)}`,
-      "",
-      "Shared Pool Inputs:",
       `- Shared pool PK Tax base: ${formatCurrencyGbp(breakdown.sharedPoolPkTaxBase)}`,
       `- Shared pool PK Tax contribution (40%): ${formatCurrencyGbp(breakdown.sharedPoolPkTaxContribution)}`,
       `- Snuggle profit total: ${formatCurrencyGbp(breakdown.totalIncludedSnuggleProfit)}`,
       `- Snuggle pool contribution (7%): ${formatCurrencyGbp(breakdown.snugglePoolContribution)}`,
       `- Total shared sales team pool: ${formatCurrencyGbp(breakdown.totalSharedSalesTeamPool)}`,
-      `- Total redistributed amount: ${formatCurrencyGbp(breakdown.totalRedistributedAmount)}`,
+      `- Johan PK Tax: ${formatCurrencyGbp(breakdown.johanPkTax)}`,
+      `- Johan separate payout (40%): ${formatCurrencyGbp(breakdown.johanSeparatePayout)}`,
       "",
       "Weighted Contribution Scores:",
       ...results.map(
@@ -499,6 +632,7 @@ export default function PkTaxCalculatorClient() {
           return `- ${row.name}: shared pool ${formatCurrencyGbp(row.finalSharedPoolPayoutGbp)} / ${formatCurrencyZar(row.totalZar)}`
         }),
       "",
+      `Total redistributed amount: ${formatCurrencyGbp(breakdown.totalRedistributedAmount)}`,
       `Total payable GBP: ${formatCurrencyGbp(breakdown.totalPayableGbp)}`,
       `Total payable ZAR: ${formatCurrencyZar(breakdown.totalPayableZar)}`,
     ]
@@ -516,86 +650,102 @@ export default function PkTaxCalculatorClient() {
   return (
     <div className="space-y-6">
       <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">Allocation Rules</p>
-        <p className="mt-2 text-zinc-400">
-          Contribution percentages include Bux, Hardus, Justin, Seth, Shannon, and Johan so the
-          weighted scores are calculated from the full monthly picture. The shared sales team pool
-          is made from 40% of PK Tax from Bux, Hardus, Justin, Seth, and Shannon, plus 7% of
-          Snuggle profit. Johan’s PK Tax is kept separate and he receives 40% of his own PK Tax.
-          Only Bux, Hardus, Justin, and Seth split the shared pool. Shannon and Johan’s calculated
-          shared-pool shares are redistributed across the eligible sales team.
-        </p>
-      </section>
+        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Month Setup</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+              Set the month, exchange rate, and optional bulk company profit value. The guide
+              button contains the allocation notes, report-source reminders, and payout checks.
+            </p>
+          </div>
 
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Month Setup</p>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <label className="space-y-2">
-              <span className="text-sm text-zinc-300">Month</span>
-              <input
-                type="text"
-                value={monthLabel}
-                onChange={(event) => setMonthLabel(event.target.value)}
-                placeholder="e.g. May 2026"
-                className={inputClassName}
-              />
-            </label>
+          <button
+            ref={guideTriggerRef}
+            type="button"
+            onClick={() => setIsGuideOpen(true)}
+            className="inline-flex items-center gap-2 self-start rounded-full border border-zinc-800 bg-[#101116] px-3 py-2 text-xs font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+          >
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[11px] text-red-400">
+              i
+            </span>
+            PK Tax Guide
+          </button>
+        </div>
 
-            <label className="space-y-2">
-              <span className="text-sm text-zinc-300">Exchange rate</span>
+        <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1.2fr)]">
+          <label className="space-y-2">
+            <span className="text-sm text-zinc-300">Month</span>
+            <input
+              type="text"
+              value={monthLabel}
+              onChange={(event) => setMonthLabel(event.target.value)}
+              placeholder="e.g. May 2026"
+              className={inputClassName}
+            />
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-sm text-zinc-300">Exchange rate</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={exchangeRate}
+              onChange={(event) => setExchangeRate(clampNumberInput(event.target.value))}
+              className={inputClassName}
+            />
+            <span className="block text-xs text-zinc-500">Default: £1 = R21</span>
+          </label>
+
+          <div className="space-y-2">
+            <span className="text-sm text-zinc-300">Apply company profit to all rows</span>
+            <div className="flex flex-col gap-3 sm:flex-row">
               <input
                 type="number"
                 min="0"
                 step="0.01"
-                value={exchangeRate}
-                onChange={(event) => setExchangeRate(clampNumberInput(event.target.value))}
+                value={defaultCompanyProfit}
+                onChange={(event) => setDefaultCompanyProfit(clampNumberInput(event.target.value))}
+                placeholder="Default company profit"
                 className={inputClassName}
               />
-              <span className="block text-xs text-zinc-500">Default: £1 = R21</span>
-            </label>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Report Sources</p>
-          <div className="mt-4 space-y-3">
-            {REPORT_SOURCES.map((source) => (
-              <div key={source.title} className="rounded-2xl border border-zinc-800 bg-[#12131a] px-4 py-3">
-                <p className="text-sm font-semibold text-white">{source.title}</p>
-                <p className="mt-1 text-sm leading-6 text-zinc-300">{source.description}</p>
-              </div>
-            ))}
+              <button
+                type="button"
+                onClick={applyCompanyProfitToAll}
+                className="shrink-0 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
+              >
+                Apply to all
+              </button>
+            </div>
+            <p className="text-xs leading-5 text-zinc-500">
+              Use this when the same company profit value applies to all account managers. You can
+              still edit individual rows afterwards.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Account Manager Inputs</p>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
-              Default rows are set up for Bux, Hardus, Justin, Seth, Shannon, and Johan. Additional
-              rows can be added if you need temporary exclusions or scenario testing.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={addRow}
-              className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
-            >
-              Add Row
-            </button>
-            <button
-              type="button"
-              onClick={resetCalculator}
-              className="rounded-xl border border-zinc-700 bg-[#12131a] px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-zinc-500 hover:text-white"
-            >
-              Reset
-            </button>
-          </div>
+      <AccordionSection
+        title="Account Manager Inputs"
+        description="Default rows are set up for Bux, Hardus, Justin, Seth, Shannon, and Johan. Expand this section when you need to edit or add manual-entry rows."
+        isOpen={isInputsOpen}
+        onToggle={() => setIsInputsOpen((current) => !current)}
+      >
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={addRow}
+            className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
+          >
+            Add Row
+          </button>
+          <button
+            type="button"
+            onClick={resetCalculator}
+            className="rounded-xl border border-zinc-700 bg-[#12131a] px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-zinc-500 hover:text-white"
+          >
+            Reset
+          </button>
         </div>
 
         <div className="mt-5 overflow-x-auto">
@@ -695,17 +845,19 @@ export default function PkTaxCalculatorClient() {
             </tbody>
           </table>
         </div>
-      </section>
+      </AccordionSection>
 
-      <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
+      <AccordionSection
+        title="Results"
+        description="Expand to view all weighted contribution percentages, shared-pool allocations, separate Johan payout values, and copy-ready summary outputs."
+        isOpen={isResultsOpen}
+        onToggle={() => setIsResultsOpen((current) => !current)}
+      >
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Results</p>
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
-              All included rows are shown below. Shannon and Johan stay in the weighted score
-              calculation, but only Bux, Hardus, Justin, and Seth receive shared-pool payouts.
-            </p>
-          </div>
+          <p className="text-sm leading-6 text-zinc-400">
+            All included rows are shown below. Shannon and Johan stay in the weighted score
+            calculation, but only Bux, Hardus, Justin, and Seth receive shared-pool payouts.
+          </p>
 
           <button
             type="button"
@@ -750,16 +902,7 @@ export default function PkTaxCalculatorClient() {
             <tbody>
               {results.map((row) => (
                 <tr key={row.id} className="rounded-2xl bg-[#12131a] text-zinc-200">
-                  <td className="px-3 py-3">
-                    <div className="flex flex-col gap-2">
-                      <span>{row.name}</span>
-                      {row.note ? (
-                        <span className="inline-flex w-fit rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[11px] text-amber-200">
-                          {row.note}
-                        </span>
-                      ) : null}
-                    </div>
-                  </td>
+                  <td className="px-3 py-3">{row.name}</td>
                   <td className="px-3 py-3 text-zinc-300">{ELIGIBILITY_LABELS[row.eligibility]}</td>
                   <td className="px-3 py-3">{formatPercent(row.companyProfitShare)}</td>
                   <td className="px-3 py-3">{formatPercent(row.snuggleProfitShare)}</td>
@@ -777,85 +920,96 @@ export default function PkTaxCalculatorClient() {
             </tbody>
           </table>
         </div>
-      </section>
+      </AccordionSection>
 
-      <section className="grid gap-6 xl:grid-cols-3">
-        <div className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">
-            A. Netsuite PK Tax Allocation
-          </p>
-          <div className="mt-4 space-y-3 text-sm text-zinc-300">
-            <div className="flex items-center justify-between">
-              <span>Total Netsuite PK Tax</span>
-              <span>{formatCurrencyGbp(breakdown.totalNetsuitePkTax)}</span>
+      <AccordionSection
+        title="Pool & Allocation Breakdown"
+        description="Expand to view the three supporting breakdown cards: Netsuite PK Tax Allocation, Shared Pool Inputs, and Final Shared Pool."
+        isOpen={isBreakdownOpen}
+        onToggle={() => setIsBreakdownOpen((current) => !current)}
+      >
+        <div className="grid gap-6 xl:grid-cols-3">
+          <div className="rounded-3xl border border-zinc-800 bg-[#12131a] p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">
+              A. Netsuite PK Tax Allocation
+            </p>
+            <div className="mt-4 space-y-3 text-sm text-zinc-300">
+              <div className="flex items-center justify-between">
+                <span>Total Netsuite PK Tax</span>
+                <span>{formatCurrencyGbp(breakdown.totalNetsuitePkTax)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>EPCC retained, 40% of total PK Tax</span>
+                <span>{formatCurrencyGbp(breakdown.epccRetained)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Admin / bank fees, 10% of total PK Tax</span>
+                <span>{formatCurrencyGbp(breakdown.adminBankFees)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Marketing, 5% of total PK Tax</span>
+                <span>{formatCurrencyGbp(breakdown.marketing)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Operations, 5% of total PK Tax</span>
+                <span>{formatCurrencyGbp(breakdown.operations)}</span>
+              </div>
+              <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
+                <span>Johan separate PK Tax payout, 40% of Johan PK Tax</span>
+                <span className="text-red-300">{formatCurrencyGbp(breakdown.johanSeparatePayout)}</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span>EPCC retained, 40% of total PK Tax</span>
-              <span>{formatCurrencyGbp(breakdown.epccRetained)}</span>
+          </div>
+
+          <div className="rounded-3xl border border-zinc-800 bg-[#12131a] p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">B. Shared Pool Inputs</p>
+            <div className="mt-4 space-y-3 text-sm text-zinc-300">
+              <div className="flex items-center justify-between">
+                <span>Shared pool PK Tax base</span>
+                <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxBase)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Shared pool PK Tax contribution, 40% of base</span>
+                <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxContribution)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Total included Snuggle profit</span>
+                <span>{formatCurrencyGbp(breakdown.totalIncludedSnuggleProfit)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Snuggle pool contribution, 7% of Snuggle profit</span>
+                <span>{formatCurrencyGbp(breakdown.snugglePoolContribution)}</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between">
-              <span>Admin / bank fees, 10% of total PK Tax</span>
-              <span>{formatCurrencyGbp(breakdown.adminBankFees)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Marketing, 5% of total PK Tax</span>
-              <span>{formatCurrencyGbp(breakdown.marketing)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Operations, 5% of total PK Tax</span>
-              <span>{formatCurrencyGbp(breakdown.operations)}</span>
-            </div>
-            <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
-              <span>Johan separate PK Tax payout, 40% of Johan PK Tax</span>
-              <span className="text-red-300">{formatCurrencyGbp(breakdown.johanSeparatePayout)}</span>
+          </div>
+
+          <div className="rounded-3xl border border-zinc-800 bg-[#12131a] p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">C. Final Shared Pool</p>
+            <div className="mt-4 space-y-3 text-sm text-zinc-300">
+              <div className="flex items-center justify-between">
+                <span>Shared pool PK Tax contribution</span>
+                <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxContribution)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Snuggle pool contribution</span>
+                <span>{formatCurrencyGbp(breakdown.snugglePoolContribution)}</span>
+              </div>
+              <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
+                <span>Total shared sales team pool</span>
+                <span className="text-red-300">{formatCurrencyGbp(breakdown.totalSharedSalesTeamPool)}</span>
+              </div>
             </div>
           </div>
         </div>
+      </AccordionSection>
 
-        <div className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">B. Shared Pool Inputs</p>
-          <div className="mt-4 space-y-3 text-sm text-zinc-300">
-            <div className="flex items-center justify-between">
-              <span>Shared pool PK Tax base</span>
-              <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxBase)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Shared pool PK Tax contribution, 40% of base</span>
-              <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxContribution)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Total included Snuggle profit</span>
-              <span>{formatCurrencyGbp(breakdown.totalIncludedSnuggleProfit)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Snuggle pool contribution, 7% of Snuggle profit</span>
-              <span>{formatCurrencyGbp(breakdown.snugglePoolContribution)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">C. Final Shared Pool</p>
-          <div className="mt-4 space-y-3 text-sm text-zinc-300">
-            <div className="flex items-center justify-between">
-              <span>Shared pool PK Tax contribution</span>
-              <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxContribution)}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Snuggle pool contribution</span>
-              <span>{formatCurrencyGbp(breakdown.snugglePoolContribution)}</span>
-            </div>
-            <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
-              <span>Total shared sales team pool</span>
-              <span className="text-red-300">{formatCurrencyGbp(breakdown.totalSharedSalesTeamPool)}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Totals and Checks</p>
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+      <AccordionSection
+        title="Totals and Checks"
+        description="Expand to review the calculated totals, redistribution values, weighted-score totals, and payout reconciliation checks."
+        isOpen={isTotalsOpen}
+        onToggle={() => setIsTotalsOpen((current) => !current)}
+      >
+        <div className="grid gap-4 lg:grid-cols-2">
           <div className="space-y-3 rounded-2xl border border-zinc-800 bg-[#12131a] p-4 text-sm text-zinc-300">
             <div className="flex items-center justify-between">
               <span>Total company profit used for percentages</span>
@@ -928,37 +1082,119 @@ export default function PkTaxCalculatorClient() {
               <span>Remaining / rounding difference against total shared sales team pool</span>
               <span>{formatCurrencyGbp(breakdown.remainingDifference)}</span>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-4 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-zinc-800 bg-[#12131a] p-4 text-sm leading-6 text-zinc-300">
-            <p className="font-semibold text-white">Checks</p>
-            <ul className="mt-2 space-y-2">
-              <li>
-                Total final shared pool payout to Bux, Hardus, Justin, and Seth should equal the
-                total shared sales team pool, allowing for small rounding differences.
-              </li>
-              <li>Johan separate payout is excluded from the shared pool payout check.</li>
-              <li>
-                If all four metric totals are above zero, the total weighted score for included
-                contributors should equal 100%.
-              </li>
-            </ul>
-          </div>
-
-          <div className="rounded-2xl border border-zinc-800 bg-[#12131a] p-4 text-sm leading-6 text-zinc-300">
             <div className="flex items-center justify-between">
               <span>Total weighted score</span>
               <span>{formatPercent(breakdown.totalWeightedScore)}</span>
             </div>
-            <div className="mt-2 flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <span>Eligible weighted score total</span>
               <span>{formatPercent(breakdown.eligibleWeightedScoreTotal)}</span>
             </div>
           </div>
         </div>
-      </section>
+      </AccordionSection>
+
+      {isGuideOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 py-6 backdrop-blur-sm"
+          onClick={() => setIsGuideOpen(false)}
+        >
+          <div
+            ref={guideDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={guideTitleId}
+            className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0c10] shadow-[0_0_40px_rgba(0,0,0,0.45)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-800 bg-[#111219] px-5 py-4 sm:px-6">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400/80">
+                  Reference Guide
+                </p>
+                <h2 id={guideTitleId} className="text-lg font-bold text-white sm:text-xl">
+                  PK Tax Guide
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsGuideOpen(false)}
+                className="rounded-full border border-zinc-700 p-2 text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+                aria-label="Close PK Tax Guide"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+              <div className="space-y-6">
+                <section>
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                    Allocation Rules
+                  </h3>
+                  <div className="mt-3 space-y-3">
+                    {ALLOCATION_RULES.map((rule) => (
+                      <div
+                        key={rule}
+                        className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3 text-sm leading-6 text-zinc-300"
+                      >
+                        {rule}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                    Report Sources
+                  </h3>
+                  <div className="mt-3 space-y-3">
+                    {REPORT_SOURCES.map((source) => (
+                      <div
+                        key={source.title}
+                        className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3"
+                      >
+                        <p className="text-sm font-semibold text-white">{source.title}</p>
+                        <p className="mt-1 text-sm leading-6 text-zinc-300">{source.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <section>
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                    Checks
+                  </h3>
+                  <div className="mt-3 space-y-3">
+                    {CHECKS_GUIDE.map((item) => (
+                      <div
+                        key={item}
+                        className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3 text-sm leading-6 text-zinc-300"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
