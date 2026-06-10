@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pins&Knuckles Hub",
-  description: "Internal Pins&Knuckles dashboard for calculators, directories, and team tools.",
+  title: "Pins Hub",
+  description: "Internal Pins Hub for calculators, directories, and team tools.",
 };
 
 import { Toaster } from "sonner";

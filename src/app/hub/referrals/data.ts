@@ -175,4 +175,4 @@ export function getReferralsTag() {
   return REFERRALS_TAG
 }
 
-export type ReferralsDashboardData = Awaited<ReturnType<typeof loadReferralsData>>
+export type ReferralsHubData = Awaited<ReturnType<typeof loadReferralsData>>

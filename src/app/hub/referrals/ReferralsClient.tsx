@@ -11,7 +11,7 @@ import {
   updateReferralStatus
 } from "./actions"
 import { REFERRAL_BONUS_POINTS } from "./constants"
-import type { ReferralsDashboardData } from "./data"
+import type { ReferralsHubData } from "./data"
 
 const REFERRAL_STATUSES: ReferralStatus[] = ["PENDING", "CONVERTED", "REWARDED", "CANCELLED"]
 const LOYALTY_TYPES: LoyaltyTransactionType[] = ["ADJUSTED", "EARNED", "REDEEMED"]
@@ -28,7 +28,7 @@ function getReferralLink(code: string) {
   return `/ref/${code}`
 }
 
-function getSearchableText(customer: ReferralsDashboardData["customers"][number]) {
+function getSearchableText(customer: ReferralsHubData["customers"][number]) {
   return [customer.name, customer.email, customer.phone, customer.referralCode]
     .filter(Boolean)
     .join(" ")
@@ -57,7 +57,7 @@ async function copyToClipboard(text: string) {
 export default function ReferralsClient({
   initialData
 }: {
-  initialData: ReferralsDashboardData
+  initialData: ReferralsHubData
 }) {
   const router = useRouter()
   const [search, setSearch] = useState("")

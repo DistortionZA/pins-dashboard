@@ -35,7 +35,7 @@ export default async function ReferralLandingPage({
             <p className="mt-4 text-lg leading-relaxed text-zinc-400">
               This link belongs to <span className="font-semibold text-white">{customer.name}</span>.
               Use code <span className="font-mono text-red-300">{customer.referralCode}</span> when
-              creating the referred customer in the dashboard.
+              creating the referred customer in the hub.
             </p>
           </>
         ) : (
@@ -59,10 +59,10 @@ export default async function ReferralLandingPage({
         </div>
 
         <Link
-          href="/dashboard/referrals"
+          href="/hub/referrals"
           className="mt-8 inline-flex items-center rounded-xl border border-red-500/20 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
         >
-          Go to Referrals Dashboard
+          Go to Referrals Hub
         </Link>
       </div>
     </div>

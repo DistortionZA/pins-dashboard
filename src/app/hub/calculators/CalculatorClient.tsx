@@ -262,7 +262,6 @@ export default function CalculatorClient({
   const handleCopyClick = async () => {
     if (!hasGarmentSelected) return
 
-    // let body = "EU Price Calculator Quote\n\n"
     let body = `${calculatorTitle} Quote\n\n`
     breakdowns.forEach((b, idx) => {
       const d = designs[idx]
@@ -308,7 +307,7 @@ export default function CalculatorClient({
   }
 
   return (
-    <div className="w-full max-w-4xl">
+    <div className="w-full max-w-5xl">
       {designs.map((design, i) => (
         <DesignCard
           key={i}

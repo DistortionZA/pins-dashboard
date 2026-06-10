@@ -39,7 +39,7 @@ function normalizeNameKey(value: string) {
 
 async function revalidateReferralsViews() {
   revalidateTag(getReferralsTag(), "max")
-  revalidatePath("/dashboard/referrals")
+  revalidatePath("/hub/referrals")
 }
 
 async function generateUniqueReferralCode(name: string) {

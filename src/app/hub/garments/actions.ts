@@ -67,9 +67,9 @@ export async function addGarment(formData: FormData) {
 
   revalidateTag(getGarmentDirectoryTag(), "max")
   revalidateTag(getCalculatorReferenceTag(), "max")
-  revalidatePath("/dashboard/garments")
-  revalidatePath("/dashboard/calculators/eu")
-  revalidatePath("/dashboard/calculators/us-clients")
+  revalidatePath("/hub/garments")
+  revalidatePath("/hub/calculators/eu/standard")
+  revalidatePath("/hub/calculators/eu/us-clients")
 }
 
 export async function updateGarmentDetails(formData: FormData) {
@@ -96,9 +96,9 @@ export async function updateGarmentDetails(formData: FormData) {
 
   revalidateTag(getGarmentDirectoryTag(), "max")
   revalidateTag(getCalculatorReferenceTag(), "max")
-  revalidatePath("/dashboard/garments")
-  revalidatePath("/dashboard/calculators/eu")
-  revalidatePath("/dashboard/calculators/us-clients")
+  revalidatePath("/hub/garments")
+  revalidatePath("/hub/calculators/eu/standard")
+  revalidatePath("/hub/calculators/eu/us-clients")
 }
 
 export async function deleteGarment(id: string) {
@@ -112,7 +112,7 @@ export async function deleteGarment(id: string) {
 
   revalidateTag(getGarmentDirectoryTag(), "max")
   revalidateTag(getCalculatorReferenceTag(), "max")
-  revalidatePath("/dashboard/garments")
-  revalidatePath("/dashboard/calculators/eu")
-  revalidatePath("/dashboard/calculators/us-clients")
+  revalidatePath("/hub/garments")
+  revalidatePath("/hub/calculators/eu/standard")
+  revalidatePath("/hub/calculators/eu/us-clients")
 }

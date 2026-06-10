@@ -1,4 +1,4 @@
-# pins-dashboard AGENTS.md
+# pins-hub AGENTS.md
 
 ## Core Rules
 - This repo is a Next.js App Router app on Next `16`. Check `node_modules/next/dist/docs/` before using framework behavior you are not sure about.
@@ -35,7 +35,7 @@
 - The Hub card label must remain spelled `Refferals` for now.
 
 ## Calculator Rules
-- Relevant files: `src/app/dashboard/calculator/CalculatorClient.tsx`, `src/components/DesignCard.tsx`.
+- Relevant files: `src/app/hub/calculators/CalculatorClient.tsx`, `src/components/DesignCard.tsx`.
 - VAT is currently hardcoded at `27%`. Reuse that rate consistently unless asked to centralize it.
 - Do not break existing quote calculations for garment pricing, print pricing, production cost, pins price, PK markup, VAT, or final totals.
 - `PK Markup` is per-unit and feeds the customer price before VAT.
@@ -43,7 +43,7 @@
 - Keep copy behavior explicit: customer-facing copy should clearly indicate whether values are incl./excl. VAT.
 
 ## Refferals Rules
-- Route lives under `src/app/dashboard/refferals/`.
+- Route lives under `src/app/hub/referrals/`.
 - Current feature uses Prisma models `Customer`, `Referral`, and `LoyaltyTransaction`.
 - Keep the route resilient: if Prisma client or tables are missing, show a setup state instead of crashing.
 - Loyalty changes must be logged through `LoyaltyTransaction`; do not mutate points silently.
@@ -54,9 +54,9 @@
 - Cached data loaders live next to routes, e.g. `calculator/data.ts`, `garments/data.ts`, `refferals/data.ts`.
 - Server mutations should use server actions where the repo already does.
 - Existing active Hub routes:
-  - `/dashboard/calculator`
-  - `/dashboard/garments`
-  - `/dashboard/refferals`
+  - `/hub/calculators/eu/standard`
+  - `/hub/garments`
+  - `/hub/referrals`
 
 
 <!-- headroom:rtk-instructions -->

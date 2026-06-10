@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pins Hub
+
+This is the internal Pins Hub app built with [Next.js](https://nextjs.org).
 
 ## Database Setup
 

@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "Starting Pins Dashboard Development Server..."
+echo "Starting Pins Hub Development Server..."
 npm run dev

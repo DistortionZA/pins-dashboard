@@ -1,18 +1,20 @@
 import Link from "next/link"
 import { connection } from "next/server"
 
-import CalculatorClient from "../calculator/CalculatorClient"
+import CalculatorClient from "./CalculatorClient"
 import { getCalculatorReferenceData } from "./data"
 import type { CalculatorProfileCode } from "@/lib/calculator-profiles"
 
 type CalculatorPageContentProps = {
   calculatorCode: CalculatorProfileCode
   title: string
+  backHref: string
 }
 
 export default async function CalculatorPageContent({
   calculatorCode,
   title,
+  backHref,
 }: CalculatorPageContentProps) {
   await connection()
 
@@ -20,9 +22,9 @@ export default async function CalculatorPageContent({
     await getCalculatorReferenceData(calculatorCode)
 
   return (
-    <div className="p-6 md:p-8 lg:p-10 max-w-7xl mx-auto font-sans bg-transparent min-h-screen">
+    <div className="mx-auto min-h-screen max-w-6xl bg-transparent p-6 font-sans md:p-8 lg:p-10">
       <Link
-        href="/dashboard/calculators"
+        href={backHref}
         className="inline-flex items-center text-sm font-medium text-zinc-400 hover:text-zinc-100 mb-6 transition-colors"
       >
         <svg
