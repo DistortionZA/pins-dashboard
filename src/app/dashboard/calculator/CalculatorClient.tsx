@@ -50,11 +50,13 @@ const BOX_CAPACITY_GUIDE_ITEMS = [
 export default function CalculatorClient({
   garments,
   printPrices,
-  garmentMarkups
+  garmentMarkups,
+  calculatorTitle,
 }: {
   garments: Garment[]
   printPrices: PrintPrice[]
   garmentMarkups: GarmentMarkup[]
+  calculatorTitle: string
 }) {
   const [designs, setDesigns] = useState<Design[]>([
     {
@@ -261,7 +263,7 @@ export default function CalculatorClient({
     if (!hasGarmentSelected) return
 
     // let body = "EU Price Calculator Quote\n\n"
-     let body = ""
+    let body = `${calculatorTitle} Quote\n\n`
     breakdowns.forEach((b, idx) => {
       const d = designs[idx]
       if (!d) return
@@ -285,14 +287,14 @@ export default function CalculatorClient({
     })
 
     await copyToClipboard(body)
-    toast.success("EU Price Calculator quote copied to clipboard")
+    toast.success(`${calculatorTitle} quote copied to clipboard`)
   }
 
   const handleDeliveryCopyClick = async () => {
     if (!isDeliveryHelperEnabled) return
 
     const deliveryInfo = [
-      // "EU Price Calculator Delivery Helper",
+      `${calculatorTitle} Delivery Helper`,
       "",
       `Delivery Country: ${selectedDeliveryRate.country}`,
       `Delivery Time: ${selectedDeliveryRate.deliveryTime}`,
@@ -302,7 +304,7 @@ export default function CalculatorClient({
     ].join("\n")
 
     await copyToClipboard(deliveryInfo)
-    toast.success("EU Price Calculator delivery info copied to clipboard")
+    toast.success(`${calculatorTitle} delivery info copied to clipboard`)
   }
 
   return (
@@ -578,7 +580,13 @@ export default function CalculatorClient({
       )}
 
       {/* Pricing Container - always mounted so selecting a garment does not shift layout */}
-      <div className={`mt-8 min-h-[360px] p-6 bg-zinc-100/30 dark:bg-zinc-900/10 border border-zinc-200/60 dark:border-zinc-800/80 rounded-2xl ${hasGarmentSelected ? "" : "opacity-60"}`}>
+      <div
+        className={
+          hasGarmentSelected
+            ? "mt-8 min-h-[360px] rounded-2xl border border-zinc-200/60 bg-zinc-100/30 p-6 dark:border-zinc-800/80 dark:bg-zinc-900/10"
+            : "hidden"
+        }
+      >
           
           {/* Cost Categories Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

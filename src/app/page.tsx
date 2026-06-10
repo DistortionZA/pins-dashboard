@@ -99,9 +99,9 @@ export default function Home() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <HubCard
-            href="/dashboard/calculator"
-            title="EU Price Calculator"
-            description="Run live EU pricing, compare production cost, and prepare customer quotes."
+            href="/dashboard/calculators"
+            title="Price Calculators"
+            description="Choose Calculator, compare production cost, and prepare customer quotes."
             badge="Open Tool"
             active
             icon={

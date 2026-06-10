@@ -21,9 +21,21 @@ model Garment {
 }
 
 model GarmentMarkup {
-  id          String      @id @default(uuid())
-  garmentType GarmentType
-  markupValue Float
+  id                  String            @id @default(uuid())
+  calculatorProfileId String
+  garmentType         GarmentType
+  markupValue         Float
+  calculatorProfile   CalculatorProfile @relation(fields: [calculatorProfileId], references: [id], onDelete: Cascade)
+
+  @@unique([calculatorProfileId, garmentType])
+}
+
+model CalculatorProfile {
+  id             String          @id @default(uuid())
+  code           String          @unique
+  name           String
+  isActive       Boolean         @default(true)
+  garmentMarkups GarmentMarkup[]
 }
 
 model PrintPrice {

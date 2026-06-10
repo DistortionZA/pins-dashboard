@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client"
+import type { GarmentType, Prisma } from "@prisma/client"
 
 export const garmentSeedData = [
   { code: "5001", altCode: "", brandName: "AS Colour", name: "Staple Tee", color: "", type: "TSHIRT", basePrice: 4.65, extraSizeCost: null, tags: "AS Colour, 5001, Staple" },
@@ -50,11 +50,34 @@ export const garmentSeedData = [
   { code: "W265", altCode: "WM265", brandName: "Westford Mill", name: "Westford Mill Organic Premium Cotton Maxi Tote Bag", color: "", type: "TSHIRT", basePrice: 3.6, extraSizeCost: null, tags: "Westford Mill, tote, W265, WM265" },
 ] satisfies Prisma.GarmentCreateManyInput[]
 
-export const garmentMarkupSeedData = [
-  { garmentType: "HOODIE", markupValue: 5 },
-  { garmentType: "LONGSLEEVE", markupValue: 3.5 },
-  { garmentType: "TSHIRT", markupValue: 3 },
-] satisfies Prisma.GarmentMarkupCreateManyInput[]
+export const calculatorProfileSeedData = [
+  {
+    code: "STANDARD_EU",
+    name: "Standard EU Calculator",
+    isActive: true,
+  },
+  {
+    code: "US_CLIENTS",
+    name: "US Clients Calculator",
+    isActive: true,
+  },
+] satisfies Prisma.CalculatorProfileCreateManyInput[]
+
+export const garmentMarkupSeedDataByCalculatorCode: Record<
+  string,
+  Array<{ garmentType: GarmentType; markupValue: number }>
+> = {
+  STANDARD_EU: [
+    { garmentType: "HOODIE", markupValue: 5 },
+    { garmentType: "LONGSLEEVE", markupValue: 3.5 },
+    { garmentType: "TSHIRT", markupValue: 3 },
+  ],
+  US_CLIENTS: [
+    { garmentType: "HOODIE", markupValue: 4 },
+    { garmentType: "LONGSLEEVE", markupValue: 3 },
+    { garmentType: "TSHIRT", markupValue: 2 },
+  ],
+}
 
 export const printPriceSeedData = [
   { colorCount: 1, qtyMin: 50, qtyMax: 99, productionPrice: 1.4, pinsPrice: 1.54 },
