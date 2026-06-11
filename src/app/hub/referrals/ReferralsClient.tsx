@@ -1,39 +1,35 @@
 "use client"
 
-import { useDeferredValue, useMemo, useState, useTransition } from "react"
-import type { LoyaltyTransactionType, ReferralStatus } from "@prisma/client"
-import { useRouter } from "next/navigation"
+import { useMemo, useState, useTransition } from "react"
 import { toast } from "sonner"
+import AccordionSection from "./AccordionSection"
 import {
-  adjustLoyaltyPoints,
-  createCustomer,
-  createReferral,
-  updateReferralStatus
+  deleteReferralScenario,
+  duplicateReferralScenario,
+  saveReferralScenario,
 } from "./actions"
-import { REFERRAL_BONUS_POINTS } from "./constants"
 import type { ReferralsHubData } from "./data"
-
-const REFERRAL_STATUSES: ReferralStatus[] = ["PENDING", "CONVERTED", "REWARDED", "CANCELLED"]
-const LOYALTY_TYPES: LoyaltyTransactionType[] = ["ADJUSTED", "EARNED", "REDEEMED"]
-
-function formatDate(value: string | Date) {
-  return new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
-  }).format(new Date(value))
-}
-
-function getReferralLink(code: string) {
-  return `/ref/${code}`
-}
-
-function getSearchableText(customer: ReferralsHubData["customers"][number]) {
-  return [customer.name, customer.email, customer.phone, customer.referralCode]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase()
-}
+import ReferralRuleCard from "./ReferralRuleCard"
+import ReferralScenarioManager from "./ReferralScenarioManager"
+import ReferralSimulationSummary from "./ReferralSimulationSummary"
+import ReferralTabs from "./ReferralTabs"
+import ReferralTestCaseCard from "./ReferralTestCaseCard"
+import {
+  applyReferralCodeTemplate,
+  buildPlanningSummary,
+  buildReferralCodePreview,
+  buildScenarioExportPayload,
+  createBlankRule,
+  createBlankTestCase,
+  createDefaultRules,
+  createDefaultTestCases,
+  simulateReferralRules,
+  type ReferralCodeStyle,
+  type ReferralRuleCardData,
+  type ReferralTestCaseData,
+  type SimulatorTab,
+} from "./simulator"
+import { useRouter } from "next/navigation"
 
 async function copyToClipboard(text: string) {
   if (navigator.clipboard?.writeText && window.isSecureContext) {
@@ -46,7 +42,6 @@ async function copyToClipboard(text: string) {
   textArea.style.position = "fixed"
   textArea.style.left = "-9999px"
   textArea.style.top = "-9999px"
-
   document.body.appendChild(textArea)
   textArea.focus()
   textArea.select()
@@ -54,720 +49,622 @@ async function copyToClipboard(text: string) {
   document.body.removeChild(textArea)
 }
 
-export default function ReferralsClient({
-  initialData
-}: {
-  initialData: ReferralsHubData
-}) {
+function makeLocalId(prefix: string) {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `${prefix}-${crypto.randomUUID()}`
+  }
+
+  return `${prefix}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+function cloneRule(rule: ReferralRuleCardData): ReferralRuleCardData {
+  return {
+    ...rule,
+    id: makeLocalId("rule"),
+    name: `${rule.name} Copy`,
+  }
+}
+
+function downloadJsonFile(filename: string, content: string) {
+  const blob = new Blob([content], { type: "application/json;charset=utf-8" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+
+function sanitizeFileName(value: string) {
+  const trimmed = value.trim().toLowerCase()
+  if (!trimmed) {
+    return "referral-rule-simulator"
+  }
+
+  return trimmed.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "referral-rule-simulator"
+}
+
+export default function ReferralsClient({ initialData }: { initialData: ReferralsHubData }) {
   const router = useRouter()
-  const [search, setSearch] = useState("")
-  const deferredSearch = useDeferredValue(search)
-  const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false)
-  const [isAddReferralOpen, setIsAddReferralOpen] = useState(false)
-  const [isCustomerPending, startCustomerTransition] = useTransition()
-  const [isReferralPending, startReferralTransition] = useTransition()
-  const [pendingCustomerId, setPendingCustomerId] = useState<string | null>(null)
-  const [pendingReferralId, setPendingReferralId] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<SimulatorTab>("simulator")
+  const [rules, setRules] = useState<ReferralRuleCardData[]>(() => createDefaultRules())
+  const [testCases, setTestCases] = useState<ReferralTestCaseData[]>(() => createDefaultTestCases())
+  const [previewName, setPreviewName] = useState("Acme Atelier")
+  const [previewCustomCode, setPreviewCustomCode] = useState("")
+  const [previewCodeStyle, setPreviewCodeStyle] = useState<ReferralCodeStyle>("name-based")
+  const [previewRewardLabel, setPreviewRewardLabel] = useState("10% off")
+  const [previewMessageTemplate, setPreviewMessageTemplate] = useState(
+    "Use my referral code [code] at Pins&Knuckles: [code]",
+  )
+  const [scenarioName, setScenarioName] = useState("Tier A v1")
+  const [scenarioNotes, setScenarioNotes] = useState(
+    "Planning-only prototype scenario. Shared team scenarios are for design review only and do not update real referrals.",
+  )
+  const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null)
 
-  const filteredCustomers = useMemo(() => {
-    const query = deferredSearch.trim().toLowerCase()
+  const [isScenarioPending, startScenarioTransition] = useTransition()
 
-    if (!query) {
-      return initialData.customers
+  const simulatorAggregate = useMemo(() => simulateReferralRules(rules, testCases), [rules, testCases])
+  const activeRulesCount = useMemo(() => rules.filter((rule) => rule.enabled).length, [rules])
+
+  const referrerOptions = useMemo(() => {
+    return testCases.map((testCase) => ({
+      value: `test:${testCase.id}`,
+      label: `${testCase.name} · Test Case`,
+    }))
+  }, [testCases])
+
+  const savedScenarios: ReferralsHubData["scenarios"] = initialData.scenarios
+
+  const referralCodePreview = useMemo(
+    () =>
+      buildReferralCodePreview({
+        name: previewName,
+        customCode: previewCustomCode,
+        codeStyle: previewCodeStyle,
+        rewardLabel: previewRewardLabel,
+      }),
+    [previewCodeStyle, previewCustomCode, previewName, previewRewardLabel],
+  )
+
+  const referralLinkPreview = useMemo(
+    () => `https://pinsknuckles.com/ref/${referralCodePreview}`,
+    [referralCodePreview],
+  )
+
+  const referralMessagePreview = useMemo(
+    () => applyReferralCodeTemplate(previewMessageTemplate, referralCodePreview),
+    [previewMessageTemplate, referralCodePreview],
+  )
+
+  function updateRule(nextRule: ReferralRuleCardData) {
+    setRules((currentRules) =>
+      currentRules.map((rule) => (rule.id === nextRule.id ? nextRule : rule)),
+    )
+  }
+
+  function addRule() {
+    setRules((currentRules) => [
+      ...currentRules,
+      {
+        ...createBlankRule(),
+        id: makeLocalId("rule"),
+        name: `Rule ${currentRules.length + 1}`,
+      },
+    ])
+    toast.success("Rule card added to the simulator.")
+  }
+
+  function duplicateRule(ruleId: string) {
+    setRules((currentRules) => {
+      const sourceRule = currentRules.find((rule) => rule.id === ruleId)
+      if (!sourceRule) {
+        return currentRules
+      }
+
+      return [...currentRules, cloneRule(sourceRule)]
+    })
+    toast.success("Rule card duplicated.")
+  }
+
+  function deleteRule(ruleId: string) {
+    setRules((currentRules) => currentRules.filter((rule) => rule.id !== ruleId))
+    toast.success("Rule card removed.")
+  }
+
+  function updateTestCase(nextTestCase: ReferralTestCaseData) {
+    setTestCases((currentCases) =>
+      currentCases.map((testCase) => (testCase.id === nextTestCase.id ? nextTestCase : testCase)),
+    )
+  }
+
+  function addTestCase() {
+    setTestCases((currentCases) => [
+      ...currentCases,
+      {
+        ...createBlankTestCase(),
+        id: makeLocalId("case"),
+        name: `Test Case ${currentCases.length + 1}`,
+      },
+    ])
+    toast.success("Test case added.")
+  }
+
+  function deleteTestCase(testCaseId: string) {
+    setTestCases((currentCases) => currentCases.filter((testCase) => testCase.id !== testCaseId))
+    toast.success("Test case removed.")
+  }
+
+  function buildCurrentExportPayload() {
+    return buildScenarioExportPayload({
+      scenarioName,
+      scenarioNotes,
+      rules,
+      testCases,
+      aggregate: simulatorAggregate,
+    })
+  }
+
+  async function handleCopyPlanningSummary() {
+    const summary = buildPlanningSummary(rules, testCases, simulatorAggregate)
+
+    try {
+      await copyToClipboard(summary)
+      toast.success("Planning summary copied.")
+    } catch {
+      toast.error("Failed to copy planning summary.")
+    }
+  }
+
+  function handleExportJson() {
+    try {
+      const payload = buildCurrentExportPayload()
+      downloadJsonFile(
+        `${sanitizeFileName(scenarioName)}-referral-rule-simulator.json`,
+        JSON.stringify(payload, null, 2),
+      )
+      toast.success("Scenario JSON exported.")
+    } catch {
+      toast.error("Failed to export scenario JSON.")
+    }
+  }
+
+  async function handleCopyScenarioComparison(summary: string) {
+    try {
+      await copyToClipboard(summary)
+      toast.success("Scenario comparison summary copied.")
+    } catch {
+      toast.error("Failed to copy scenario comparison summary.")
+    }
+  }
+
+  async function handleCopyPreviewValue(value: string, successMessage: string) {
+    try {
+      await copyToClipboard(value)
+      toast.success(successMessage)
+    } catch {
+      toast.error("Failed to copy preview value.")
+    }
+  }
+
+  function saveScenario() {
+    const formData = new FormData()
+    if (activeScenarioId) {
+      formData.set("scenarioId", activeScenarioId)
+    }
+    formData.set("name", scenarioName)
+    formData.set("notes", scenarioNotes)
+    formData.set("rulesJson", JSON.stringify(rules))
+    formData.set("testCasesJson", JSON.stringify(testCases))
+    formData.set("summaryJson", JSON.stringify(simulatorAggregate))
+
+    startScenarioTransition(() => {
+      void saveReferralScenario(formData).then((result) => {
+        if (!result.ok) {
+          toast.error(result.message)
+          return
+        }
+
+        if (result.scenarioId) {
+          setActiveScenarioId(result.scenarioId)
+        }
+        toast.success(result.message)
+        router.refresh()
+      })
+    })
+  }
+
+  function loadScenario(scenarioId: string) {
+    const scenario = savedScenarios.find((entry) => entry.id === scenarioId)
+    if (!scenario) {
+      toast.error("Saved scenario not found.")
+      return
     }
 
-    return initialData.customers.filter((customer) => getSearchableText(customer).includes(query))
-  }, [deferredSearch, initialData.customers])
+    setRules(scenario.rules)
+    setTestCases(scenario.testCases)
+    setScenarioName(scenario.name)
+    setScenarioNotes(scenario.notes)
+    setActiveScenarioId(scenario.id)
+    setActiveTab("comparison")
+    toast.success(`Loaded ${scenario.name}.`)
+  }
 
-  if (initialData.setupIssue) {
+  function duplicateScenario(scenarioId: string) {
+    const formData = new FormData()
+    formData.set("scenarioId", scenarioId)
+
+    startScenarioTransition(() => {
+      void duplicateReferralScenario(formData).then((result) => {
+        if (!result.ok) {
+          toast.error(result.message)
+          return
+        }
+
+        toast.success(result.message)
+        router.refresh()
+      })
+    })
+  }
+
+  function deleteScenario(scenarioId: string) {
+    const formData = new FormData()
+    formData.set("scenarioId", scenarioId)
+
+    startScenarioTransition(() => {
+      void deleteReferralScenario(formData).then((result) => {
+        if (!result.ok) {
+          toast.error(result.message)
+          return
+        }
+
+        if (activeScenarioId === scenarioId) {
+          setActiveScenarioId(null)
+        }
+        toast.success(result.message)
+        router.refresh()
+      })
+    })
+  }
+
+  function renderSimulatorTab() {
     return (
-      <div className="rounded-2xl border border-amber-500/20 bg-[#0b0c10] p-6 shadow-[0_0_15px_rgba(245,158,11,0.08)]">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-amber-400">
-              Setup Required
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
-              Referrals database tables are missing
-            </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-400">
-              {initialData.setupIssue}
-            </p>
-          </div>
-          <div className="rounded-xl border border-zinc-800 bg-[#111219] px-4 py-3 text-xs text-zinc-500">
-            Page rendering is blocked gracefully until the migration is applied.
-          </div>
+      <div className="space-y-4">
+        <div className="rounded-2xl border border-red-500/20 bg-red-600/10 p-4 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-300">Prototype Only</p>
+          <p className="mt-2 text-sm text-zinc-200">
+            Planning tool only — this does not update real customers, referrals, or loyalty points.
+          </p>
         </div>
+
+        {initialData.setupIssue ? (
+          <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-zinc-200">
+            {initialData.setupIssue}
+          </div>
+        ) : null}
+
+        <AccordionSection
+          title="Referral Code Preview"
+          badge="Preview Only"
+          summary="Generate example codes, links, and customer-facing copy without reserving anything."
+          defaultOpen
+        >
+          <div className="space-y-4">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="xl:col-span-2">
+                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Customer / Brand Name
+                </label>
+                <input
+                  type="text"
+                  value={previewName}
+                  onChange={(event) => setPreviewName(event.target.value)}
+                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Custom Code
+                </label>
+                <input
+                  type="text"
+                  value={previewCustomCode}
+                  onChange={(event) => setPreviewCustomCode(event.target.value)}
+                  placeholder="Optional"
+                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm uppercase text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  Code Style
+                </label>
+                <select
+                  value={previewCodeStyle}
+                  onChange={(event) => setPreviewCodeStyle(event.target.value as ReferralCodeStyle)}
+                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                >
+                  <option value="name-based">name-based</option>
+                  <option value="initials-based">initials-based</option>
+                  <option value="random">random</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+              <div className="space-y-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                    Reward Label
+                  </label>
+                  <input
+                    type="text"
+                    value={previewRewardLabel}
+                    onChange={(event) => setPreviewRewardLabel(event.target.value)}
+                    placeholder="10% off, 100 points, £50 credit"
+                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                    Customer-Facing Message Template
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={previewMessageTemplate}
+                    onChange={(event) => setPreviewMessageTemplate(event.target.value)}
+                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                  />
+                  <p className="mt-2 text-xs text-zinc-500">
+                    Use <span className="font-mono text-zinc-300">[code]</span> anywhere in the template to insert the preview referral code.
+                  </p>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Preview only — copied codes are not reserved until the real referral system is implemented.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Referral Code</p>
+                  <p className="mt-2 font-mono text-sm font-semibold text-white">{referralCodePreview}</p>
+                  <button
+                    type="button"
+                    onClick={() => void handleCopyPreviewValue(referralCodePreview, "Preview code copied.")}
+                    className="mt-3 rounded-lg border border-red-500/20 bg-red-600/10 px-2.5 py-1.5 text-xs font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                  >
+                    Copy Code
+                  </button>
+                </div>
+                <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3 md:col-span-2">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Referral Link Using [code]</p>
+                  <p className="mt-2 break-all font-mono text-sm text-white">{referralLinkPreview}</p>
+                  <button
+                    type="button"
+                    onClick={() => void handleCopyPreviewValue(referralLinkPreview, "Preview link copied.")}
+                    className="mt-3 rounded-lg border border-red-500/20 bg-red-600/10 px-2.5 py-1.5 text-xs font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                  >
+                    Copy Link
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Customer-Facing Message Preview</p>
+                  <pre className="mt-2 whitespace-pre-wrap break-words font-sans text-sm text-white">
+                    {referralMessagePreview}
+                  </pre>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void handleCopyPreviewValue(referralMessagePreview, "Preview message copied.")}
+                  className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-xs font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                >
+                  Copy Full Message
+                </button>
+              </div>
+            </div>
+          </div>
+        </AccordionSection>
+
+        <AccordionSection
+          title="Rule Simulator"
+          badge={`${activeRulesCount} Active Rules`}
+          summary="Build and tune proposed referral reward rules."
+          // defaultOpen
+        >
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={addRule}
+                className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+              >
+                Add Rule Card
+              </button>
+            </div>
+
+            {rules.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-zinc-800 bg-[#111219] p-4 text-sm text-zinc-500">
+                No rule cards yet. Add one to start simulating referral structures.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {rules.map((rule) => (
+                  <ReferralRuleCard
+                    key={rule.id}
+                    rule={rule}
+                    onChange={updateRule}
+                    onDuplicate={duplicateRule}
+                    onDelete={deleteRule}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection
+          title="Saved Team Scenarios"
+          badge={`${savedScenarios.length} Saved Scenarios`}
+          summary="Database-backed planning scenarios shared across the team."
+        >
+          <ReferralScenarioManager
+            activeScenarioId={activeScenarioId}
+            scenarioName={scenarioName}
+            scenarioNotes={scenarioNotes}
+            savedScenarios={savedScenarios}
+            onScenarioNameChange={setScenarioName}
+            onScenarioNotesChange={setScenarioNotes}
+            onSave={saveScenario}
+            onLoad={loadScenario}
+            onDuplicate={duplicateScenario}
+            onDelete={deleteScenario}
+          />
+          {isScenarioPending ? <p className="mt-3 text-xs text-zinc-500">Updating shared scenarios…</p> : null}
+        </AccordionSection>
+
+        <AccordionSection
+          title="Export Tools"
+          badge="Planning Output"
+          summary="Share prototype outputs without connecting to a real referral system."
+        >
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => void handleCopyPlanningSummary()}
+              className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+            >
+              Copy Planning Summary
+            </button>
+            <button
+              type="button"
+              onClick={handleExportJson}
+              className="rounded-lg border border-zinc-700 bg-[#111219] px-3 py-2 text-sm font-semibold text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-[#171922]"
+            >
+              Export JSON
+            </button>
+          </div>
+        </AccordionSection>
       </div>
     )
   }
 
-  async function handleCreateCustomer(formData: FormData) {
-    const result = await createCustomer(formData)
+  function renderTestCasesTab() {
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl border border-red-500/20 bg-red-600/10 p-4 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-300">Planning Tool Only</p>
+          <p className="mt-2 text-sm text-zinc-200">
+            These cases are projections for rule testing. They do not create or update real customers, referrals, or loyalty points.
+          </p>
+        </div>
 
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
+        <AccordionSection
+          title="Test Cases"
+          badge={`${testCases.length} Cases`}
+          summary="Projected scenarios to test how proposed rules behave."
+          defaultOpen
+        >
+          <div className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={addTestCase}
+                className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+              >
+                Add Test Case
+              </button>
+            </div>
 
-    toast.success(result.message)
-    setIsAddCustomerOpen(false)
-    router.refresh()
+            {testCases.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-zinc-800 bg-[#111219] p-4 text-sm text-zinc-500">
+                No test cases yet. Add one to project tier and reward outcomes.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {testCases.map((testCase) => (
+                  <ReferralTestCaseCard
+                    key={testCase.id}
+                    testCase={testCase}
+                    result={simulatorAggregate.results[testCase.id]}
+                    referrerOptions={referrerOptions.filter(
+                      (option) => option.value !== `test:${testCase.id}`,
+                    )}
+                    onChange={updateTestCase}
+                    onDelete={deleteTestCase}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection
+          title="Settings"
+          badge={`${activeRulesCount} Active Rules`}
+          summary="Quick planning context for the current prototype."
+        >
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Scenario</p>
+              <p className="mt-1 font-semibold text-white">{scenarioName}</p>
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Shared Scenarios</p>
+              <p className="mt-1 font-semibold text-white">{savedScenarios.length}</p>
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Mode</p>
+              <p className="mt-1 text-sm text-zinc-300">Planning and prototype only.</p>
+            </div>
+          </div>
+        </AccordionSection>
+      </div>
+    )
   }
 
-  async function handleCreateReferral(formData: FormData) {
-    const result = await createReferral(formData)
+  function renderComparisonTab() {
+    return (
+      <div className="space-y-4">
+        <div className="rounded-2xl border border-red-500/20 bg-red-600/10 p-4 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-300">Planning Tool Only</p>
+          <p className="mt-2 text-sm text-zinc-200">
+            Saved team scenarios are shared planning snapshots only. They do not update real customers, referrals, or loyalty points.
+          </p>
+        </div>
 
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-
-    toast.success(result.message)
-    setIsAddReferralOpen(false)
-    router.refresh()
-  }
-
-  async function handleAdjustPoints(customerId: string, formData: FormData) {
-    setPendingCustomerId(customerId)
-    const result = await adjustLoyaltyPoints(formData)
-    setPendingCustomerId(null)
-
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-
-    toast.success(result.message)
-    router.refresh()
-  }
-
-  async function handleUpdateReferralStatus(referralId: string, formData: FormData) {
-    setPendingReferralId(referralId)
-    const result = await updateReferralStatus(formData)
-    setPendingReferralId(null)
-
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-
-    toast.success(result.message)
-    router.refresh()
+        <ReferralSimulationSummary
+          rules={rules}
+          testCases={testCases}
+          aggregate={simulatorAggregate}
+          savedScenarios={savedScenarios}
+          onCopyPlanningSummary={handleCopyPlanningSummary}
+          onExportJson={handleExportJson}
+          onCopyScenarioComparison={(summary) => void handleCopyScenarioComparison(summary)}
+        />
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Customers</p>
-          <p className="mt-3 text-3xl font-black text-white">{initialData.overview.customers}</p>
-        </div>
-        <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Total Referrals</p>
-          <p className="mt-3 text-3xl font-black text-white">{initialData.overview.totalReferrals}</p>
-        </div>
-        <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Pending</p>
-          <p className="mt-3 text-3xl font-black text-amber-300">
-            {initialData.overview.statusOverview.PENDING}
-          </p>
-        </div>
-        <div className="rounded-2xl border border-red-500/20 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-400/80">Rewarded</p>
-          <p className="mt-3 text-3xl font-black text-red-300">
-            {initialData.overview.statusOverview.REWARDED}
-          </p>
-          <p className="mt-2 text-xs text-zinc-500">
-            Rewarding adds {REFERRAL_BONUS_POINTS} points to the referrer.
-          </p>
-        </div>
-      </div>
+    <div className="space-y-5">
+      <ReferralTabs activeTab={activeTab} onChange={setActiveTab} />
 
-      <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative w-full max-w-xl">
-            <svg
-              className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-            <input
-              type="text"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by customer, email, phone, or referral code..."
-              className="w-full rounded-xl border border-zinc-800 bg-[#111219] py-3 pl-10 pr-4 text-white placeholder:text-zinc-500 outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-            />
-          </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => setIsAddReferralOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-600/10 px-5 py-3 text-sm font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
-            >
-              Log Referral
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsAddCustomerOpen(true)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-700 bg-[#111219] px-5 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-[#171922]"
-            >
-              Add Customer
-            </button>
+      <div className="rounded-[1.75rem] border border-zinc-800 bg-[#090a0f] p-2 shadow-[0_0_25px_rgba(0,0,0,0.28)]">
+        <div className="min-h-[960px] overflow-hidden rounded-[1.35rem] bg-[#07080c] xl:h-[calc(100vh-13rem)]">
+          <div className="h-full overflow-y-auto p-4">
+            {activeTab === "simulator" ? renderSimulatorTab() : null}
+            {activeTab === "test-cases" ? renderTestCasesTab() : null}
+            {activeTab === "comparison" ? renderComparisonTab() : null}
           </div>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1.8fr)_minmax(320px,1fr)]">
-        <div className="space-y-5">
-          {filteredCustomers.length === 0 ? (
-            <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-8 text-center text-zinc-500">
-              No customers found for &quot;{search}&quot;.
-            </div>
-          ) : (
-            filteredCustomers.map((customer) => {
-              const statusCounts = {
-                PENDING: 0,
-                CONVERTED: 0,
-                REWARDED: 0,
-                CANCELLED: 0
-              }
-
-              for (const referral of customer.referralsMade) {
-                statusCounts[referral.status] += 1
-              }
-
-              return (
-                <div
-                  key={customer.id}
-                  className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]"
-                >
-                  <div className="flex flex-col gap-5">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h2 className="text-xl font-bold tracking-tight text-white">
-                            {customer.name}
-                          </h2>
-                          <span className="rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-red-300">
-                            {customer.referralCode}
-                          </span>
-                        </div>
-                        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-400">
-                          <span>{customer.email || "No email"}</span>
-                          <span>{customer.phone || "No phone"}</span>
-                          <span>Added {formatDate(customer.createdAt)}</span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3 sm:min-w-[280px]">
-                        <div className="rounded-xl border border-zinc-800 bg-[#111219] px-4 py-3">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
-                            Referrals
-                          </p>
-                          <p className="mt-2 text-2xl font-black text-white">
-                            {customer._count.referralsMade}
-                          </p>
-                        </div>
-                        <div className="rounded-xl border border-zinc-800 bg-[#111219] px-4 py-3">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
-                            Loyalty Points
-                          </p>
-                          <p className="mt-2 text-2xl font-black text-red-300">
-                            {customer.loyaltyPoints}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
-                      <div className="rounded-2xl border border-zinc-800 bg-[#0f1016] p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                              Referral Link
-                            </p>
-                            <p className="mt-2 break-all font-mono text-sm text-zinc-200">
-                              {getReferralLink(customer.referralCode)}
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 sm:flex-row">
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                await copyToClipboard(getReferralLink(customer.referralCode))
-                                toast.success("Referral link copied.")
-                              }}
-                              className="rounded-lg border border-zinc-700 bg-[#111219] px-3 py-2 text-xs font-semibold text-zinc-200 transition-colors hover:border-zinc-600"
-                            >
-                              Copy Link
-                            </button>
-                            <button
-                              type="button"
-                              disabled
-                              className="rounded-lg border border-red-500/10 bg-red-500/5 px-3 py-2 text-xs font-semibold text-red-300/70"
-                            >
-                              QR Soon
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-                          {REFERRAL_STATUSES.map((status) => (
-                            <div
-                              key={status}
-                              className="rounded-xl border border-zinc-800 bg-[#111219] px-3 py-3"
-                            >
-                              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
-                                {status}
-                              </p>
-                              <p className="mt-2 text-xl font-black text-white">
-                                {statusCounts[status]}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="rounded-2xl border border-zinc-800 bg-[#0f1016] p-4">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                          Manual Loyalty Adjustment
-                        </p>
-                        <form
-                          className="mt-4 space-y-3"
-                          onSubmit={(event) => {
-                            event.preventDefault()
-                            const formData = new FormData(event.currentTarget)
-
-                            startCustomerTransition(() => {
-                              void handleAdjustPoints(customer.id, formData)
-                            })
-                          }}
-                        >
-                          <input type="hidden" name="customerId" value={customer.id} />
-                          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[120px_minmax(0,1fr)]">
-                            <input
-                              required
-                              name="pointsChange"
-                              type="number"
-                              step="1"
-                              placeholder="+100 or -50"
-                              className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                            />
-                            <select
-                              name="type"
-                              defaultValue="ADJUSTED"
-                              className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                            >
-                              {LOYALTY_TYPES.map((type) => (
-                                <option key={type} value={type}>
-                                  {type}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <input
-                            required
-                            name="reason"
-                            type="text"
-                            placeholder="Reason for points change"
-                            className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                          />
-                          <button
-                            type="submit"
-                            disabled={isCustomerPending && pendingCustomerId === customer.id}
-                            className="rounded-lg border border-red-500/20 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-600/20 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {isCustomerPending && pendingCustomerId === customer.id
-                              ? "Saving..."
-                              : "Update Points"}
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                      <div className="rounded-2xl border border-zinc-800 bg-[#0f1016] p-4">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                          Recent Referrals
-                        </p>
-                        <div className="mt-4 space-y-3">
-                          {customer.referralsMade.length === 0 ? (
-                            <p className="text-sm text-zinc-500">No referrals logged yet.</p>
-                          ) : (
-                            customer.referralsMade.slice(0, 4).map((referral) => (
-                              <div
-                                key={referral.id}
-                                className="rounded-xl border border-zinc-800 bg-[#111219] p-3"
-                              >
-                                <div className="flex items-center justify-between gap-3">
-                                  <div>
-                                    <p className="font-semibold text-white">
-                                      {referral.referredCustomer.name}
-                                    </p>
-                                    <p className="mt-1 text-xs text-zinc-500">
-                                      Used {referral.referralCodeUsed} on {formatDate(referral.createdAt)}
-                                    </p>
-                                  </div>
-                                  <span className="rounded-full border border-zinc-700 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-300">
-                                    {referral.status}
-                                  </span>
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="rounded-2xl border border-zinc-800 bg-[#0f1016] p-4">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                          Recent Loyalty Log
-                        </p>
-                        <div className="mt-4 space-y-3">
-                          {customer.loyaltyTransactions.length === 0 ? (
-                            <p className="text-sm text-zinc-500">No loyalty activity yet.</p>
-                          ) : (
-                            customer.loyaltyTransactions.map((transaction) => (
-                              <div
-                                key={transaction.id}
-                                className="rounded-xl border border-zinc-800 bg-[#111219] p-3"
-                              >
-                                <div className="flex items-center justify-between gap-3">
-                                  <div>
-                                    <p className="font-semibold text-white">{transaction.reason}</p>
-                                    <p className="mt-1 text-xs text-zinc-500">
-                                      {transaction.type} on {formatDate(transaction.createdAt)}
-                                    </p>
-                                  </div>
-                                  <span className="font-mono text-sm font-bold text-red-300">
-                                    {transaction.pointsChange > 0 ? "+" : ""}
-                                    {transaction.pointsChange}
-                                  </span>
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })
-          )}
-        </div>
-
-        <div className="space-y-5">
-          <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-              Referral Status Overview
-            </p>
-            <div className="mt-4 space-y-3">
-              {REFERRAL_STATUSES.map((status) => (
-                <div
-                  key={status}
-                  className="flex items-center justify-between rounded-xl border border-zinc-800 bg-[#111219] px-4 py-3 text-sm"
-                >
-                  <span className="font-medium text-zinc-300">{status}</span>
-                  <span className="font-mono text-white">
-                    {initialData.overview.statusOverview[status]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-zinc-800 bg-[#0b0c10] p-5 shadow-[0_0_15px_rgba(0,0,0,0.18)]">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                  Recent Referral Activity
-                </p>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Update statuses here. Rewarding adds the bonus automatically.
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 space-y-4">
-              {initialData.recentReferrals.length === 0 ? (
-                <p className="text-sm text-zinc-500">No referrals logged yet.</p>
-              ) : (
-                initialData.recentReferrals.map((referral) => (
-                  <form
-                    key={referral.id}
-                    className="rounded-xl border border-zinc-800 bg-[#111219] p-4"
-                    onSubmit={(event) => {
-                      event.preventDefault()
-                      const formData = new FormData(event.currentTarget)
-
-                      startReferralTransition(() => {
-                        void handleUpdateReferralStatus(referral.id, formData)
-                      })
-                    }}
-                  >
-                    <input type="hidden" name="referralId" value={referral.id} />
-                    <div className="flex flex-col gap-3">
-                      <div>
-                        <p className="font-semibold text-white">
-                          {referral.referrerCustomer.name} referred {referral.referredCustomer.name}
-                        </p>
-                        <p className="mt-1 text-xs text-zinc-500">
-                          Code {referral.referralCodeUsed} · {formatDate(referral.createdAt)}
-                        </p>
-                        {referral.notes ? (
-                          <p className="mt-2 text-sm text-zinc-400">{referral.notes}</p>
-                        ) : null}
-                      </div>
-                      <div className="flex flex-col gap-3 sm:flex-row">
-                        <select
-                          name="status"
-                          defaultValue={referral.status}
-                          className="w-full rounded-lg border border-zinc-800 bg-[#0b0c10] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                        >
-                          {REFERRAL_STATUSES.map((status) => (
-                            <option key={status} value={status}>
-                              {status}
-                            </option>
-                          ))}
-                        </select>
-                        <button
-                          type="submit"
-                          disabled={isReferralPending && pendingReferralId === referral.id}
-                          className="rounded-lg border border-red-500/20 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-600/20 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {isReferralPending && pendingReferralId === referral.id
-                            ? "Saving..."
-                            : "Save Status"}
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {isAddCustomerOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-          <div className="w-full max-w-xl rounded-2xl border border-zinc-800 bg-[#0b0c10] p-6 shadow-[0_0_30px_rgba(0,0,0,0.45)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-white">Add Customer</h2>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Create a customer and reserve a referral code now.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAddCustomerOpen(false)}
-                className="text-zinc-500 transition-colors hover:text-white"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </button>
-            </div>
-            <form
-              className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2"
-              onSubmit={(event) => {
-                event.preventDefault()
-                const formData = new FormData(event.currentTarget)
-
-                startCustomerTransition(() => {
-                  void handleCreateCustomer(formData)
-                })
-              }}
-            >
-              <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-zinc-400">Name</label>
-                <input
-                  required
-                  name="name"
-                  type="text"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-400">Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-400">Phone</label>
-                <input
-                  name="phone"
-                  type="text"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-zinc-400">
-                  Referral Code
-                </label>
-                <input
-                  name="referralCode"
-                  type="text"
-                  placeholder="Optional. Leave blank to auto-generate."
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 uppercase text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddCustomerOpen(false)}
-                  className="rounded-lg border border-zinc-700 bg-[#111219] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-zinc-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isCustomerPending}
-                  className="rounded-lg border border-red-500/20 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-600/20 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isCustomerPending ? "Saving..." : "Create Customer"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
-
-      {isAddReferralOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
-          <div className="w-full max-w-xl rounded-2xl border border-zinc-800 bg-[#0b0c10] p-6 shadow-[0_0_30px_rgba(0,0,0,0.45)]">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-white">Log Referral</h2>
-                <p className="mt-1 text-sm text-zinc-500">
-                  Use an existing referral code and create the referred customer in one step.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAddReferralOpen(false)}
-                className="text-zinc-500 transition-colors hover:text-white"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </button>
-            </div>
-            <form
-              className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2"
-              onSubmit={(event) => {
-                event.preventDefault()
-                const formData = new FormData(event.currentTarget)
-
-                startReferralTransition(() => {
-                  void handleCreateReferral(formData)
-                })
-              }}
-            >
-              <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-zinc-400">
-                  Referral Code Used
-                </label>
-                <input
-                  required
-                  name="referralCodeUsed"
-                  type="text"
-                  placeholder="e.g. GERMAN1"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 uppercase text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-zinc-400">
-                  Referred Customer Name
-                </label>
-                <input
-                  required
-                  name="name"
-                  type="text"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-400">Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-zinc-400">Phone</label>
-                <input
-                  name="phone"
-                  type="text"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div className="sm:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-zinc-400">Notes</label>
-                <textarea
-                  name="notes"
-                  rows={3}
-                  placeholder="Optional context for sales follow-up"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-white outline-none transition-shadow focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
-                />
-              </div>
-              <div className="sm:col-span-2 flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsAddReferralOpen(false)}
-                  className="rounded-lg border border-zinc-700 bg-[#111219] px-4 py-2.5 text-sm font-semibold text-zinc-200 transition-colors hover:border-zinc-600"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isReferralPending}
-                  className="rounded-lg border border-red-500/20 bg-red-600/10 px-4 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:border-red-500/40 hover:bg-red-600/20 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isReferralPending ? "Saving..." : "Create Referral"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      ) : null}
     </div>
   )
 }

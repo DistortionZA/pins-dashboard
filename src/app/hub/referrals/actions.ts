@@ -15,6 +15,10 @@ type ActionResult = {
   message: string
 }
 
+type ScenarioActionResult = ActionResult & {
+  scenarioId?: string
+}
+
 function normalizeText(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : ""
 }
@@ -397,6 +401,133 @@ export async function updateReferralStatus(formData: FormData): Promise<ActionRe
     return {
       ok: false,
       message: error instanceof Error ? error.message : "Failed to update referral status."
+    }
+  }
+}
+
+function parseJsonString(value: FormDataEntryValue | null) {
+  const text = normalizeText(value)
+  if (!text) {
+    return null
+  }
+
+  return JSON.parse(text) as Prisma.InputJsonValue
+}
+
+export async function saveReferralScenario(formData: FormData): Promise<ScenarioActionResult> {
+  const scenarioId = normalizeText(formData.get("scenarioId"))
+  const name = normalizeText(formData.get("name"))
+  const notes = normalizeText(formData.get("notes"))
+
+  if (!name) {
+    return { ok: false, message: "Scenario name is required." }
+  }
+
+  try {
+    const rulesJson = parseJsonString(formData.get("rulesJson"))
+    const testCasesJson = parseJsonString(formData.get("testCasesJson"))
+    const summaryJson = parseJsonString(formData.get("summaryJson"))
+
+    if (!Array.isArray(rulesJson) || !Array.isArray(testCasesJson) || !summaryJson) {
+      return { ok: false, message: "Scenario payload is invalid." }
+    }
+
+    if (scenarioId) {
+      const scenario = await prisma.referralScenario.update({
+        where: { id: scenarioId },
+        data: {
+          name,
+          notes,
+          rulesJson,
+          testCasesJson,
+          summaryJson,
+        },
+        select: { id: true },
+      })
+
+      await revalidateReferralsViews()
+      return { ok: true, message: "Team scenario updated.", scenarioId: scenario.id }
+    }
+
+    const scenario = await prisma.referralScenario.create({
+      data: {
+        name,
+        notes,
+        rulesJson,
+        testCasesJson,
+        summaryJson,
+      },
+      select: { id: true },
+    })
+
+    await revalidateReferralsViews()
+    return { ok: true, message: "Team scenario saved.", scenarioId: scenario.id }
+  } catch (error) {
+    console.error(error)
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Failed to save team scenario.",
+    }
+  }
+}
+
+export async function duplicateReferralScenario(formData: FormData): Promise<ScenarioActionResult> {
+  const scenarioId = normalizeText(formData.get("scenarioId"))
+
+  if (!scenarioId) {
+    return { ok: false, message: "Scenario is required." }
+  }
+
+  try {
+    const scenario = await prisma.referralScenario.findUnique({
+      where: { id: scenarioId },
+    })
+
+    if (!scenario) {
+      return { ok: false, message: "Scenario not found." }
+    }
+
+    const duplicated = await prisma.referralScenario.create({
+      data: {
+        name: `${scenario.name} Copy`,
+        notes: scenario.notes,
+        rulesJson: scenario.rulesJson as Prisma.InputJsonValue,
+        testCasesJson: scenario.testCasesJson as Prisma.InputJsonValue,
+        summaryJson: scenario.summaryJson as Prisma.InputJsonValue,
+      },
+      select: { id: true },
+    })
+
+    await revalidateReferralsViews()
+    return { ok: true, message: "Team scenario duplicated.", scenarioId: duplicated.id }
+  } catch (error) {
+    console.error(error)
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Failed to duplicate team scenario.",
+    }
+  }
+}
+
+export async function deleteReferralScenario(formData: FormData): Promise<ActionResult> {
+  const scenarioId = normalizeText(formData.get("scenarioId"))
+
+  if (!scenarioId) {
+    return { ok: false, message: "Scenario is required." }
+  }
+
+  try {
+    await prisma.referralScenario.delete({
+      where: { id: scenarioId },
+    })
+
+    await revalidateReferralsViews()
+    return { ok: true, message: "Team scenario deleted." }
+  } catch (error) {
+    console.error(error)
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Failed to delete team scenario.",
     }
   }
 }

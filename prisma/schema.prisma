@@ -116,6 +116,20 @@ model LoyaltyTransaction {
   @@index([customerId, createdAt])
 }
 
+model ReferralScenario {
+  id            String   @id @default(uuid())
+  name          String
+  notes         String
+  rulesJson     Json
+  testCasesJson Json
+  summaryJson   Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([updatedAt])
+  @@index([name])
+}
+
 enum PrintPosition {
   FRONT
   BACK

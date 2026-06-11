@@ -32,8 +32,8 @@ export default async function ReferralsPage() {
         <p className="text-sm font-bold uppercase tracking-[0.25em] text-red-500">Sales Tools</p>
         <h1 className="text-3xl font-bold tracking-tight text-white md:text-4xl">Referrals</h1>
         <p className="max-w-3xl text-zinc-400">
-          Track referral codes, log referred customers, monitor statuses, and maintain loyalty
-          points without keeping the system in your head.
+          Prototype referral reward structures, test scenarios, compare saved models, and export
+          planning outputs before any real referral system is implemented.
         </p>
       </div>
 

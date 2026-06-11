@@ -1,144 +1,75 @@
 import { Prisma } from "@prisma/client"
 import { unstable_cache } from "next/cache"
 import { prisma } from "@/lib/db"
+import type { ReferralScenarioData } from "./simulator"
 
 const REFERRALS_TAG = "referrals"
 
-function hasReferralDelegates() {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}
+
+function parseScenarioRow(row: {
+  id: string
+  name: string
+  notes: string
+  rulesJson: Prisma.JsonValue
+  testCasesJson: Prisma.JsonValue
+  summaryJson: Prisma.JsonValue
+  createdAt: Date
+  updatedAt: Date
+}): ReferralScenarioData {
+  return {
+    id: row.id,
+    name: row.name,
+    notes: row.notes,
+    rules: Array.isArray(row.rulesJson) ? (row.rulesJson as ReferralScenarioData["rules"]) : [],
+    testCases: Array.isArray(row.testCasesJson)
+      ? (row.testCasesJson as ReferralScenarioData["testCases"])
+      : [],
+    aggregate: isRecord(row.summaryJson)
+      ? (row.summaryJson as ReferralScenarioData["aggregate"])
+      : {
+          results: {},
+          totalPoints: 0,
+          totalCashValue: 0,
+          totalCreditValue: 0,
+          totalDiscountPercent: 0,
+          qualifiedTierCounts: [],
+          ruleSummaries: [],
+        },
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }
+}
+
+function hasReferralScenarioDelegate() {
   const client = prisma as typeof prisma & {
-    customer?: { findMany?: (...args: unknown[]) => unknown }
-    referral?: {
+    referralScenario?: {
       findMany?: (...args: unknown[]) => unknown
-      groupBy?: (...args: unknown[]) => unknown
-      count?: (...args: unknown[]) => unknown
     }
   }
 
-  return (
-    typeof client.customer?.findMany === "function" &&
-    typeof client.referral?.findMany === "function" &&
-    typeof client.referral?.groupBy === "function" &&
-    typeof client.referral?.count === "function"
-  )
+  return typeof client.referralScenario?.findMany === "function"
 }
 
 async function loadReferralsData() {
-  if (!hasReferralDelegates()) {
+  if (!hasReferralScenarioDelegate()) {
     return {
-      customers: [],
-      recentReferrals: [],
-      overview: {
-        customers: 0,
-        totalReferrals: 0,
-        statusOverview: {
-          PENDING: 0,
-          CONVERTED: 0,
-          REWARDED: 0,
-          CANCELLED: 0
-        }
-      },
+      scenarios: [] as ReferralScenarioData[],
       setupIssue:
-        "The running Prisma client does not include the referral models yet. Regenerate the Prisma client and restart the app server before using this page."
+        "The running Prisma client does not include ReferralScenario yet. Regenerate Prisma client and apply the migration before using the shared planning scenarios.",
     }
   }
 
   try {
-    const [customers, recentReferrals, referralStatusGroups, totalReferrals] = await Promise.all([
-      prisma.customer.findMany({
-        orderBy: { createdAt: "desc" },
-        include: {
-          referralsMade: {
-            orderBy: { createdAt: "desc" },
-            select: {
-              id: true,
-              status: true,
-              referralCodeUsed: true,
-              createdAt: true,
-              updatedAt: true,
-              referredCustomer: {
-                select: {
-                  id: true,
-                  name: true,
-                  email: true,
-                  phone: true,
-                  referralCode: true
-                }
-              }
-            }
-          },
-          loyaltyTransactions: {
-            orderBy: { createdAt: "desc" },
-            take: 5,
-            select: {
-              id: true,
-              pointsChange: true,
-              type: true,
-              reason: true,
-              createdAt: true
-            }
-          },
-          _count: {
-            select: {
-              referralsMade: true
-            }
-          }
-        }
-      }),
-      prisma.referral.findMany({
-        orderBy: { createdAt: "desc" },
-        take: 12,
-        select: {
-          id: true,
-          status: true,
-          referralCodeUsed: true,
-          notes: true,
-          createdAt: true,
-          updatedAt: true,
-          referrerCustomer: {
-            select: {
-              id: true,
-              name: true,
-              referralCode: true
-            }
-          },
-          referredCustomer: {
-            select: {
-              id: true,
-              name: true,
-              referralCode: true
-            }
-          }
-        }
-      }),
-      prisma.referral.groupBy({
-        by: ["status"],
-        _count: {
-          status: true
-        }
-      }),
-      prisma.referral.count()
-    ])
-
-    const statusOverview = {
-      PENDING: 0,
-      CONVERTED: 0,
-      REWARDED: 0,
-      CANCELLED: 0
-    }
-
-    for (const group of referralStatusGroups) {
-      statusOverview[group.status] = group._count.status
-    }
+    const scenarios = await prisma.referralScenario.findMany({
+      orderBy: { updatedAt: "desc" },
+    })
 
     return {
-      customers,
-      recentReferrals,
-      overview: {
-        customers: customers.length,
-        totalReferrals,
-        statusOverview
-      },
-      setupIssue: null as string | null
+      scenarios: scenarios.map(parseScenarioRow),
+      setupIssue: null as string | null,
     }
   } catch (error) {
     if (
@@ -146,20 +77,9 @@ async function loadReferralsData() {
       (error.code === "P2021" || error.code === "P2022")
     ) {
       return {
-        customers: [],
-        recentReferrals: [],
-        overview: {
-          customers: 0,
-          totalReferrals: 0,
-          statusOverview: {
-            PENDING: 0,
-            CONVERTED: 0,
-            REWARDED: 0,
-            CANCELLED: 0
-          }
-        },
+        scenarios: [] as ReferralScenarioData[],
         setupIssue:
-          "Referral tables are not available in the database yet. Apply the Prisma migration for Customer, Referral, and LoyaltyTransaction before using this page."
+          "ReferralScenario is not available in the database yet. Apply the Prisma migration before using shared team scenarios.",
       }
     }
 
@@ -168,7 +88,7 @@ async function loadReferralsData() {
 }
 
 export const getReferralsData = unstable_cache(loadReferralsData, ["referrals-data"], {
-  tags: [REFERRALS_TAG]
+  tags: [REFERRALS_TAG],
 })
 
 export function getReferralsTag() {
