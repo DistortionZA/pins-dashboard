@@ -332,15 +332,15 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
   function renderSimulatorTab() {
     return (
       <div className="space-y-4">
-        <div className="rounded-2xl border border-red-500/20 bg-red-600/10 p-4 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-300">Prototype Only</p>
-          <p className="mt-2 text-sm text-zinc-200">
+        <div className="hub-accent-panel rounded-2xl p-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-cream">Prototype Only</p>
+          <p className="mt-2 text-sm text-brand-cream">
             Planning tool only — this does not update real customers, referrals, or loyalty points.
           </p>
         </div>
 
         {initialData.setupIssue ? (
-          <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-zinc-200">
+          <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-brand-cream">
             {initialData.setupIssue}
           </div>
         ) : null}
@@ -354,18 +354,18 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
           <div className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <div className="xl:col-span-2">
-                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-brand-muted/80">
                   Customer / Brand Name
                 </label>
                 <input
                   type="text"
                   value={previewName}
                   onChange={(event) => setPreviewName(event.target.value)}
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                  className="w-full rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2 text-sm text-brand-cream focus:border-brand-red/50 focus:ring-2 focus:ring-brand-red/30"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-brand-muted/80">
                   Custom Code
                 </label>
                 <input
@@ -373,17 +373,17 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
                   value={previewCustomCode}
                   onChange={(event) => setPreviewCustomCode(event.target.value)}
                   placeholder="Optional"
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm uppercase text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                  className="w-full rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2 text-sm uppercase text-brand-cream focus:border-brand-red/50 focus:ring-2 focus:ring-brand-red/30"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-brand-muted/80">
                   Code Style
                 </label>
                 <select
                   value={previewCodeStyle}
                   onChange={(event) => setPreviewCodeStyle(event.target.value as ReferralCodeStyle)}
-                  className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                  className="w-full rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2 text-sm text-brand-cream focus:border-brand-red/50 focus:ring-2 focus:ring-brand-red/30"
                 >
                   <option value="name-based">name-based</option>
                   <option value="initials-based">initials-based</option>
@@ -395,7 +395,7 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
             <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
               <div className="space-y-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-brand-muted/80">
                     Reward Label
                   </label>
                   <input
@@ -403,48 +403,48 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
                     value={previewRewardLabel}
                     onChange={(event) => setPreviewRewardLabel(event.target.value)}
                     placeholder="10% off, 100 points, £50 credit"
-                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                    className="w-full rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2 text-sm text-brand-cream focus:border-brand-red/50 focus:ring-2 focus:ring-brand-red/30"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+                  <label className="mb-1 block text-xs font-medium uppercase tracking-[0.16em] text-brand-muted/80">
                     Customer-Facing Message Template
                   </label>
                   <textarea
                     rows={4}
                     value={previewMessageTemplate}
                     onChange={(event) => setPreviewMessageTemplate(event.target.value)}
-                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2 text-sm text-white focus:border-red-500/40 focus:ring-2 focus:ring-red-500/30"
+                    className="w-full rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2 text-sm text-brand-cream focus:border-brand-red/50 focus:ring-2 focus:ring-brand-red/30"
                   />
-                  <p className="mt-2 text-xs text-zinc-500">
-                    Use <span className="font-mono text-zinc-300">[code]</span> anywhere in the template to insert the preview referral code.
+                  <p className="mt-2 text-xs text-brand-muted/80">
+                    Use <span className="font-mono text-brand-cream/90">[code]</span> anywhere in the template to insert the preview referral code.
                   </p>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-brand-muted/80">
                     Preview only — copied codes are not reserved until the real referral system is implemented.
                   </p>
                 </div>
               </div>
 
               <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Referral Code</p>
-                  <p className="mt-2 font-mono text-sm font-semibold text-white">{referralCodePreview}</p>
+                <div className="rounded-xl border border-brand-border bg-brand-panel-alt p-3">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted/80">Referral Code</p>
+                  <p className="mt-2 font-mono text-sm font-semibold text-brand-cream">{referralCodePreview}</p>
                   <button
                     type="button"
                     onClick={() => void handleCopyPreviewValue(referralCodePreview, "Preview code copied.")}
-                    className="mt-3 rounded-lg border border-red-500/20 bg-red-600/10 px-2.5 py-1.5 text-xs font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                    className="mt-3 rounded-lg border border-brand-red/35 bg-brand-red/16 px-2.5 py-1.5 text-xs font-semibold text-brand-cream transition-colors hover:border-brand-red/50 hover:bg-brand-red/24"
                   >
                     Copy Code
                   </button>
                 </div>
-                <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3 md:col-span-2">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Referral Link Using [code]</p>
-                  <p className="mt-2 break-all font-mono text-sm text-white">{referralLinkPreview}</p>
+                <div className="rounded-xl border border-brand-border bg-brand-panel-alt p-3 md:col-span-2">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted/80">Referral Link Using [code]</p>
+                  <p className="mt-2 break-all font-mono text-sm text-brand-cream">{referralLinkPreview}</p>
                   <button
                     type="button"
                     onClick={() => void handleCopyPreviewValue(referralLinkPreview, "Preview link copied.")}
-                    className="mt-3 rounded-lg border border-red-500/20 bg-red-600/10 px-2.5 py-1.5 text-xs font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                    className="mt-3 rounded-lg border border-brand-red/35 bg-brand-red/16 px-2.5 py-1.5 text-xs font-semibold text-brand-cream transition-colors hover:border-brand-red/50 hover:bg-brand-red/24"
                   >
                     Copy Link
                   </button>
@@ -452,18 +452,18 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
               </div>
             </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
+            <div className="rounded-xl border border-brand-border bg-brand-panel-alt p-3">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Customer-Facing Message Preview</p>
-                  <pre className="mt-2 whitespace-pre-wrap break-words font-sans text-sm text-white">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted/80">Customer-Facing Message Preview</p>
+                  <pre className="mt-2 whitespace-pre-wrap break-words font-sans text-sm text-brand-cream">
                     {referralMessagePreview}
                   </pre>
                 </div>
                 <button
                   type="button"
                   onClick={() => void handleCopyPreviewValue(referralMessagePreview, "Preview message copied.")}
-                  className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-xs font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                  className="rounded-lg border border-brand-red/35 bg-brand-red/16 px-3 py-2 text-xs font-semibold text-brand-cream transition-colors hover:border-brand-red/50 hover:bg-brand-red/24"
                 >
                   Copy Full Message
                 </button>
@@ -483,14 +483,14 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
               <button
                 type="button"
                 onClick={addRule}
-                className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                className="rounded-lg border border-brand-red/35 bg-brand-red/16 px-3 py-2 text-sm font-semibold text-brand-cream transition-colors hover:border-brand-red/50 hover:bg-brand-red/24"
               >
                 Add Rule Card
               </button>
             </div>
 
             {rules.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-zinc-800 bg-[#111219] p-4 text-sm text-zinc-500">
+              <div className="rounded-xl border border-dashed border-brand-border bg-brand-panel-alt p-4 text-sm text-brand-muted/80">
                 No rule cards yet. Add one to start simulating referral structures.
               </div>
             ) : (
@@ -526,7 +526,7 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
             onDuplicate={duplicateScenario}
             onDelete={deleteScenario}
           />
-          {isScenarioPending ? <p className="mt-3 text-xs text-zinc-500">Updating shared scenarios…</p> : null}
+          {isScenarioPending ? <p className="mt-3 text-xs text-brand-muted/80">Updating shared scenarios…</p> : null}
         </AccordionSection>
 
         <AccordionSection
@@ -538,14 +538,14 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
             <button
               type="button"
               onClick={() => void handleCopyPlanningSummary()}
-              className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+              className="rounded-lg border border-brand-red/35 bg-brand-red/16 px-3 py-2 text-sm font-semibold text-brand-cream transition-colors hover:border-brand-red/50 hover:bg-brand-red/24"
             >
               Copy Planning Summary
             </button>
             <button
               type="button"
               onClick={handleExportJson}
-              className="rounded-lg border border-zinc-700 bg-[#111219] px-3 py-2 text-sm font-semibold text-zinc-200 transition-colors hover:border-zinc-600 hover:bg-[#171922]"
+              className="rounded-lg border border-brand-border/80 bg-brand-panel-alt px-3 py-2 text-sm font-semibold text-brand-cream transition-colors hover:border-brand-red/40 hover:bg-brand-surface"
             >
               Export JSON
             </button>
@@ -558,9 +558,9 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
   function renderTestCasesTab() {
     return (
       <div className="space-y-4">
-        <div className="rounded-2xl border border-red-500/20 bg-red-600/10 p-4 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-300">Planning Tool Only</p>
-          <p className="mt-2 text-sm text-zinc-200">
+        <div className="hub-accent-panel rounded-2xl p-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-cream">Planning Tool Only</p>
+          <p className="mt-2 text-sm text-brand-cream">
             These cases are projections for rule testing. They do not create or update real customers, referrals, or loyalty points.
           </p>
         </div>
@@ -576,14 +576,14 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
               <button
                 type="button"
                 onClick={addTestCase}
-                className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:border-red-500/40 hover:bg-red-600/20"
+                className="rounded-lg border border-brand-red/35 bg-brand-red/16 px-3 py-2 text-sm font-semibold text-brand-cream transition-colors hover:border-brand-red/50 hover:bg-brand-red/24"
               >
                 Add Test Case
               </button>
             </div>
 
             {testCases.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-zinc-800 bg-[#111219] p-4 text-sm text-zinc-500">
+              <div className="rounded-xl border border-dashed border-brand-border bg-brand-panel-alt p-4 text-sm text-brand-muted/80">
                 No test cases yet. Add one to project tier and reward outcomes.
               </div>
             ) : (
@@ -611,17 +611,17 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
           summary="Quick planning context for the current prototype."
         >
           <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Scenario</p>
-              <p className="mt-1 font-semibold text-white">{scenarioName}</p>
+            <div className="rounded-xl border border-brand-border bg-brand-panel-alt p-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted/80">Scenario</p>
+              <p className="mt-1 font-semibold text-brand-cream">{scenarioName}</p>
             </div>
-            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Shared Scenarios</p>
-              <p className="mt-1 font-semibold text-white">{savedScenarios.length}</p>
+            <div className="rounded-xl border border-brand-border bg-brand-panel-alt p-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted/80">Shared Scenarios</p>
+              <p className="mt-1 font-semibold text-brand-cream">{savedScenarios.length}</p>
             </div>
-            <div className="rounded-xl border border-zinc-800 bg-[#111219] p-3">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">Mode</p>
-              <p className="mt-1 text-sm text-zinc-300">Planning and prototype only.</p>
+            <div className="rounded-xl border border-brand-border bg-brand-panel-alt p-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-brand-muted/80">Mode</p>
+              <p className="mt-1 text-sm text-brand-cream/90">Planning and prototype only.</p>
             </div>
           </div>
         </AccordionSection>
@@ -632,9 +632,9 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
   function renderComparisonTab() {
     return (
       <div className="space-y-4">
-        <div className="rounded-2xl border border-red-500/20 bg-red-600/10 p-4 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-red-300">Planning Tool Only</p>
-          <p className="mt-2 text-sm text-zinc-200">
+        <div className="hub-accent-panel rounded-2xl p-4">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-cream">Planning Tool Only</p>
+          <p className="mt-2 text-sm text-brand-cream">
             Saved team scenarios are shared planning snapshots only. They do not update real customers, referrals, or loyalty points.
           </p>
         </div>
@@ -656,8 +656,8 @@ export default function ReferralsClient({ initialData }: { initialData: Referral
     <div className="space-y-5">
       <ReferralTabs activeTab={activeTab} onChange={setActiveTab} />
 
-      <div className="rounded-[1.75rem] border border-zinc-800 bg-[#090a0f] p-2 shadow-[0_0_25px_rgba(0,0,0,0.28)]">
-        <div className="min-h-[960px] overflow-hidden rounded-[1.35rem] bg-[#07080c] xl:h-[calc(100vh-13rem)]">
+      <div className="rounded-[1.75rem] border border-brand-border bg-brand-panel p-2 shadow-[0_0_25px_rgba(0,0,0,0.28)]">
+        <div className="min-h-[960px] overflow-hidden rounded-[1.35rem] bg-brand-panel xl:h-[calc(100vh-13rem)]">
           <div className="h-full overflow-y-auto p-4">
             {activeTab === "simulator" ? renderSimulatorTab() : null}
             {activeTab === "test-cases" ? renderTestCasesTab() : null}

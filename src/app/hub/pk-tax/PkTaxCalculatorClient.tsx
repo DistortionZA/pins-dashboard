@@ -144,19 +144,19 @@ function AccordionSection({
   children,
 }: AccordionSectionProps) {
   return (
-    <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10]">
+    <section className="rounded-3xl border border-brand-border bg-brand-panel">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-[#111219]"
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-brand-panel-alt"
         aria-expanded={isOpen}
       >
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">{title}</p>
-          {description ? <p className="mt-2 text-sm leading-6 text-zinc-400">{description}</p> : null}
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-muted/80">{title}</p>
+          {description ? <p className="mt-2 text-sm leading-6 text-brand-muted">{description}</p> : null}
         </div>
         <svg
-          className={`h-4 w-4 flex-shrink-0 text-zinc-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`h-4 w-4 flex-shrink-0 text-brand-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -169,7 +169,7 @@ function AccordionSection({
         </svg>
       </button>
 
-      {isOpen ? <div className="border-t border-zinc-800 px-6 py-6">{children}</div> : null}
+      {isOpen ? <div className="border-t border-brand-border px-6 py-6">{children}</div> : null}
     </section>
   )
 }
@@ -272,7 +272,7 @@ async function copyToClipboard(text: string) {
 }
 
 function getInputClassName() {
-  return "w-full rounded-xl border border-zinc-800 bg-[#12131a] px-3 py-2.5 outline-none transition focus:border-red-500/60 focus:ring-2 focus:ring-red-500/20"
+  return "w-full rounded-xl border border-brand-border bg-brand-panel-alt px-3 py-2.5 outline-none transition focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/20"
 }
 
 function isIncludedRow(row: AccountManagerMonthlyInput) {
@@ -664,11 +664,11 @@ export default function PkTaxCalculatorClient() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-zinc-800 bg-[#0b0c10] p-6">
+      <section className="rounded-3xl border border-brand-border bg-brand-panel p-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">Month Setup</p>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-muted/80">Month Setup</p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-brand-muted">
               Set the month, exchange rate, and optional bulk company profit value. The guide
               button contains the allocation notes, report-source reminders, and payout checks.
             </p>
@@ -678,9 +678,9 @@ export default function PkTaxCalculatorClient() {
             ref={guideTriggerRef}
             type="button"
             onClick={() => setIsGuideOpen(true)}
-            className="inline-flex items-center gap-2 self-start rounded-full border border-zinc-800 bg-[#101116] px-3 py-2 text-xs font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+            className="inline-flex items-center gap-2 self-start rounded-full border border-brand-border bg-brand-panel-alt px-3 py-2 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-red/50 hover:text-brand-cream"
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[11px] text-red-400">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-brand-border/80 text-[11px] text-brand-red/90">
               i
             </span>
             PK Tax Guide
@@ -689,7 +689,7 @@ export default function PkTaxCalculatorClient() {
 
         <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)_minmax(0,1.2fr)]">
           <label className="space-y-2">
-            <span className="text-sm text-zinc-300">Month</span>
+            <span className="text-sm text-brand-cream/90">Month</span>
             <input
               type="text"
               value={monthLabel}
@@ -700,7 +700,7 @@ export default function PkTaxCalculatorClient() {
           </label>
 
           <label className="space-y-2">
-            <span className="text-sm text-zinc-300">Exchange rate</span>
+            <span className="text-sm text-brand-cream/90">Exchange rate</span>
             <input
               type="number"
               min="0"
@@ -709,11 +709,11 @@ export default function PkTaxCalculatorClient() {
               onChange={(event) => setExchangeRate(clampNumberInput(event.target.value))}
               className={inputClassName}
             />
-            <span className="block text-xs text-zinc-500">Default: £1 = R21</span>
+            <span className="block text-xs text-brand-muted/80">Default: £1 = R21</span>
           </label>
 
           <div className="space-y-2">
-            <span className="text-sm text-zinc-300">Apply company profit to all rows</span>
+            <span className="text-sm text-brand-cream/90">Apply company profit to all rows</span>
             <div className="flex flex-col gap-3 sm:flex-row">
               <input
                 type="number"
@@ -727,12 +727,12 @@ export default function PkTaxCalculatorClient() {
               <button
                 type="button"
                 onClick={applyCompanyProfitToAll}
-                className="shrink-0 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
+                className="shrink-0 rounded-xl border border-brand-red/40 bg-brand-red/16 px-4 py-2.5 text-sm font-medium text-brand-cream transition hover:border-brand-red/60 hover:bg-brand-red/20"
               >
                 Apply to all
               </button>
             </div>
-            <p className="text-xs leading-5 text-zinc-500">
+            <p className="text-xs leading-5 text-brand-muted/80">
               Use this when the same company profit value applies to all account managers. You can
               still edit individual rows afterwards.
             </p>
@@ -750,14 +750,14 @@ export default function PkTaxCalculatorClient() {
           <button
             type="button"
             onClick={addRow}
-            className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
+            className="rounded-xl border border-brand-red/40 bg-brand-red/16 px-4 py-2 text-sm font-medium text-brand-cream transition hover:border-brand-red/60 hover:bg-brand-red/20"
           >
             Add Row
           </button>
           <button
             type="button"
             onClick={resetCalculator}
-            className="rounded-xl border border-zinc-700 bg-[#12131a] px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-zinc-500 hover:text-white"
+            className="rounded-xl border border-brand-border/80 bg-brand-panel-alt px-4 py-2 text-sm font-medium text-brand-cream/90 transition hover:border-brand-red/40 hover:text-brand-cream"
           >
             Reset
           </button>
@@ -766,7 +766,7 @@ export default function PkTaxCalculatorClient() {
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-y-3 text-sm">
             <thead>
-              <tr className="text-left text-xs uppercase tracking-[0.18em] text-zinc-500">
+              <tr className="text-left text-xs uppercase tracking-[0.18em] text-brand-muted/80">
                 <th className="px-3 py-2">Name</th>
                 <th className="px-3 py-2">Eligibility</th>
                 <th className="px-3 py-2">Company Profit</th>
@@ -778,7 +778,7 @@ export default function PkTaxCalculatorClient() {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="rounded-2xl bg-[#12131a] text-zinc-200">
+                <tr key={row.id} className="rounded-2xl bg-brand-panel-alt text-brand-cream">
                   <td className="px-3 py-3">
                     <input
                       type="text"
@@ -847,12 +847,12 @@ export default function PkTaxCalculatorClient() {
                       <button
                         type="button"
                         onClick={() => removeRow(row.id)}
-                        className="rounded-xl border border-zinc-700 px-3 py-2 text-sm text-zinc-300 transition hover:border-red-500/40 hover:text-red-200"
+                        className="rounded-xl border border-brand-border/80 px-3 py-2 text-sm text-brand-cream/90 transition hover:border-brand-red/50 hover:text-brand-cream"
                       >
                         Remove
                       </button>
                     ) : (
-                      <span className="text-xs text-zinc-500">Default row</span>
+                      <span className="text-xs text-brand-muted/80">Default row</span>
                     )}
                   </td>
                 </tr>
@@ -869,7 +869,7 @@ export default function PkTaxCalculatorClient() {
         onToggle={() => setIsResultsOpen((current) => !current)}
       >
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <p className="text-sm leading-6 text-zinc-400">
+          <p className="text-sm leading-6 text-brand-muted">
             All included rows are shown below. Shannon and Johan stay in the weighted score
             calculation, but only Bux, Hardus, Justin, and Seth receive shared-pool payouts.
           </p>
@@ -877,7 +877,7 @@ export default function PkTaxCalculatorClient() {
           <button
             type="button"
             onClick={handleCopySummary}
-            className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
+            className="rounded-xl border border-brand-red/40 bg-brand-red/16 px-4 py-2 text-sm font-medium text-brand-cream transition hover:border-brand-red/60 hover:bg-brand-red/20"
           >
             Copy Summary
           </button>
@@ -890,7 +890,7 @@ export default function PkTaxCalculatorClient() {
         ) : null}
 
         {noEligibleWeightedScore ? (
-          <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-100/90">
+          <div className="mt-4 rounded-2xl border border-brand-red/35 bg-brand-red/10 px-4 py-3 text-sm text-brand-cream/90">
             No eligible weighted score exists to distribute the pool.
           </div>
         ) : null}
@@ -898,7 +898,7 @@ export default function PkTaxCalculatorClient() {
         <div className="mt-5 overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-y-3 text-sm">
             <thead>
-              <tr className="text-left text-xs uppercase tracking-[0.18em] text-zinc-500">
+              <tr className="text-left text-xs uppercase tracking-[0.18em] text-brand-muted/80">
                 <th className="px-3 py-2">Name</th>
                 <th className="px-3 py-2">Eligibility</th>
                 <th className="px-3 py-2">Company Profit %</th>
@@ -916,19 +916,19 @@ export default function PkTaxCalculatorClient() {
             </thead>
             <tbody>
               {results.map((row) => (
-                <tr key={row.id} className="rounded-2xl bg-[#12131a] text-zinc-200">
+                <tr key={row.id} className="rounded-2xl bg-brand-panel-alt text-brand-cream">
                   <td className="px-3 py-3">{row.name}</td>
-                  <td className="px-3 py-3 text-zinc-300">{ELIGIBILITY_LABELS[row.eligibility]}</td>
+                  <td className="px-3 py-3 text-brand-cream/90">{ELIGIBILITY_LABELS[row.eligibility]}</td>
                   <td className="px-3 py-3">{formatPercent(row.companyProfitShare)}</td>
                   <td className="px-3 py-3">{formatPercent(row.snuggleProfitShare)}</td>
                   <td className="px-3 py-3">{formatPercent(row.pkTaxShare)}</td>
                   <td className="px-3 py-3">{formatPercent(row.ordersShare)}</td>
-                  <td className="px-3 py-3 font-semibold text-white">{formatPercent(row.weightedScore)}</td>
+                  <td className="px-3 py-3 font-semibold text-brand-cream">{formatPercent(row.weightedScore)}</td>
                   <td className="px-3 py-3">{formatCurrencyGbp(row.initialSharedPoolShareGbp)}</td>
                   <td className="px-3 py-3">{formatCurrencyGbp(row.redistributedAdjustmentGbp)}</td>
                   <td className="px-3 py-3">{formatCurrencyGbp(row.finalSharedPoolPayoutGbp)}</td>
                   <td className="px-3 py-3">{formatCurrencyGbp(row.separatePkTaxPayoutGbp)}</td>
-                  <td className="px-3 py-3 font-semibold text-white">{formatCurrencyGbp(row.totalGbp)}</td>
+                  <td className="px-3 py-3 font-semibold text-brand-cream">{formatCurrencyGbp(row.totalGbp)}</td>
                   <td className="px-3 py-3">{formatCurrencyZar(row.totalZar)}</td>
                 </tr>
               ))}
@@ -944,11 +944,11 @@ export default function PkTaxCalculatorClient() {
         onToggle={() => setIsBreakdownOpen((current) => !current)}
       >
         <div className="grid gap-6 xl:grid-cols-3">
-          <div className="rounded-3xl border border-zinc-800 bg-[#12131a] p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">
+          <div className="rounded-3xl border border-brand-border bg-brand-panel-alt p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-red">
               A. Netsuite PK Tax Allocation
             </p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-300">
+            <div className="mt-4 space-y-3 text-sm text-brand-cream/90">
               <div className="flex items-center justify-between">
                 <span>Total Netsuite PK Tax</span>
                 <span>{formatCurrencyGbp(breakdown.totalNetsuitePkTax)}</span>
@@ -969,16 +969,16 @@ export default function PkTaxCalculatorClient() {
                 <span>Operations, 5% of total PK Tax</span>
                 <span>{formatCurrencyGbp(breakdown.operations)}</span>
               </div>
-              <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
+              <div className="flex items-center justify-between border-t border-brand-border pt-3">
                 <span>Johan separate PK Tax payout, 40% of Johan PK Tax</span>
-                <span className="text-red-300">{formatCurrencyGbp(breakdown.johanSeparatePayout)}</span>
+                <span className="text-brand-cream">{formatCurrencyGbp(breakdown.johanSeparatePayout)}</span>
               </div>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-zinc-800 bg-[#12131a] p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">B. Shared Pool Inputs</p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-300">
+          <div className="rounded-3xl border border-brand-border bg-brand-panel-alt p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-red">B. Shared Pool Inputs</p>
+            <div className="mt-4 space-y-3 text-sm text-brand-cream/90">
               <div className="flex items-center justify-between">
                 <span>Shared pool PK Tax base</span>
                 <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxBase)}</span>
@@ -998,9 +998,9 @@ export default function PkTaxCalculatorClient() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-zinc-800 bg-[#12131a] p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-500">C. Final Shared Pool</p>
-            <div className="mt-4 space-y-3 text-sm text-zinc-300">
+          <div className="rounded-3xl border border-brand-border bg-brand-panel-alt p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-brand-red">C. Final Shared Pool</p>
+            <div className="mt-4 space-y-3 text-sm text-brand-cream/90">
               <div className="flex items-center justify-between">
                 <span>Shared pool PK Tax contribution</span>
                 <span>{formatCurrencyGbp(breakdown.sharedPoolPkTaxContribution)}</span>
@@ -1009,9 +1009,9 @@ export default function PkTaxCalculatorClient() {
                 <span>Snuggle pool contribution</span>
                 <span>{formatCurrencyGbp(breakdown.snugglePoolContribution)}</span>
               </div>
-              <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
+              <div className="flex items-center justify-between border-t border-brand-border pt-3">
                 <span>Total shared sales team pool</span>
-                <span className="text-red-300">{formatCurrencyGbp(breakdown.totalSharedSalesTeamPool)}</span>
+                <span className="text-brand-cream">{formatCurrencyGbp(breakdown.totalSharedSalesTeamPool)}</span>
               </div>
             </div>
           </div>
@@ -1025,7 +1025,7 @@ export default function PkTaxCalculatorClient() {
         onToggle={() => setIsTotalsOpen((current) => !current)}
       >
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="space-y-3 rounded-2xl border border-zinc-800 bg-[#12131a] p-4 text-sm text-zinc-300">
+          <div className="space-y-3 rounded-2xl border border-brand-border bg-brand-panel-alt p-4 text-sm text-brand-cream/90">
             <div className="flex items-center justify-between">
               <span>Total company profit used for percentages</span>
               <span>{formatCurrencyGbp(breakdown.totalCompanyProfitUsed)}</span>
@@ -1054,13 +1054,13 @@ export default function PkTaxCalculatorClient() {
               <span>Total Snuggle pool contribution at 7%</span>
               <span>{formatCurrencyGbp(breakdown.snugglePoolContribution)}</span>
             </div>
-            <div className="flex items-center justify-between font-semibold text-white">
+            <div className="flex items-center justify-between font-semibold text-brand-cream">
               <span>Total shared sales team pool</span>
               <span>{formatCurrencyGbp(breakdown.totalSharedSalesTeamPool)}</span>
             </div>
           </div>
 
-          <div className="space-y-3 rounded-2xl border border-zinc-800 bg-[#12131a] p-4 text-sm text-zinc-300">
+          <div className="space-y-3 rounded-2xl border border-brand-border bg-brand-panel-alt p-4 text-sm text-brand-cream/90">
             <div className="flex items-center justify-between">
               <span>Johan PK Tax</span>
               <span>{formatCurrencyGbp(breakdown.johanPkTax)}</span>
@@ -1085,11 +1085,11 @@ export default function PkTaxCalculatorClient() {
               <span>Total separate Johan payout GBP</span>
               <span>{formatCurrencyGbp(breakdown.totalSeparateJohanPayoutGbp)}</span>
             </div>
-            <div className="flex items-center justify-between font-semibold text-white">
+            <div className="flex items-center justify-between font-semibold text-brand-cream">
               <span>Total payable GBP</span>
               <span>{formatCurrencyGbp(breakdown.totalPayableGbp)}</span>
             </div>
-            <div className="flex items-center justify-between font-semibold text-white">
+            <div className="flex items-center justify-between font-semibold text-brand-cream">
               <span>Total payable ZAR</span>
               <span>{formatCurrencyZar(breakdown.totalPayableZar)}</span>
             </div>
@@ -1116,7 +1116,7 @@ export default function PkTaxCalculatorClient() {
         onToggle={() => setIsFactoryInvoiceOpen((current) => !current)}
       >
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <p className="max-w-3xl text-sm leading-6 text-zinc-400">
+          <p className="max-w-3xl text-sm leading-6 text-brand-muted">
             Invoice Justin Baker / EPCC for this GBP total. This is 60% of the total Netsuite PK
             Tax and does not include any Snuggle profit.
           </p>
@@ -1124,14 +1124,14 @@ export default function PkTaxCalculatorClient() {
           <button
             type="button"
             onClick={handleCopyFactoryInvoiceTotal}
-            className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:border-red-500/50 hover:bg-red-500/15"
+            className="rounded-xl border border-brand-red/40 bg-brand-red/16 px-4 py-2 text-sm font-medium text-brand-cream transition hover:border-brand-red/60 hover:bg-brand-red/20"
           >
             Copy Factory Invoice Total
           </button>
         </div>
 
         <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
-          <div className="space-y-3 rounded-2xl border border-zinc-800 bg-[#12131a] p-4 text-sm text-zinc-300">
+          <div className="space-y-3 rounded-2xl border border-brand-border bg-brand-panel-alt p-4 text-sm text-brand-cream/90">
             <div className="flex items-center justify-between">
               <span>EPCC / PK Tax portion, 40% of total Netsuite PK Tax</span>
               <span>{formatCurrencyGbp(factoryPkTaxPortion)}</span>
@@ -1150,14 +1150,14 @@ export default function PkTaxCalculatorClient() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400/80">
+          <div className="rounded-2xl border border-brand-red/35 bg-brand-red/10 p-5">
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-brand-red/80">
               Factory Invoice Total
             </p>
-            <p className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+            <p className="mt-3 text-3xl font-black tracking-tight text-brand-cream sm:text-4xl">
               {formatCurrencyGbp(factoryInvoiceTotal)}
             </p>
-            <p className="mt-3 text-sm leading-6 text-zinc-400">
+            <p className="mt-3 text-sm leading-6 text-brand-muted">
               This total is based only on Netsuite PK Tax at 60% and is separate from all account
               manager payouts, Snuggle values, and ZAR totals.
             </p>
@@ -1175,15 +1175,15 @@ export default function PkTaxCalculatorClient() {
             role="dialog"
             aria-modal="true"
             aria-labelledby={guideTitleId}
-            className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0c10] shadow-[0_0_40px_rgba(0,0,0,0.45)]"
+            className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-brand-border bg-brand-panel shadow-[0_0_40px_rgba(0,0,0,0.45)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-zinc-800 bg-[#111219] px-5 py-4 sm:px-6">
+            <div className="flex items-start justify-between gap-4 border-b border-brand-border bg-brand-panel-alt px-5 py-4 sm:px-6">
               <div className="space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400/80">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-brand-red/80">
                   Reference Guide
                 </p>
-                <h2 id={guideTitleId} className="text-lg font-bold text-white sm:text-xl">
+                <h2 id={guideTitleId} className="text-lg font-bold text-brand-cream sm:text-xl">
                   PK Tax Guide
                 </h2>
               </div>
@@ -1191,7 +1191,7 @@ export default function PkTaxCalculatorClient() {
               <button
                 type="button"
                 onClick={() => setIsGuideOpen(false)}
-                className="rounded-full border border-zinc-700 p-2 text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+                className="rounded-full border border-brand-border/80 p-2 text-brand-muted transition-colors hover:border-brand-red/50 hover:text-brand-cream"
                 aria-label="Close PK Tax Guide"
               >
                 <svg
@@ -1214,14 +1214,14 @@ export default function PkTaxCalculatorClient() {
             <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
               <div className="space-y-6">
                 <section>
-                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-brand-muted">
                     Allocation Rules
                   </h3>
                   <div className="mt-3 space-y-3">
                     {ALLOCATION_RULES.map((rule) => (
                       <div
                         key={rule}
-                        className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3 text-sm leading-6 text-zinc-300"
+                        className="rounded-2xl border border-brand-border bg-brand-panel-alt px-4 py-3 text-sm leading-6 text-brand-cream/90"
                       >
                         {rule}
                       </div>
@@ -1230,31 +1230,31 @@ export default function PkTaxCalculatorClient() {
                 </section>
 
                 <section>
-                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-brand-muted">
                     Report Sources
                   </h3>
                   <div className="mt-3 space-y-3">
                     {REPORT_SOURCES.map((source) => (
                       <div
                         key={source.title}
-                        className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3"
+                        className="rounded-2xl border border-brand-border bg-brand-panel-alt px-4 py-3"
                       >
-                        <p className="text-sm font-semibold text-white">{source.title}</p>
-                        <p className="mt-1 text-sm leading-6 text-zinc-300">{source.description}</p>
+                        <p className="text-sm font-semibold text-brand-cream">{source.title}</p>
+                        <p className="mt-1 text-sm leading-6 text-brand-cream/90">{source.description}</p>
                       </div>
                     ))}
                   </div>
                 </section>
 
                 <section>
-                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-brand-muted">
                     Checks
                   </h3>
                   <div className="mt-3 space-y-3">
                     {CHECKS_GUIDE.map((item) => (
                       <div
                         key={item}
-                        className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3 text-sm leading-6 text-zinc-300"
+                        className="rounded-2xl border border-brand-border bg-brand-panel-alt px-4 py-3 text-sm leading-6 text-brand-cream/90"
                       >
                         {item}
                       </div>

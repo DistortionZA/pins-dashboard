@@ -1,98 +1,105 @@
 import Link from "next/link"
 import type { ReactNode } from "react"
 
-type NavigationCardTone = "interactive" | "disabled"
-
-function StatusBadge({
-  label,
-  tone,
-  showArrow = false,
-}: {
-  label: string
-  tone: NavigationCardTone
-  showArrow?: boolean
-}) {
-  return (
-    <div
-      className={`mt-auto inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest ${
-        tone === "interactive"
-          ? "border border-red-500/20 bg-red-600/10 text-red-300"
-          : "bg-zinc-800/80 text-zinc-400"
-      }`}
-    >
-      {label}
-      {showArrow ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M5 12h14" />
-          <path d="m12 5 7 7-7 7" />
-        </svg>
-      ) : null}
-    </div>
-  )
+type NavigationCardProps = {
+  title: string
+  description: string
+  icon: ReactNode
+  href?: string
+  badge?: string
+  disabled?: boolean
 }
 
-export default function NavigationCard({
+function CardInner({
   title,
   description,
   icon,
   badge,
-  href,
-  disabled = false,
-}: {
-  title: string
-  description: string
-  icon: ReactNode
-  badge: string
-  href?: string
-  disabled?: boolean
-}) {
-  const isInteractive = Boolean(href) && !disabled
-  const tone: NavigationCardTone = isInteractive ? "interactive" : "disabled"
-
-  const content = (
+  disabled,
+}: NavigationCardProps) {
+  return (
     <div
-      className={`relative flex h-full min-h-[18rem] flex-col items-start rounded-2xl border p-8 transition-all duration-300 ${
-        isInteractive
-          ? "bg-zinc-950/80 border-zinc-800 hover:border-red-500/40 hover:bg-zinc-950 hover:shadow-[0_0_25px_rgba(239,68,68,0.12)]"
-          : "bg-zinc-950/50 border-zinc-800/50 opacity-70"
-      }`}
+      className={[
+        "group relative flex min-h-[210px] overflow-hidden rounded-[1.65rem] border p-6 shadow-[var(--shadow-card)] transition",
+        disabled
+          ? "border-brand-border bg-brand-panel/70 opacity-70"
+          : "border-brand-border bg-brand-panel hover:-translate-y-1 hover:border-brand-red/70",
+      ].join(" ")}
     >
-      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800/50 text-zinc-500">
-        {icon}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(222,59,67,0.08),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.025),rgba(255,255,255,0))]" />
+
+      <div className="relative flex h-full w-full flex-col">
+        <div className="flex items-start justify-between gap-4">
+          <div
+            className={[
+              "flex h-12 w-12 items-center justify-center rounded-2xl border",
+              disabled
+                ? "border-brand-border bg-brand-panel-alt text-brand-muted"
+                : "border-brand-red/45 bg-brand-red/10 text-brand-red",
+            ].join(" ")}
+          >
+            <svg
+              className="h-6 w-6"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              {icon}
+            </svg>
+          </div>
+
+          {badge ? (
+            <span
+              className={[
+                "rounded-full border px-4 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.18em]",
+                disabled
+                  ? "border-brand-border bg-brand-panel-alt text-brand-muted"
+                  : "border-brand-red/45 bg-brand-red/15 text-brand-cream",
+              ].join(" ")}
+            >
+              {badge}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="mt-7 pr-12">
+          <h2 className="text-xl font-black tracking-[-0.035em] text-brand-cream">
+            {title}
+          </h2>
+          <p className="mt-4 text-sm leading-6 text-brand-muted">
+            {description}
+          </p>
+        </div>
+
+        {/* <div
+          className={[
+            "absolute bottom-5 right-5 flex h-9 w-9 items-center justify-center rounded-full border text-lg transition",
+            disabled
+              ? "border-brand-border text-brand-muted"
+              : "border-brand-red/55 text-brand-red group-hover:bg-brand-red group-hover:text-brand-cream",
+          ].join(" ")}
+          aria-hidden="true"
+        >
+          →
+        </div> */}
       </div>
-      <h2
-        className={`mb-2 text-xl font-bold tracking-tight ${
-          isInteractive
-            ? "text-zinc-300 transition-colors group-hover:text-white"
-            : "text-zinc-300"
-        }`}
-      >
-        {title}
-      </h2>
-      <p className="mb-6 flex-1 text-sm leading-relaxed text-zinc-500">
-        {description}
-      </p>
-      <StatusBadge label={badge} tone={tone} showArrow={isInteractive} />
     </div>
   )
+}
 
-  if (!isInteractive) {
-    return content
+export default function NavigationCard(props: NavigationCardProps) {
+  if (props.disabled || !props.href) {
+    return <CardInner {...props} />
   }
 
   return (
-    <Link href={href!} className="group relative">
-      {content}
+    <Link href={props.href} className="block h-full">
+      <CardInner {...props} />
     </Link>
   )
 }

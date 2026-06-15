@@ -171,12 +171,12 @@ function GarmentSelector({
         }}
         onBlur={() => setTimeout(() => setIsOpen(false), 200)}
         placeholder="Search for a garment..."
-        className="w-full border border-zinc-800 rounded-lg p-2.5 bg-[#111219] text-white focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 outline-none transition-shadow placeholder:text-zinc-500"
+        className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow placeholder:text-brand-muted/80"
       />
       {isOpen && (
-        <ul className="absolute z-10 w-full mt-2 max-h-60 overflow-auto bg-[#0b0c10] border border-zinc-800 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        <ul className="absolute z-10 w-full mt-2 max-h-60 overflow-auto bg-brand-panel border border-brand-border rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
           {filtered.length === 0 ? (
-            <li className="p-3 text-sm text-zinc-500">No garments found.</li>
+            <li className="p-3 text-sm text-brand-muted/80">No garments found.</li>
           ) : (
             filtered.map((g) => (
               <li
@@ -186,10 +186,10 @@ function GarmentSelector({
                   setIsOpen(false)
                   setQuery("")
                 }}
-                className="p-3 text-sm hover:bg-[#161722] cursor-pointer text-zinc-300 flex justify-between items-center whitespace-nowrap transition-colors"
+                className="p-3 text-sm hover:bg-brand-surface cursor-pointer text-brand-cream/90 flex justify-between items-center whitespace-nowrap transition-colors"
               >
                 <span>{getGarmentLabel(g)}</span>
-                <span className="text-zinc-500 text-xs ml-2 font-mono">
+                <span className="text-brand-muted/80 text-xs ml-2 font-mono">
                   {[g.code, g.altCode].filter(Boolean).join(" / ")}
                 </span>
               </li>
@@ -341,11 +341,11 @@ export default function DesignCard({
 
 
   return (
-    <div className="relative w-full min-w-0 max-w-full min-h-[380px] overflow-hidden bg-[#0b0c10] border border-zinc-800/80 p-6 mb-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.2)]">
+    <div className="relative w-full min-w-0 max-w-full min-h-[380px] overflow-hidden bg-brand-panel border border-brand-border/80 p-6 mb-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.2)]">
       {onRemove && (
         <button
           onClick={onRemove}
-          className="absolute top-4 right-4 text-zinc-500 hover:text-red-500 transition-colors"
+          className="absolute top-4 right-4 text-brand-muted/80 hover:text-brand-red transition-colors"
           title="Remove design"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -360,13 +360,13 @@ export default function DesignCard({
           onChange={(e) => updateItemLabel(e.target.value)}
           onBlur={normalizeItemLabel}
           aria-label={`Item ${itemNumber ?? 1} label`}
-          className="w-64 rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-lg font-bold text-zinc-100 outline-none transition-shadow placeholder:text-zinc-600 focus:border-red-500/50 focus:ring-2 focus:ring-red-500/40"
+          className="w-64 rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2.5 text-lg font-bold text-brand-cream outline-none transition-shadow placeholder:text-brand-muted-soft focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/40"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
-          <label className="block text-sm font-medium text-zinc-400 mb-2">Garment</label>
+          <label className="block text-sm font-medium text-brand-muted mb-2">Garment</label>
           <GarmentSelector 
             garments={garments} 
             value={design.garmentId} 
@@ -375,19 +375,19 @@ export default function DesignCard({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-zinc-400 mb-2">Quantity</label>
+          <label className="block text-sm font-medium text-brand-muted mb-2">Quantity</label>
           <input
             type="number"
             min={50}
             value={design.quantity || ""}
             onChange={(e) => updateQuantity(Number(e.target.value))}
-            className="w-full border border-zinc-800 rounded-lg p-2.5 bg-[#111219] text-white focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 outline-none transition-shadow"
+            className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
           />
         </div>
       </div>
 
       <div className="mb-6">
-        <h4 className="text-sm font-medium text-zinc-400 mb-3">Print Positions</h4>
+        <h4 className="text-sm font-medium text-brand-muted mb-3">Print Positions</h4>
 
         <div className="flex flex-wrap gap-3 mb-4">
           {PRINT_POSITIONS.map((pos) => {
@@ -399,8 +399,8 @@ export default function DesignCard({
                 onClick={() => togglePosition(pos.value, isSelected)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-red-500/10 text-red-400 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
-                    : "bg-[#111219] text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:bg-[#161722]"
+                    ? "bg-brand-red/16 text-brand-red/90 border-brand-red/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
+                    : "bg-brand-panel-alt text-brand-muted border-brand-border hover:border-brand-border/80 hover:bg-brand-surface"
                 }`}
               >
                 {pos.label}
@@ -410,10 +410,10 @@ export default function DesignCard({
         </div>
 {/* 
         {Object.keys(design.positions).some(p => design.positions[p] > 0) && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-zinc-800/50 bg-[#111219]/50 rounded-xl">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-brand-border/60 bg-brand-panel-alt/50 rounded-xl">
             {PRINT_POSITIONS.filter(pos => (design.positions[pos.value] || 0) > 0).map((pos) => (
               <div key={pos.value} className="flex flex-col">
-                <label className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider">{pos.label} Colors</label>
+                <label className="text-xs font-bold text-brand-red/90 mb-2 uppercase tracking-wider">{pos.label} Colors</label>
                 <input
                   type="number"
                   min={1}
@@ -421,19 +421,19 @@ export default function DesignCard({
                   value={colorInputs[pos.value] ?? ""}
                   onChange={(e) => updatePositionColorInput(pos.value, e.target.value)}
                   onBlur={() => normalizePositionColorInput(pos.value)}
-                  className="w-full border border-zinc-800 rounded-lg p-2.5 bg-[#0b0c10] text-white focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 outline-none transition-shadow"
+                  className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
                 />
                 {colorError && (
-                  <p className="text-xs text-red-400 mt-1">{colorError}</p>
+                  <p className="text-xs text-brand-red/90 mt-1">{colorError}</p>
                 )}
               </div>
             ))}
           </div>
         )} */}
-        <div className="min-h-[120px] grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-zinc-800/50 bg-[#111219]/50 rounded-xl">
+        <div className="min-h-[120px] grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-brand-border/60 bg-brand-panel-alt/50 rounded-xl">
   {PRINT_POSITIONS.filter(pos => (design.positions[pos.value] || 0) > 0).map((pos) => (
     <div key={pos.value} className="flex flex-col">
-      <label className="text-xs font-bold text-red-400 mb-2 uppercase tracking-wider">
+      <label className="text-xs font-bold text-brand-red/90 mb-2 uppercase tracking-wider">
         {pos.label} Colors
       </label>
 
@@ -444,12 +444,12 @@ export default function DesignCard({
         value={colorInputs[pos.value] ?? ""}
         onChange={(e) => updatePositionColorInput(pos.value, e.target.value)}
         onBlur={() => normalizePositionColorInput(pos.value)}
-        className="w-full border border-zinc-800 rounded-lg p-2.5 bg-[#0b0c10] text-white focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 outline-none transition-shadow"
+        className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
       />
 
       <div className="min-h-[18px]">
         {colorError && (
-          <p className="text-xs text-red-400 mt-1">{colorError}</p>
+          <p className="text-xs text-brand-red/90 mt-1">{colorError}</p>
         )}
       </div>
     </div>
@@ -457,12 +457,12 @@ export default function DesignCard({
 </div>
 
       <div className="mt-4 space-y-2">
-        <label className="flex items-center gap-2 text-sm font-medium text-zinc-400">
+        <label className="flex items-center gap-2 text-sm font-medium text-brand-muted">
           <input
             type="checkbox"
             checked={design.pkMarkupEnabled ?? false}
             onChange={(e) => updatePkMarkupEnabled(e.target.checked)}
-            className="h-4 w-4 rounded border-zinc-700 bg-[#111219] text-red-500 focus:ring-red-500/50"
+            className="h-4 w-4 rounded border-brand-border/80 bg-brand-panel-alt text-brand-red focus:ring-brand-red/40"
           />
           PK Markup
         </label>
@@ -472,7 +472,7 @@ export default function DesignCard({
             inputMode="decimal"
             value={design.pkMarkupInput ?? String(design.pkMarkupPerUnit ?? 0)}
             onChange={(e) => updatePkMarkupPerUnit(e.target.value)}
-            className="w-full max-w-xs border border-zinc-800 rounded-lg p-2.5 bg-[#111219] text-white focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 outline-none transition-shadow"
+            className="w-full max-w-xs border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
           />
         )}
       </div>

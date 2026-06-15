@@ -293,7 +293,12 @@ export default function CalculatorClient({
   }
 
   return (
-  <div className="w-full max-w-5xl min-w-0 overflow-x-hidden">
+  // <div className="w-full max-w-5xl min-w-0 overflow-x-hidden">
+      <div className="grid w-full min-w-0 gap-5 overflow-x-hidden 
+          xl:grid-cols-[minmax(0,1fr)_620px]
+          2xl:grid-cols-[minmax(0,1fr)_700px]
+      ">
+    <div className="max-w-[900px] space-y-4">
       {designs.map((design, i) => (
         <DesignCard
           key={i}
@@ -308,7 +313,7 @@ export default function CalculatorClient({
       <div className="mt-2">
         <button
           onClick={addDesign}
-          className="bg-red-600/10 text-red-500 hover:bg-red-600/20 border border-red-500/20 hover:border-red-500/40 transition-all px-6 py-2.5 rounded-xl font-medium shadow-[0_0_15px_rgba(239,68,68,0.05)] hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] flex items-center gap-2 cursor-pointer"
+          className="hub-accent-button px-6 py-2.5 rounded-xl font-medium flex items-center gap-2 cursor-pointer"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -318,19 +323,19 @@ export default function CalculatorClient({
         </button>
       </div>
 
-      <div className="mt-6 min-h-[96px] bg-[#0b0c10] border border-red-500/20 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(239,68,68,0.08)]">
-        <div className="px-6 py-4 bg-[#111219] flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div className="hub-accent-panel mt-6 min-h-[96px] rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 bg-brand-panel-alt flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-3 text-sm font-semibold text-zinc-200">
+            <label className="flex items-center gap-3 text-sm font-semibold text-brand-cream">
               <input
                 type="checkbox"
                 checked={isDeliveryHelperEnabled}
                 onChange={(e) => setIsDeliveryHelperEnabled(e.target.checked)}
-                className="h-4 w-4 rounded border-zinc-700 bg-[#0b0c10] text-red-500 focus:ring-red-500/50"
+                className="h-4 w-4 rounded border-brand-border/80 bg-brand-panel text-brand-red focus:ring-brand-red/40"
               />
               <span>Delivery Costs</span>
             </label>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-red-400/80">
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-red/80">
               Sales Helper
             </span>
           </div>
@@ -339,9 +344,9 @@ export default function CalculatorClient({
             ref={boxCapacityGuideTriggerRef}
             type="button"
             onClick={() => setIsBoxCapacityGuideOpen(true)}
-            className="inline-flex items-center gap-2 self-start rounded-full border border-zinc-800 bg-[#101116] px-3 py-2 text-xs font-semibold text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+            className="inline-flex items-center gap-2 self-start rounded-full border border-brand-border bg-brand-panel-alt px-3 py-2 text-xs font-semibold text-brand-muted transition-colors hover:border-brand-red/50 hover:text-brand-cream"
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 text-[11px] text-red-400">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-brand-border/80 text-[11px] text-brand-red/90">
               i
             </span>
             Box Capacity Guide
@@ -349,17 +354,17 @@ export default function CalculatorClient({
         </div>
 
         {isDeliveryHelperEnabled && (
-          <div className="border-t border-red-500/10 px-6 py-5">
+          <div className="border-t border-brand-red/10 px-6 py-5">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-brand-muted/80">
                     Delivery Area
                   </label>
                   <select
                     value={deliveryCountry}
                     onChange={(e) => setDeliveryCountry(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] p-2.5 text-white outline-none transition-shadow focus:border-red-500/50 focus:ring-2 focus:ring-red-500/50"
+                    className="w-full rounded-lg border border-brand-border bg-brand-panel-alt p-2.5 text-brand-cream outline-none transition-shadow focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/40"
                   >
                     {DELIVERY_RATES.map((rate) => (
                       <option key={rate.country} value={rate.country}>
@@ -370,7 +375,7 @@ export default function CalculatorClient({
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-brand-muted/80">
                     Number of Boxes
                   </label>
                   <input
@@ -378,35 +383,35 @@ export default function CalculatorClient({
                     min={1}
                     value={deliveryBoxCount}
                     onChange={(e) => setDeliveryBoxCount(Math.max(1, Number(e.target.value) || 1))}
-                    className="w-full rounded-lg border border-zinc-800 bg-[#111219] p-2.5 text-white outline-none transition-shadow focus:border-red-500/50 focus:ring-2 focus:ring-red-500/50"
+                    className="w-full rounded-lg border border-brand-border bg-brand-panel-alt p-2.5 text-brand-cream outline-none transition-shadow focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/40"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-brand-muted/80">
                     Cost Per Box
                   </label>
-                  <div className="rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-sm font-semibold text-zinc-200">
-                    {CURRENCY}{selectedDeliveryRate.cost} <span className="text-zinc-500">excl. VAT</span>
+                  <div className="rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2.5 text-sm font-semibold text-brand-cream">
+                    {CURRENCY}{selectedDeliveryRate.cost} <span className="text-brand-muted/80">excl. VAT</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-brand-muted/80">
                     Delivery Time
                   </label>
-                  <div className="rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-sm font-semibold text-zinc-200">
+                  <div className="rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2.5 text-sm font-semibold text-brand-cream">
                     {selectedDeliveryRate.deliveryTime}
                   </div>
                 </div>
 
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-zinc-400">
+                  <label className="flex items-center gap-2 text-sm font-medium text-brand-muted">
                     <input
                       type="checkbox"
                       checked={deliveryMarkupEnabled}
                       onChange={(e) => setDeliveryMarkupEnabled(e.target.checked)}
-                      className="h-4 w-4 rounded border-zinc-700 bg-[#111219] text-red-500 focus:ring-red-500/50"
+                      className="h-4 w-4 rounded border-brand-border/80 bg-brand-panel-alt text-brand-red focus:ring-brand-red/40"
                     />
                     Delivery Markup
                   </label>
@@ -420,10 +425,10 @@ export default function CalculatorClient({
                         setDeliveryMarkupInput(e.target.value)
                       }}
                       placeholder="Markup per box excl. VAT"
-                      className="mt-2 w-full rounded-lg border border-zinc-800 bg-[#111219] p-2.5 text-white outline-none transition-shadow focus:border-red-500/50 focus:ring-2 focus:ring-red-500/50 placeholder:text-zinc-500"
+                      className="mt-2 w-full rounded-lg border border-brand-border bg-brand-panel-alt p-2.5 text-brand-cream outline-none transition-shadow focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/40 placeholder:text-brand-muted/80"
                     />
                   ) : (
-                    <div className="mt-2 rounded-lg border border-zinc-800 bg-[#111219] px-3 py-2.5 text-sm text-zinc-500">
+                    <div className="mt-2 rounded-lg border border-brand-border bg-brand-panel-alt px-3 py-2.5 text-sm text-brand-muted/80">
                       No delivery markup applied
                     </div>
                   )}
@@ -433,57 +438,58 @@ export default function CalculatorClient({
               <button
                 type="button"
                 onClick={handleDeliveryCopyClick}
-                className="rounded-xl border border-zinc-800 bg-[#0f1016] p-4 text-left transition-colors hover:border-red-500/30 hover:bg-[#13151d]"
+                className="rounded-xl border border-brand-border bg-brand-panel-alt p-4 text-left transition-colors hover:border-brand-red/40 hover:bg-brand-surface"
               >
                 <div className="mb-3 flex items-center justify-between gap-3">
-                  <p className="text-xs font-black uppercase tracking-widest text-zinc-500">
+                  <p className="text-xs font-black uppercase tracking-widest text-brand-muted/80">
                     Delivery Summary
                   </p>
-                  <span className="rounded-lg border border-red-500/20 bg-red-600/10 px-3 py-2 text-xs font-bold text-red-400 transition-colors">
+                  <span className="rounded-lg border border-brand-red/35 bg-brand-red/16 px-3 py-2 text-xs font-bold text-brand-red/90 transition-colors">
                     Copy Delivery Info
                   </span>
                 </div>
 
                 <div className="space-y-3 text-sm">
-                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                  <div className="flex items-center justify-between gap-4 text-brand-muted">
                     <span>Selected Country</span>
-                    <span className="font-mono text-zinc-200">{selectedDeliveryRate.country}</span>
+                    <span className="font-mono text-brand-cream">{selectedDeliveryRate.country}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                  <div className="flex items-center justify-between gap-4 text-brand-muted">
                     <span>Delivery Time</span>
-                    <span className="font-mono text-zinc-200">{selectedDeliveryRate.deliveryTime}</span>
+                    <span className="font-mono text-brand-cream">{selectedDeliveryRate.deliveryTime}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                  <div className="flex items-center justify-between gap-4 text-brand-muted">
                     <span>Cost Per Box</span>
-                    <span className="font-mono text-zinc-200">{CURRENCY}{selectedDeliveryRate.cost} excl. VAT</span>
+                    <span className="font-mono text-brand-cream">{CURRENCY}{selectedDeliveryRate.cost} excl. VAT</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                  <div className="flex items-center justify-between gap-4 text-brand-muted">
                     <span>Number of Boxes</span>
-                    <span className="font-mono text-zinc-200">{deliveryBoxCount}</span>
+                    <span className="font-mono text-brand-cream">{deliveryBoxCount}</span>
                   </div>
                   {deliveryMarkupEnabled ? (
-                    <div className="flex items-center justify-between gap-4 text-zinc-400">
+                    <div className="flex items-center justify-between gap-4 text-brand-muted">
                       <span>Delivery Markup</span>
-                      <span className="font-mono text-zinc-200">{CURRENCY}{deliveryMarkupExclVat.toFixed(2)} excl. VAT</span>
+                      <span className="font-mono text-brand-cream">{CURRENCY}{deliveryMarkupExclVat.toFixed(2)} excl. VAT</span>
                     </div>
                   ) : null}
-                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                  <div className="flex items-center justify-between gap-4 text-brand-muted">
                     <span>Subtotal Excl. VAT</span>
-                    <span className="font-mono text-zinc-200">{CURRENCY}{deliverySubtotalExclVat.toFixed(2)}</span>
+                    <span className="font-mono text-brand-cream">{CURRENCY}{deliverySubtotalExclVat.toFixed(2)}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 text-zinc-400">
+                  <div className="flex items-center justify-between gap-4 text-brand-muted">
                     <span>VAT ({vatRate}%)</span>
-                    <span className="font-mono text-zinc-200">{CURRENCY}{deliveryVatAmount.toFixed(2)}</span>
+                    <span className="font-mono text-brand-cream">{CURRENCY}{deliveryVatAmount.toFixed(2)}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 border-t border-zinc-800 pt-3 text-zinc-300">
+                  <div className="flex items-center justify-between gap-4 border-t border-brand-border pt-3 text-brand-cream/90">
                     <span className="font-semibold">Total Delivery Cost Incl. VAT</span>
-                    <span className="font-mono font-bold text-red-300">{CURRENCY}{deliveryTotalInclVat.toFixed(2)}</span>
+                    <span className="font-mono font-bold text-brand-cream">{CURRENCY}{deliveryTotalInclVat.toFixed(2)}</span>
                   </div>
                 </div>
               </button>
             </div>
           </div>
         )}
+         </div>
       </div>
 
       {isBoxCapacityGuideOpen && (
@@ -496,15 +502,15 @@ export default function CalculatorClient({
             role="dialog"
             aria-modal="true"
             aria-labelledby={boxCapacityGuideTitleId}
-            className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0c10] shadow-[0_0_40px_rgba(0,0,0,0.45)]"
+            className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-brand-border bg-brand-panel shadow-[0_0_40px_rgba(0,0,0,0.45)]"
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-zinc-800 bg-[#111219] px-5 py-4 sm:px-6">
+            <div className="flex items-start justify-between gap-4 border-b border-brand-border bg-brand-panel-alt px-5 py-4 sm:px-6">
               <div className="space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-red-400/80">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-brand-red/80">
                   Sales Reference
                 </p>
-                <h2 id={boxCapacityGuideTitleId} className="text-lg font-bold text-white sm:text-xl">
+                <h2 id={boxCapacityGuideTitleId} className="text-lg font-bold text-brand-cream sm:text-xl">
                   Box Capacity Guide
                 </h2>
               </div>
@@ -512,7 +518,7 @@ export default function CalculatorClient({
               <button
                 type="button"
                 onClick={() => setIsBoxCapacityGuideOpen(false)}
-                className="rounded-full border border-zinc-700 p-2 text-zinc-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+                className="rounded-full border border-brand-border/80 p-2 text-brand-muted transition-colors hover:border-brand-red/50 hover:text-brand-cream"
                 aria-label="Close Box Capacity Guide"
               >
                 <svg
@@ -533,28 +539,28 @@ export default function CalculatorClient({
             </div>
 
             <div className="max-h-[calc(100vh-8rem)] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
-              <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4">
-                <p className="text-sm leading-6 text-zinc-300">
+              <div className="rounded-2xl border border-brand-red/35 bg-brand-red/10 p-4">
+                <p className="text-sm leading-6 text-brand-cream/90">
                   Use this guide as a quick packing reference when estimating delivery box counts. Capacities are approximate and can vary with garment thickness, folding, and mixed-product orders.
                 </p>
               </div>
 
               <div className="mt-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-zinc-400">
+                <div className="flex items-center justify-between border-b border-brand-border pb-2">
+                  <h3 className="text-xs font-black uppercase tracking-[0.22em] text-brand-muted">
                     Approximate Capacities
                   </h3>
-                  <span className="text-[11px] font-medium text-zinc-500">Per standard box</span>
+                  <span className="text-[11px] font-medium text-brand-muted/80">Per standard box</span>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {BOX_CAPACITY_GUIDE_ITEMS.map((item) => (
                     <div
                       key={item.label}
-                      className="rounded-2xl border border-zinc-800 bg-[#111219] px-4 py-3 shadow-[0_0_18px_rgba(239,68,68,0.04)]"
+                      className="rounded-2xl border border-brand-border bg-brand-panel-alt px-4 py-3 shadow-[var(--shadow-accent)]"
                     >
-                      <p className="text-sm font-semibold text-white">{item.label}</p>
-                      <p className="mt-1 text-sm text-red-300">{item.capacity}</p>
+                      <p className="text-sm font-semibold text-brand-cream">{item.label}</p>
+                      <p className="mt-1 text-sm text-brand-cream">{item.capacity}</p>
                     </div>
                   ))}
                 </div>
@@ -562,25 +568,28 @@ export default function CalculatorClient({
             </div>
           </div>
         </div>
+        
       )}
 
+  <aside className="min-w-0 xl:sticky xl:top-4 xl:self-start"> 
+   
       {/* Pricing Container - always mounted so selecting a garment does not shift layout */}
-    <div
-  className={`mt-8 min-h-[360px] rounded-2xl border border-zinc-200/60 bg-zinc-100/30 p-6 transition-opacity dark:border-zinc-800/80 dark:bg-zinc-900/10 ${
+<div
+  className={`min-h-[360px] rounded-2xl border border-brand-border/80 bg-brand-panel-alt/30 p-4 transition-opacity ${
     hasGarmentSelected ? "opacity-100" : "opacity-0 pointer-events-none"
   }`}
 >
           {/* Cost Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-3">
             
             {/* Pins Price Card (Customer Quote) */}
             <div
               onClick={handleCopyClick}
-              className="md:order-2 bg-[#0b0c10] border border-blue-500/30 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.06)] hover:shadow-[0_0_25px_rgba(59,130,246,0.12)] hover:border-blue-500/50 cursor-pointer"
+              className="md:order-2 bg-brand-panel border border-blue-500/30 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.06)] hover:shadow-[0_0_25px_rgba(59,130,246,0.12)] hover:border-blue-500/50 cursor-pointer"
             >
               <div className="p-6 flex-grow">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">PINS PRICE (incl Vat)</p>
+                  <p className="text-brand-muted/80 text-xs font-bold uppercase tracking-widest">PINS PRICE (incl Vat)</p>
                   <span className="bg-blue-500/10 text-blue-400 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Click to Copy</span>
                 </div>
                 <div className="mb-6">
@@ -592,14 +601,14 @@ export default function CalculatorClient({
             </div>
 
             {/* Production Costs Card (Sales Team Reference - Excl VAT only) */}
-            <div className="md:order-1 bg-[#0b0c10] border border-zinc-800 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_25px_rgba(255,255,255,0.04)] hover:border-zinc-700">
+            <div className="md:order-1 bg-brand-panel border border-brand-border rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_25px_rgba(255,255,255,0.04)] hover:border-brand-border/80">
               <div className="p-6 flex-grow">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">PRODUCTION COSTS</p>
-                  {/* <span className="bg-zinc-800 text-zinc-400 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Sales Comparison (Excl VAT)</span> */}
+                  <p className="text-brand-muted/80 text-xs font-bold uppercase tracking-widest">PRODUCTION COSTS</p>
+                  {/* <span className="bg-brand-panel-alt text-brand-muted text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Sales Comparison (Excl VAT)</span> */}
                 </div>
                 <div className="mb-6">
-                  <span className="text-4xl md:text-5xl font-black text-zinc-300 tabular-nums">
+                  <span className="text-4xl md:text-5xl font-black text-brand-cream/90 tabular-nums">
                     {CURRENCY}{displayProductionSubtotalExclVat.toFixed(2)}
                   </span>
                 </div>
@@ -609,14 +618,14 @@ export default function CalculatorClient({
           </div>
 
           {/* Unified Quote Breakdown Dropdown */}
-          <div className="mt-6 bg-[#0b0c10] border border-zinc-800 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.2)]">
+          <div className="mt-6 bg-brand-panel border border-brand-border rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.2)]">
             <button
               onClick={() => setIsBreakdownOpen(!isBreakdownOpen)}
-              className="w-full px-6 py-4 flex items-center justify-between bg-[#111219] hover:bg-[#161722] text-zinc-400 hover:text-white transition-colors cursor-pointer border-none outline-none"
+              className="w-full px-6 py-4 flex items-center justify-between bg-brand-panel-alt hover:bg-brand-surface text-brand-muted hover:text-brand-cream transition-colors cursor-pointer border-none outline-none"
             >
               <span className="text-xs font-bold uppercase tracking-widest">Breakdown</span>
               <svg
-                className={`w-4 h-4 text-zinc-400 flex-shrink-0 transition-transform duration-200 ${isBreakdownOpen ? "rotate-180" : ""}`}
+                className={`w-4 h-4 text-brand-muted flex-shrink-0 transition-transform duration-200 ${isBreakdownOpen ? "rotate-180" : ""}`}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -631,7 +640,7 @@ export default function CalculatorClient({
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${isBreakdownOpen ? "max-h-[2500px] opacity-100" : "max-h-0 opacity-0"}`}
             >
-              <div className="px-6 pb-6 pt-4 bg-[#0e0f14] border-t border-zinc-900/50">
+              <div className="px-6 pb-6 pt-4 bg-brand-panel-alt border-t border-brand-border/50">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   
                   {/* PINS PRICE BREAKDOWN SECTION */}
@@ -651,25 +660,25 @@ export default function CalculatorClient({
                             const pinsSubtotalExclVat = (b.baseCost + b.pinsCost + b.markupCost + b.pkMarkupCost).toFixed(2)
 
                         return (
-                          <div key={idx} className="space-y-3 pb-3 border-b border-zinc-900 last:border-0 last:pb-0">
-                            <div className="flex justify-between items-center text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                          <div key={idx} className="space-y-3 pb-3 border-b border-brand-border/80 last:border-0 last:pb-0">
+                            <div className="flex justify-between items-center text-[10px] font-bold text-brand-muted/80 uppercase tracking-wider">
                               <span>{d.itemLabel?.trim() || `Item #${idx + 1}`} - {garment?.name || "No garment"}</span>
-                              <span className="shrink-0 whitespace-nowrap font-mono text-zinc-400">{d.quantity} units</span>
+                              <span className="shrink-0 whitespace-nowrap font-mono text-brand-muted">{d.quantity} units</span>
                             </div>
                             
                             {/* Garment Base Supply Price */}
                             {garment && (
-                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                 <span className="min-w-0 leading-snug">Garment Base (Supply) Price</span>
-                                <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
+                                <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
                               </div>
                             )}
 
                             {/* Garment Markup */}
                             {garment && (
-                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                 <span className="min-w-0 leading-snug">Garment Markup ({garment.type})</span>
-                                <span className="font-mono text-zinc-300">
+                                <span className="font-mono text-brand-cream/90">
                                   {CURRENCY}{((garmentMarkups.find((m) => m.garmentType === garment.type)?.markupValue) || 0).toFixed(2)} / unit
                                 </span>
                               </div>
@@ -682,27 +691,27 @@ export default function CalculatorClient({
                               const priceLabel = unitPrices.isFixedPrice ? "fixed" : `${colorCount} col`
 
                               return (
-                                <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                   <span className="min-w-0 leading-snug">{posLabel} Pins ({priceLabel})</span>
-                                  <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{unitPrices.pinsPrice.toFixed(2)} / unit</span>
+                                  <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{unitPrices.pinsPrice.toFixed(2)} / unit</span>
                                 </div>
                                 )
                               })}
 
                             {d.pkMarkupEnabled && (
-                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                 <span className="min-w-0 leading-snug">PK Markup</span>
-                                <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{pkMarkupCostPerUnit.toFixed(2)} / unit</span>
+                                <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{pkMarkupCostPerUnit.toFixed(2)} / unit</span>
                               </div>
                             )}
                             
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
-                              <span className="min-w-0 text-zinc-500 leading-snug">Total Unit Cost (excl VAT)</span>
+                              <span className="min-w-0 text-brand-muted/80 leading-snug">Total Unit Cost (excl VAT)</span>
                               <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
                             </div>
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
-                              <span className="min-w-0 text-zinc-500 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
-                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-white">{CURRENCY}{pinsSubtotalExclVat}</span>
+                              <span className="min-w-0 text-brand-muted/80 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
+                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream">{CURRENCY}{pinsSubtotalExclVat}</span>
                             </div>
                           </div>
                         )
@@ -712,7 +721,7 @@ export default function CalculatorClient({
 
                   {/* PRODUCTION COSTS BREAKDOWN SECTION */}
                   <div className="md:order-1">
-                    <h3 className="text-xs font-black text-zinc-400 uppercase tracking-widest mb-3 pb-1 border-b border-zinc-800">Production Cost Breakdown</h3>
+                    <h3 className="text-xs font-black text-brand-muted uppercase tracking-widest mb-3 pb-1 border-b border-brand-border">Production Cost Breakdown</h3>
                     <div className="space-y-4">
                       {breakdowns.map((b, idx) => {
                         const d = designs[idx]
@@ -723,15 +732,15 @@ export default function CalculatorClient({
                         const totalUnitCost = baseCostPerUnit + prodCostPerUnit
 
                         return (
-                          <div key={idx} className="space-y-3 pb-3 border-b border-zinc-900 last:border-0 last:pb-0">
-                            <div className="flex justify-between items-center text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                          <div key={idx} className="space-y-3 pb-3 border-b border-brand-border/80 last:border-0 last:pb-0">
+                            <div className="flex justify-between items-center text-[10px] font-bold text-brand-muted/80 uppercase tracking-wider">
                               <span>{d.itemLabel?.trim() || `Item #${idx + 1}`} - {garment?.name || "No garment"}</span>
-                              <span className="shrink-0 whitespace-nowrap font-mono text-zinc-400">{d.quantity} units</span>
+                              <span className="shrink-0 whitespace-nowrap font-mono text-brand-muted">{d.quantity} units</span>
                             </div>
                             {garment && (
-                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                 <span className="min-w-0 leading-snug">Garment Base (Supply) Price</span>
-                                <span className="font-mono text-zinc-300">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
+                                <span className="font-mono text-brand-cream/90">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
                               </div>
                             )}
                             {Object.keys(d.positions).filter((pos) => d.positions[pos] > 0).map((pos) => {
@@ -741,19 +750,19 @@ export default function CalculatorClient({
                               const priceLabel = unitPrices.isFixedPrice ? "fixed" : `${colorCount} col`
 
                               return (
-                                <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-zinc-400">
+                                <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                   <span>{posLabel} Print Print Production ({priceLabel})</span>
-                                  <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{unitPrices.productionPrice.toFixed(2)} / unit</span>
+                                  <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{unitPrices.productionPrice.toFixed(2)} / unit</span>
                                 </div>
                               )
                             })}
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
-                              <span className="text-zinc-500">Unit Cost (excl VAT)</span>
+                              <span className="text-brand-muted/80">Unit Cost (excl VAT)</span>
                               <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
                             </div>
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
-                              <span className="min-w-0 text-zinc-500 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
-                              <span className="font-mono text-white">{CURRENCY}{(b.baseCost + b.productionCost).toFixed(2)}</span>
+                              <span className="min-w-0 text-brand-muted/80 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
+                              <span className="font-mono text-brand-cream">{CURRENCY}{(b.baseCost + b.productionCost).toFixed(2)}</span>
                             </div>
                           </div>
                         )
@@ -764,16 +773,16 @@ export default function CalculatorClient({
                 </div>
 
                 {/* COMBINED SUMMARY FOOTER */}
-                <div className="pt-4 border-t-2 border-zinc-800 space-y-2 text-xs font-semibold mt-6">
-                  <div className="flex justify-between items-center text-zinc-400">
+                <div className="pt-4 border-t-2 border-brand-border space-y-2 text-xs font-semibold mt-6">
+                  <div className="flex justify-between items-center text-brand-muted">
                     <span>Production Subtotal ({totalQty} units, excl VAT)</span>
-                    <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{displayProductionSubtotalExclVat.toFixed(2)}</span>
+                    <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{displayProductionSubtotalExclVat.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between items-center text-zinc-400">
+                  <div className="flex justify-between items-center text-brand-muted">
                     <span>Pins Subtotal ({totalQty} units, excl VAT)</span>
-                    <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-zinc-300">{CURRENCY}{displayPinsSubtotalExclVat.toFixed(2)}</span>
+                    <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{displayPinsSubtotalExclVat.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between items-center text-zinc-400">
+                  <div className="flex justify-between items-center text-brand-muted">
                     <span>Pins Profit ({totalQty} units, excl VAT)</span>
                   <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-sky-300">{CURRENCY}{displayPinsProfit.toFixed(2)}</span>
                   </div>
@@ -784,6 +793,7 @@ export default function CalculatorClient({
           </div>
 
       </div>
+      </aside>
     </div>
   )
 }
