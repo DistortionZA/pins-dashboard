@@ -38,6 +38,14 @@ function normalizeCode(value: FormDataEntryValue | null) {
   return normalizeText(value).replace(/-(white|black)$/i, "")
 }
 
+function normalizeOptionalFloat(value: FormDataEntryValue | null) {
+  if (typeof value !== "string" || value.trim() === "") {
+    return null
+  }
+
+  return parseFloat(value)
+}
+
 export async function addGarment(formData: FormData) {
   const code = normalizeCode(formData.get("code"))
   const altCode = normalizeText(formData.get("altCode"))
@@ -46,10 +54,9 @@ export async function addGarment(formData: FormData) {
   const color = normalizeText(formData.get("color"))
   const type = formData.get("type") as GarmentType
   const basePrice = parseFloat(formData.get("basePrice") as string)
-  const extraSizeCostStr = formData.get("extraSizeCost") as string
+  const gbpPrice = normalizeOptionalFloat(formData.get("gbpPrice"))
+  const extraSizeCost = normalizeOptionalFloat(formData.get("extraSizeCost"))
   const tags = normalizeTags(formData.get("tags"))
-  
-  const extraSizeCost = extraSizeCostStr ? parseFloat(extraSizeCostStr) : null
 
   await prisma.garment.create({
     data: {
@@ -60,6 +67,7 @@ export async function addGarment(formData: FormData) {
       color,
       type,
       basePrice,
+      gbpPrice,
       extraSizeCost,
       tags
     }
@@ -89,7 +97,8 @@ export async function updateGarmentDetails(formData: FormData) {
       color: normalizeText(formData.get("color")),
       type: formData.get("type") as GarmentType,
       basePrice: parseFloat(formData.get("basePrice") as string),
-      extraSizeCost: formData.get("extraSizeCost") ? parseFloat(formData.get("extraSizeCost") as string) : null,
+      gbpPrice: normalizeOptionalFloat(formData.get("gbpPrice")),
+      extraSizeCost: normalizeOptionalFloat(formData.get("extraSizeCost")),
       tags: normalizeTags(formData.get("tags"))
     }
   })

@@ -16,6 +16,19 @@ function normalizeSearch(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
 }
 
+function getGbpPriceDisplay(value: number | null | undefined) {
+  return typeof value === "number" ? `£${value.toFixed(2)}` : "—"
+}
+
+function normalizeGarmentDirectoryItem(
+  garment: GarmentDirectoryItem,
+): GarmentDirectoryItem {
+  return {
+    ...garment,
+    gbpPrice: typeof garment.gbpPrice === "number" ? garment.gbpPrice : null,
+  }
+}
+
 export default function GarmentDirectoryClient({
   initialGarments
 }: {
@@ -29,17 +42,22 @@ export default function GarmentDirectoryClient({
   const [isUpdatingDetails, setIsUpdatingDetails] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const CURRENCY = "€"
+  const EUR_CURRENCY = "€"
+  const GBP_CURRENCY = "£"
+  const garments = useMemo(
+    () => initialGarments.map(normalizeGarmentDirectoryItem),
+    [initialGarments],
+  )
 
   // Client-side filtering
   const filtered = useMemo(() => {
     const queryParts = normalizeSearch(search).split(" ").filter(Boolean)
 
     if (queryParts.length === 0) {
-      return initialGarments
+      return garments
     }
 
-    return initialGarments.filter((g) => {
+    return garments.filter((g) => {
       const searchableText = normalizeSearch([
         g.name,
         g.code,
@@ -51,7 +69,7 @@ export default function GarmentDirectoryClient({
 
       return queryParts.every((part) => searchableText.includes(part))
     })
-  }, [initialGarments, search])
+  }, [garments, search])
 
   async function handleAddGarment(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -106,7 +124,7 @@ export default function GarmentDirectoryClient({
   }
 
   return (
-    <div className="max-w-6xl">
+    <div className="w-full min-w-0">
       
       {/* Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -136,7 +154,7 @@ export default function GarmentDirectoryClient({
       </div>
 
       {/* Data Table */}
-      <div className="bg-brand-panel border border-brand-border/80 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.2)] min-h-[600px]">
+      <div className="w-full bg-brand-panel border border-brand-border/80 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(0,0,0,0.2)] min-h-[600px]">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -150,14 +168,15 @@ export default function GarmentDirectoryClient({
                   <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">Type</th>
                   <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">Markup</th>
                   <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">Tags</th>
-                <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">Base Price</th>
+                <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">EUR Price</th>
+                <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">GBP Price</th>
                 <th className="p-4 text-xs font-semibold text-brand-muted uppercase tracking-wider">Extra Size Cost</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border/60">
               {filtered.length === 0 ? (
                 <tr>
-                    <td colSpan={11} className="p-8 text-center text-brand-muted/80">
+                    <td colSpan={12} className="p-8 text-center text-brand-muted/80">
                     No garments found matching &quot;{search}&quot;
                   </td>
                 </tr>
@@ -167,7 +186,9 @@ export default function GarmentDirectoryClient({
                     <td className="p-4">
                       <button
                         type="button"
-                        onClick={() => setEditingGarment(g)}
+                        onClick={() =>
+                          setEditingGarment(normalizeGarmentDirectoryItem(g))
+                        }
                         aria-label={`Edit details for ${g.name}`}
                         title="Edit details"
                         className="rounded-lg border border-brand-border p-2 text-brand-muted/80 transition-colors hover:border-brand-red/50 hover:bg-brand-red/16 hover:text-brand-red/90"
@@ -185,7 +206,7 @@ export default function GarmentDirectoryClient({
                     <td className="p-4 text-sm text-brand-muted">{g.color || "-"}</td>
                     <td className="p-4 text-sm text-brand-muted">{g.type}</td>
                     <td className="p-4 text-sm font-medium text-brand-cream/90">
-                      {g.connectedMarkupValue !== null ? `${CURRENCY}${g.connectedMarkupValue.toFixed(2)}` : "-"}
+                      {g.connectedMarkupValue !== null ? `${EUR_CURRENCY}${g.connectedMarkupValue.toFixed(2)}` : "-"}
                     </td>
                     <td className="p-4 min-w-56">
                       <div className="flex items-center gap-2">
@@ -202,9 +223,12 @@ export default function GarmentDirectoryClient({
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 font-mono text-sm text-cyan-400 font-bold">{CURRENCY}{g.basePrice.toFixed(2)}</td>
+                    <td className="p-4 font-mono text-sm text-cyan-400 font-bold">{EUR_CURRENCY}{g.basePrice.toFixed(2)}</td>
+                    <td className="p-4 font-mono text-sm text-brand-cream/90">
+                      {getGbpPriceDisplay(g.gbpPrice)}
+                    </td>
                     <td className="p-4 font-mono text-sm text-brand-muted">
-                      {g.extraSizeCost ? `${CURRENCY}${g.extraSizeCost.toFixed(2)}` : "-"}
+                      {g.extraSizeCost ? `${EUR_CURRENCY}${g.extraSizeCost.toFixed(2)}` : "-"}
                     </td>
                   </tr>
                 ))
@@ -271,15 +295,19 @@ export default function GarmentDirectoryClient({
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-brand-muted mb-1">Base Price ({CURRENCY})</label>
-                  <input required name="basePrice" type="number" step="0.01" min="0" placeholder="0.00" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-brand-muted mb-1">Extra Size Cost ({CURRENCY})</label>
-                  <input name="extraSizeCost" type="number" step="0.01" min="0" placeholder="Optional" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
-                </div>
-              </div>
+                    <div>
+                      <label className="block text-sm font-medium text-brand-muted mb-1">EUR Price ({EUR_CURRENCY})</label>
+                      <input required name="basePrice" type="number" step="0.01" min="0" placeholder="0.00" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-brand-muted mb-1">GBP Price ({GBP_CURRENCY})</label>
+                      <input name="gbpPrice" type="number" step="0.01" min="0" placeholder="Optional" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-brand-muted mb-1">Extra Size Cost ({EUR_CURRENCY})</label>
+                      <input name="extraSizeCost" type="number" step="0.01" min="0" placeholder="Optional" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
+                    </div>
+                  </div>
 
               <div className="mt-8 flex justify-end gap-3 pt-2">
                 <button 
@@ -409,23 +437,35 @@ export default function GarmentDirectoryClient({
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-brand-muted mb-1">Base Price ({CURRENCY})</label>
-                  <input
-                    required
-                    name="basePrice"
+                    <div>
+                      <label className="block text-sm font-medium text-brand-muted mb-1">EUR Price ({EUR_CURRENCY})</label>
+                      <input
+                        required
+                        name="basePrice"
                     type="number"
                     step="0.01"
                     min="0"
                     defaultValue={editingGarment.basePrice}
                     placeholder="0.00"
-                    className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-brand-muted mb-1">Extra Size Cost ({CURRENCY})</label>
-                  <input
-                    name="extraSizeCost"
+                        className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-brand-muted mb-1">GBP Price ({GBP_CURRENCY})</label>
+                      <input
+                        name="gbpPrice"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        defaultValue={editingGarment.gbpPrice ?? ""}
+                        placeholder="Optional"
+                        className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-brand-muted mb-1">Extra Size Cost ({EUR_CURRENCY})</label>
+                      <input
+                        name="extraSizeCost"
                     type="number"
                     step="0.01"
                     min="0"

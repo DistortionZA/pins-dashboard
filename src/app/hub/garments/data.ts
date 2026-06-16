@@ -30,6 +30,7 @@ async function loadGarmentDirectoryData(): Promise<GarmentDirectoryItem[]> {
 
   return garments.map((garment) => ({
     ...garment,
+    gbpPrice: garment.gbpPrice ?? null,
     connectedMarkupValue: markupByType.get(garment.type) ?? null,
   }))
 }

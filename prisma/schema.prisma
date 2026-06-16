@@ -15,6 +15,7 @@ model Garment {
   color         String      @default("")
   type          GarmentType
   basePrice     Float
+  gbpPrice      Float?
   extraSizeCost Float?
   tags          String      @default("")
   designs       Design[]

@@ -18,16 +18,15 @@ export default async function CalculatorPageContent({
   backHref,
 }: CalculatorPageContentProps) {
   await connection()
-
   const { garments, printPrices, garmentMarkups } =
     await getCalculatorReferenceData(calculatorCode)
 
   return (
     <div className="hub-page-stack">
-      <section className="hub-panel hub-page-header flex items-center justify-between gap-4">
-        <h1 className="hub-page-header-title mt-0">{title}</h1>
+      <BackLink href={backHref}>Back to Calculators</BackLink>
 
-        <BackLink href={backHref}>Back to Calculators</BackLink>
+      <section className="hub-panel hub-page-header">
+        <h1 className="hub-page-header-title mt-0">{title}</h1>
       </section>
 
       <div className="min-w-0">

@@ -309,11 +309,16 @@ body {
     background: var(--color-accent);
   }
 
-  .hub-page-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+.hub-page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hub-page-stack > * {
+  min-width: 0;
+}
 
   .hub-page-header {
     border-radius: 1.7rem;
