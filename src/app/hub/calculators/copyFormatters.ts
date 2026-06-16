@@ -95,7 +95,7 @@ export function formatUsClientQuoteCopy({
       return [
         `${getItemLabel(design, index)}:`,
         "",
-        `${garmentCode} ${garmentName}${positionsText ? ` (${positionsText})` : ""} + base `,
+        `${garmentCode} ${garmentName}${positionsText ? ` (${positionsText} + base) ` : ""}`,
         `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} each (${currency}${subtotalExclVat.toFixed(2)} ex vat)`,
         `VAT = ${currency}${vatAmount.toFixed(2)}`,
         `TOTAL = ${currency}${totalInclVat.toFixed(2)}`
