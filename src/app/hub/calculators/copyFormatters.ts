@@ -85,6 +85,7 @@ export function formatUsClientQuoteCopy({
         .map(([position, colorCount]) => `${colorCount}c ${getPositionLabel(position).toLowerCase()}`)
         .join(", ")
 
+      const baseCost  =breakdown.baseCost
       const subtotalExclVat =
         breakdown.baseCost + breakdown.pinsCost + breakdown.markupCost + breakdown.pkMarkupCost
       const unitExclVat = design.quantity > 0 ? subtotalExclVat / design.quantity : 0
@@ -94,7 +95,7 @@ export function formatUsClientQuoteCopy({
       return [
         `${getItemLabel(design, index)}:`,
         "",
-        `${garmentCode}  ${garmentName}${positionsText ? ` (${positionsText})` : ""}`,
+        `${garmentCode} ${garmentName}${positionsText ? ` (${positionsText})` : ""} + base `,
         `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} each (${currency}${subtotalExclVat.toFixed(2)} ex vat)`,
         `VAT = ${currency}${vatAmount.toFixed(2)}`,
         `TOTAL = ${currency}${totalInclVat.toFixed(2)}`
