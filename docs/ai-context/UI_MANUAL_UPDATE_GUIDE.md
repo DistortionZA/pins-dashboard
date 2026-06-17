@@ -61,7 +61,14 @@ src/
         CalculatorClient.tsx
         CalculatorLoading.tsx
         eu/page.tsx
-        uk/page.tsx
+        uk/
+          page.tsx
+          trade/
+            page.tsx
+            UkTradeCalculatorClient.tsx
+            UkTradeDesignCard.tsx
+            data.ts
+        data.ts
       garments/
         page.tsx
         loading.tsx
@@ -91,9 +98,9 @@ src/
     theme/
       HubThemeProvider.tsx
       ThemeToggle.tsx
-src/assets/
-  P&K_LOGO.png
-  P&K_ICON.png
+  assets/
+    P&K_LOGO.png
+    P&K_ICON.png
 ```
 
 ## Theme System
@@ -318,6 +325,7 @@ Files:
 - `src/app/hub/calculators/page.tsx`
 - `src/app/hub/calculators/eu/page.tsx`
 - `src/app/hub/calculators/uk/page.tsx`
+- `src/app/hub/calculators/uk/trade/page.tsx`
 - `src/app/hub/calculators/CalculatorPageContent.tsx`
 
 Own:
@@ -331,6 +339,8 @@ Own:
 Main file:
 
 - `src/app/hub/calculators/CalculatorClient.tsx`
+- `src/app/hub/calculators/displayStandards.ts`
+- `src/app/hub/calculators/copyFormatters.ts`
 
 Shared design subcomponent:
 
@@ -346,7 +356,23 @@ Change these files for:
 - segmented controls
 - search/dropdown styling inside the calculator
 
-Do not change math or copy formatter logic.
+Preserve pricing math. Breakdown label formatting and customer quote copy can be standardized through the shared display and formatter helpers.
+
+### UK Trade calculator
+
+Main files:
+
+- `src/app/hub/calculators/uk/trade/UkTradeCalculatorClient.tsx`
+- `src/app/hub/calculators/uk/trade/UkTradeDesignCard.tsx`
+
+Change files for:
+
+- GBP totals layout
+- item card spacing
+- breakdown panel styling
+- setup-cost presentation
+- trade calculator control density
+- keep the shared customer quote card pattern and breakdown row formatting aligned with the EU calculators
 
 ### Garment Directory
 
@@ -665,4 +691,3 @@ When asking for manual edits:
    - page-level client file
 4. explicitly repeat:
    - `Do not change logic`
-

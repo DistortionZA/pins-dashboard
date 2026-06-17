@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { addGarment, updateGarmentDetails, deleteGarment } from "./actions"
 import type { GarmentDirectoryItem } from "./data"
@@ -41,6 +41,10 @@ export default function GarmentDirectoryClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUpdatingDetails, setIsUpdatingDetails] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const addDialogTitleId = useId()
+  const editDialogTitleId = useId()
+  const addTriggerRef = useRef<HTMLButtonElement | null>(null)
+  const dialogReturnFocusRef = useRef<HTMLElement | null>(null)
 
   const EUR_CURRENCY = "€"
   const GBP_CURRENCY = "£"
@@ -70,6 +74,59 @@ export default function GarmentDirectoryClient({
       return queryParts.every((part) => searchableText.includes(part))
     })
   }, [garments, search])
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    const fallbackFocusElement = addTriggerRef.current
+
+    document.body.style.overflow = "hidden"
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        setIsModalOpen(false)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", handleKeyDown)
+      ;(dialogReturnFocusRef.current ?? fallbackFocusElement)?.focus()
+      dialogReturnFocusRef.current = null
+    }
+  }, [isModalOpen])
+
+  useEffect(() => {
+    if (!editingGarment) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+
+    document.body.style.overflow = "hidden"
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault()
+        setEditingGarment(null)
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", handleKeyDown)
+      dialogReturnFocusRef.current?.focus()
+      dialogReturnFocusRef.current = null
+    }
+  }, [editingGarment])
 
   async function handleAddGarment(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -142,7 +199,12 @@ export default function GarmentDirectoryClient({
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          ref={addTriggerRef}
+          type="button"
+          onClick={() => {
+            dialogReturnFocusRef.current = addTriggerRef.current
+            setIsModalOpen(true)
+          }}
           className="hub-accent-button px-4 py-2 rounded-xl font-medium whitespace-nowrap flex items-center gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -186,9 +248,10 @@ export default function GarmentDirectoryClient({
                     <td className="p-4">
                       <button
                         type="button"
-                        onClick={() =>
+                        onClick={(event) => {
+                          dialogReturnFocusRef.current = event.currentTarget
                           setEditingGarment(normalizeGarmentDirectoryItem(g))
-                        }
+                        }}
                         aria-label={`Edit details for ${g.name}`}
                         title="Edit details"
                         className="rounded-lg border border-brand-border p-2 text-brand-muted/80 transition-colors hover:border-brand-red/50 hover:bg-brand-red/16 hover:text-brand-red/90"
@@ -223,7 +286,7 @@ export default function GarmentDirectoryClient({
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 font-mono text-sm text-cyan-400 font-bold">{EUR_CURRENCY}{g.basePrice.toFixed(2)}</td>
+                    <td className="hub-info-text p-4 font-mono text-sm font-bold">{EUR_CURRENCY}{g.basePrice.toFixed(2)}</td>
                     <td className="p-4 font-mono text-sm text-brand-cream/90">
                       {getGbpPriceDisplay(g.gbpPrice)}
                     </td>
@@ -240,13 +303,24 @@ export default function GarmentDirectoryClient({
 
       {/* Add Garment Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-brand-panel border border-brand-border rounded-2xl w-full max-w-md overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={addDialogTitleId}
+            className="bg-brand-panel border border-brand-border rounded-2xl w-full max-w-md overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="p-6 border-b border-brand-border flex justify-between items-center">
-              <h2 className="text-xl font-bold text-brand-cream">Add New Garment</h2>
-              <button 
+              <h2 id={addDialogTitleId} className="text-xl font-bold text-brand-cream">Add New Garment</h2>
+              <button
+                type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="text-brand-muted/80 hover:text-brand-cream transition-colors"
+                aria-label="Close Add New Garment dialog"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
@@ -256,7 +330,7 @@ export default function GarmentDirectoryClient({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-brand-muted mb-1">Garment Code</label>
-                  <input required name="code" type="text" placeholder="e.g. GI5000" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
+                  <input autoFocus required name="code" type="text" placeholder="e.g. GI5000" className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel-alt text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-brand-muted mb-1">Alt Code</label>
@@ -332,16 +406,27 @@ export default function GarmentDirectoryClient({
 
       {/* Edit Details Modal */}
       {editingGarment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="bg-brand-panel border border-brand-border rounded-2xl w-full max-w-md overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          onClick={() => setEditingGarment(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={editDialogTitleId}
+            className="bg-brand-panel border border-brand-border rounded-2xl w-full max-w-md overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="p-6 border-b border-brand-border flex justify-between items-center">
               <div>
-                <h2 className="text-xl font-bold text-brand-cream">Edit Details</h2>
+                <h2 id={editDialogTitleId} className="text-xl font-bold text-brand-cream">Edit Details</h2>
                 <p className="mt-1 text-sm text-brand-muted/80">{editingGarment.name}</p>
               </div>
               <button
+                type="button"
                 onClick={() => setEditingGarment(null)}
                 className="text-brand-muted/80 hover:text-brand-cream transition-colors"
+                aria-label="Close Edit Details dialog"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
@@ -354,6 +439,7 @@ export default function GarmentDirectoryClient({
                 <div>
                   <label className="block text-sm font-medium text-brand-muted mb-1">Garment Code</label>
                   <input
+                    autoFocus
                     required
                     name="code"
                     type="text"

@@ -3,17 +3,15 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+
 import PkIcon from "@/assets/P&K_ICON.png"
 import PkLogo from "@/assets/P&K_LOGO.png"
-import ThemeToggle from "@/components/theme/ThemeToggle"
 
 const navItems = [
   {
     label: "Home",
     href: "/",
-    icon: (
-      <path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
-    ),
+    icon: <path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
   },
   {
     label: "Price Calculators",
@@ -74,26 +72,19 @@ export default function HubSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="hub-dashboard-sidebar w-full rounded-[2rem] p-4 lg:w-[320px] lg:shrink-0">
-     <div className="flex justify-center pt-2">
-  <Link href="/" aria-label="Pins Hub home">
-    <Image
-      src={PkLogo}
-      alt="Pins & Knuckles"
-      priority
-      className="h-auto w-[220px]"
-    />
-  </Link>
-</div>
-{/*       
-<div className="rounded-2xl border border-brand-border bg-brand-panel-alt/70 px-4 py-3">
-  <div className="flex items-center justify-between gap-3">
-    <span className="text-sm font-bold text-brand-cream">Theme</span>
-    <ThemeToggle compact />
-  </div>
-</div> */}
+    <aside className="hub-dashboard-sidebar w-full rounded-[1.6rem] p-3 sm:p-4 md:w-[272px] md:shrink-0 lg:w-[296px] xl:w-[320px]">
+      <div className="flex justify-center pt-1 sm:pt-2">
+        <Link href="/" aria-label="Pins Hub home">
+          <Image
+            src={PkLogo}
+            alt="Pins & Knuckles"
+            priority
+            className="h-auto w-[150px] sm:w-[176px] md:w-[190px] xl:w-[220px]"
+          />
+        </Link>
+      </div>
 
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1.5 sm:gap-2">
         {navItems.map((item) => {
           const active = isActive(pathname, item.href)
 
@@ -102,13 +93,13 @@ export default function HubSidebar() {
               key={item.href}
               href={item.href}
               className={[
-                "hub-dashboard-nav-item group flex min-h-14 items-center gap-4 rounded-2xl px-4 text-sm font-bold transition",
+                "hub-dashboard-nav-item group flex min-h-11 items-center gap-3 rounded-xl px-3.5 text-sm font-bold transition sm:min-h-12 sm:rounded-2xl sm:px-4 md:min-h-[3.25rem] lg:min-h-14",
                 active ? "hub-dashboard-nav-item-active" : "",
               ].join(" ")}
             >
               <svg
                 className={[
-                  "h-5 w-5 shrink-0 transition",
+                  "h-[18px] w-[18px] shrink-0 transition sm:h-5 sm:w-5",
                   active ? "text-brand-red" : "text-brand-muted group-hover:text-brand-cream",
                 ].join(" ")}
                 xmlns="http://www.w3.org/2000/svg"
@@ -128,22 +119,15 @@ export default function HubSidebar() {
         })}
       </nav>
 
-      <div className="mt-auto space-y-4 border-t border-brand-border pt-5">
-        <div className="flex items-center gap-4 rounded-2xl border border-brand-border bg-brand-panel-alt/70 p-4">
-          <Image
-            src={PkIcon}
-            alt=""
-            className="h-12 w-12 rounded-full"
-          />
-          <div className="min-w-0">
-            <p className="font-bold text-brand-cream">Pins Hub</p>
-            <p className="text-sm text-brand-muted">v1.0.0</p>
+      <div className="mt-auto space-y-2.5 border-t border-brand-border pt-4 sm:space-y-3 sm:pt-5">
+        <div className="rounded-xl border border-brand-border bg-brand-panel-alt/70 p-3 sm:rounded-2xl sm:p-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Image src={PkIcon} alt="" className="h-10 w-10 rounded-full sm:h-12 sm:w-12" />
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-brand-cream sm:text-base">Pins Hub</p>
+              <p className="text-xs text-brand-muted sm:text-sm">v1.0.0</p>
+            </div>
           </div>
-          <span className="ml-auto text-brand-muted">⌄</span>
-        </div>
-
-        <div className="flex h-11 w-11 items-center justify-center rounded-full border border-brand-border bg-brand-panel-alt text-sm font-bold text-brand-muted">
-          N
         </div>
       </div>
     </aside>

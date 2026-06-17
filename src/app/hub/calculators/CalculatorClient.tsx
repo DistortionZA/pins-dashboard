@@ -2,14 +2,21 @@
 import { toast } from "sonner"
 import { useEffect, useId, useMemo, useRef, useState } from "react"
 import DesignCard, {
-  type Design,
-  calculateDesignCosts,
-  type DesignCostBreakdown,
-  getPrintUnitPrices,
-  PRINT_POSITIONS
+type Design,
+calculateDesignCosts,
+type DesignCostBreakdown,
+getPrintUnitPrices,
 } from "@/components/DesignCard"
 import type { Garment, GarmentMarkup, PrintPrice } from "@prisma/client"
 import { formatDeliveryCopy, getQuoteFormatter } from "./copyFormatters"
+import {
+CUSTOMER_QUOTE_COPY_LABEL,
+formatPrintBreakdownLabel,
+formatBreakdownUnitAmount,
+formatSubtotalBreakdownLabel,
+getBreakdownItemLabel,
+getPrintPositionLabel
+} from "./displayStandards"
 
 const DELIVERY_RATES = [
   { country: "Austria", cost: 25, deliveryTime: "1 day" },
@@ -583,22 +590,24 @@ export default function CalculatorClient({
           <div className="grid grid-cols-2 gap-3">
             
             {/* Pins Price Card (Customer Quote) */}
-            <div
+            <button
+              type="button"
               onClick={handleCopyClick}
-              className="md:order-2 bg-brand-panel border border-blue-500/30 rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.06)] hover:shadow-[0_0_25px_rgba(59,130,246,0.12)] hover:border-blue-500/50 cursor-pointer"
+            className="hub-info-card md:order-2 bg-brand-panel rounded-2xl flex flex-col overflow-hidden text-left transition-all duration-300 cursor-pointer"
+              aria-label="Copy pins price quote"
             >
               <div className="p-6 flex-grow">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-brand-muted/80 text-xs font-bold uppercase tracking-widest">PINS PRICE (incl Vat)</p>
-                  <span className="bg-blue-500/10 text-blue-400 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">Click to Copy</span>
+<span className="hub-info-pill text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">{CUSTOMER_QUOTE_COPY_LABEL}</span>
                 </div>
                 <div className="mb-6">
-                  <span className="text-4xl md:text-5xl font-black text-sky-400 tabular-nums">
+                  <span className="hub-info-text text-4xl md:text-5xl font-black tabular-nums">
                     {CURRENCY}{displayPinsTotalInclVat.toFixed(2)}
                   </span>
                 </div>
               </div>
-            </div>
+            </button>
 
             {/* Production Costs Card (Sales Team Reference - Excl VAT only) */}
             <div className="md:order-1 bg-brand-panel border border-brand-border rounded-2xl flex flex-col overflow-hidden transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] hover:shadow-[0_0_25px_rgba(255,255,255,0.04)] hover:border-brand-border/80">
@@ -645,7 +654,7 @@ export default function CalculatorClient({
                   
                   {/* PINS PRICE BREAKDOWN SECTION */}
                   <div className="md:order-2">
-                    <h3 className="text-xs font-black text-sky-400 uppercase tracking-widest mb-3 pb-1 border-b border-sky-500/20">Pins Price Breakdown</h3>
+                    <h3 className="hub-info-text text-xs font-black uppercase tracking-widest mb-3 pb-1 border-b border-[var(--color-info-border)]/60">Pins Price Breakdown</h3>
                     <div className="space-y-4">
                       {breakdowns.map((b, idx) => {
                         const d = designs[idx]
@@ -662,38 +671,38 @@ export default function CalculatorClient({
                         return (
                           <div key={idx} className="space-y-3 pb-3 border-b border-brand-border/80 last:border-0 last:pb-0">
                             <div className="flex justify-between items-center text-[10px] font-bold text-brand-muted/80 uppercase tracking-wider">
-                              <span>{d.itemLabel?.trim() || `Item #${idx + 1}`} - {garment?.name || "No garment"}</span>
+<span>{getBreakdownItemLabel(d.itemLabel, idx)} - {garment?.name || "No garment"}</span>
                               <span className="shrink-0 whitespace-nowrap font-mono text-brand-muted">{d.quantity} units</span>
                             </div>
                             
                             {/* Garment Base Supply Price */}
                             {garment && (
                               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                                <span className="min-w-0 leading-snug">Garment Base (Supply) Price</span>
-                                <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
+                                <span className="min-w-0 leading-snug">Garment Base Price</span>
+<span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{formatBreakdownUnitAmount(CURRENCY, garment.basePrice)}</span>
                               </div>
                             )}
 
                             {/* Garment Markup */}
                             {garment && (
                               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                                <span className="min-w-0 leading-snug">Garment Markup ({garment.type})</span>
+<span className="min-w-0 leading-snug">Garment Markup</span>
                                 <span className="font-mono text-brand-cream/90">
-                                  {CURRENCY}{((garmentMarkups.find((m) => m.garmentType === garment.type)?.markupValue) || 0).toFixed(2)} / unit
+{formatBreakdownUnitAmount(CURRENCY, ((garmentMarkups.find((m) => m.garmentType === garment.type)?.markupValue) || 0))}
                                 </span>
                               </div>
                             )}
 
                             {Object.keys(d.positions).filter((pos) => d.positions[pos] > 0).map((pos) => {
-                              const posLabel = PRINT_POSITIONS.find((p) => p.value === pos)?.label || pos
+const posLabel = getPrintPositionLabel(pos)
                               const unitPrices = getPrintUnitPrices(pos, d, printPrices)
                               const colorCount = d.positions[pos]
                               const priceLabel = unitPrices.isFixedPrice ? "fixed" : `${colorCount} col`
 
                               return (
                                 <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                                  <span className="min-w-0 leading-snug">{posLabel} Pins ({priceLabel})</span>
-                                  <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{unitPrices.pinsPrice.toFixed(2)} / unit</span>
+<span className="min-w-0 leading-snug">{priceLabel === "fixed" ? `${posLabel} Print (${priceLabel})` : formatPrintBreakdownLabel(pos, colorCount)}</span>
+<span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{formatBreakdownUnitAmount(CURRENCY, unitPrices.pinsPrice)}</span>
                                 </div>
                                 )
                               })}
@@ -701,16 +710,16 @@ export default function CalculatorClient({
                             {d.pkMarkupEnabled && (
                               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                                 <span className="min-w-0 leading-snug">PK Markup</span>
-                                <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{pkMarkupCostPerUnit.toFixed(2)} / unit</span>
+<span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{formatBreakdownUnitAmount(CURRENCY, pkMarkupCostPerUnit)}</span>
                               </div>
                             )}
                             
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
                               <span className="min-w-0 text-brand-muted/80 leading-snug">Total Unit Cost (excl VAT)</span>
-                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
+<span className="hub-info-text shrink-0 whitespace-nowrap text-xs md:text-sm font-mono font-bold">{formatBreakdownUnitAmount(CURRENCY, totalUnitCost)}</span>
                             </div>
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
-                              <span className="min-w-0 text-brand-muted/80 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
+<span className="min-w-0 text-brand-muted/80 leading-snug">{formatSubtotalBreakdownLabel(d.quantity)}</span>
                               <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream">{CURRENCY}{pinsSubtotalExclVat}</span>
                             </div>
                           </div>
@@ -734,34 +743,34 @@ export default function CalculatorClient({
                         return (
                           <div key={idx} className="space-y-3 pb-3 border-b border-brand-border/80 last:border-0 last:pb-0">
                             <div className="flex justify-between items-center text-[10px] font-bold text-brand-muted/80 uppercase tracking-wider">
-                              <span>{d.itemLabel?.trim() || `Item #${idx + 1}`} - {garment?.name || "No garment"}</span>
+<span>{getBreakdownItemLabel(d.itemLabel, idx)} - {garment?.name || "No garment"}</span>
                               <span className="shrink-0 whitespace-nowrap font-mono text-brand-muted">{d.quantity} units</span>
                             </div>
                             {garment && (
                               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                                <span className="min-w-0 leading-snug">Garment Base (Supply) Price</span>
-                                <span className="font-mono text-brand-cream/90">{CURRENCY}{garment.basePrice.toFixed(2)} / unit</span>
+                                <span className="min-w-0 leading-snug">Garment Base Price</span>
+<span className="font-mono text-brand-cream/90">{formatBreakdownUnitAmount(CURRENCY, garment.basePrice)}</span>
                               </div>
                             )}
                             {Object.keys(d.positions).filter((pos) => d.positions[pos] > 0).map((pos) => {
-                              const posLabel = PRINT_POSITIONS.find((p) => p.value === pos)?.label || pos
+const posLabel = getPrintPositionLabel(pos)
                               const unitPrices = getPrintUnitPrices(pos, d, printPrices)
                               const colorCount = d.positions[pos]
                               const priceLabel = unitPrices.isFixedPrice ? "fixed" : `${colorCount} col`
 
                               return (
                                 <div key={pos} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                                  <span>{posLabel} Print Print Production ({priceLabel})</span>
-                                  <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{CURRENCY}{unitPrices.productionPrice.toFixed(2)} / unit</span>
+<span>{priceLabel === "fixed" ? `${posLabel} Print (${priceLabel})` : formatPrintBreakdownLabel(pos, colorCount)}</span>
+<span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">{formatBreakdownUnitAmount(CURRENCY, unitPrices.productionPrice)}</span>
                                 </div>
                               )
                             })}
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
                               <span className="text-brand-muted/80">Unit Cost (excl VAT)</span>
-                              <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-cyan-400 font-bold">{CURRENCY}{totalUnitCost.toFixed(2)} / unit</span>
+<span className="hub-info-text shrink-0 whitespace-nowrap text-xs md:text-sm font-mono font-bold">{formatBreakdownUnitAmount(CURRENCY, totalUnitCost)}</span>
                             </div>
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
-                              <span className="min-w-0 text-brand-muted/80 leading-snug">Subtotal ({d.quantity} units, excl VAT)</span>
+<span className="min-w-0 text-brand-muted/80 leading-snug">{formatSubtotalBreakdownLabel(d.quantity)}</span>
                               <span className="font-mono text-brand-cream">{CURRENCY}{(b.baseCost + b.productionCost).toFixed(2)}</span>
                             </div>
                           </div>
@@ -784,7 +793,7 @@ export default function CalculatorClient({
                   </div>
                   <div className="flex justify-between items-center text-brand-muted">
                     <span>Pins Profit ({totalQty} units, excl VAT)</span>
-                  <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-sky-300">{CURRENCY}{displayPinsProfit.toFixed(2)}</span>
+                  <span className="hub-info-text font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono">{CURRENCY}{displayPinsProfit.toFixed(2)}</span>
                   </div>
                 </div>
 

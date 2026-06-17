@@ -1,7 +1,6 @@
-import Image from "next/image"
 import HubSidebar from "@/components/HubSidebar"
+import BrandLogo from "@/components/BrandLogo"
 import NavigationCard from "@/components/NavigationCard"
-import PkLogo from "@/assets/P&K_LOGO.png"
 
 export default function Home() {
   return (
@@ -10,19 +9,21 @@ export default function Home() {
         <HubSidebar />
 
         <main className="hub-home-main">
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <section className="hub-home-hero">
-              <div className="relative z-10">
-                <p className="hub-kicker">Pins Hub</p>
-                <Image
-                  src={PkLogo}
-                  alt="Pins & Knuckles Merchandise"
-                  priority
-                  className="mt-3 h-auto w-[330px] max-w-full"
-                />
-                <p className="mt-5 max-w-3xl text-lg leading-8 text-brand-muted">
-                  Pricing, garment data, finance workflows, referrals, and reusable
-                  operational copy in one system.
+              <div className="relative z-10 flex flex-col gap-3">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="hub-kicker">Pins Hub</p>
+                    <BrandLogo className="mt-2 h-8 w-auto max-w-full opacity-90" />
+                  </div>
+                  <span className="rounded-full border border-brand-border bg-brand-panel-alt/70 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-brand-muted">
+                    5 Live Tools
+                  </span>
+                </div>
+                <p className="max-w-3xl text-sm leading-6 text-brand-muted md:text-[0.95rem]">
+                  Pricing, garment data, PK Tax workflows, referrals, and reusable operational
+                  copy in one system.
                 </p>
               </div>
             </section>
@@ -31,8 +32,8 @@ export default function Home() {
               <NavigationCard
                 href="/hub/calculators"
                 title="Price Calculators"
-                description="Operational quote builders for EU pricing flows and client-ready copy."
-                badge="Open Tool"
+                description="Operational quote builders EU pricing flows client-ready copy."
+                compact
                 icon={
                   <>
                     <rect width="14" height="18" x="5" y="3" rx="2" />
@@ -45,17 +46,15 @@ export default function Home() {
                 href="/hub/garments"
                 title="Garment Directory"
                 description="Reference catalogue with connected markup visibility and garment management."
-                badge="Open Tool"
-                icon={
-                  <path d="M20.38 3.46 16 2l-2 3-2-3-4.38 1.46L6 9l3 2v9h6v-9l3-2Z" />
-                }
+                compact
+                icon={<path d="M20.38 3.46 16 2l-2 3-2-3-4.38 1.46L6 9l3 2v9h6v-9l3-2Z" />}
               />
 
               <NavigationCard
                 href="/hub/pk-tax"
                 title="PK Tax"
-                description="Finance dashboard for PK Tax, payout allocation, and shared-pool outputs."
-                badge="Open Tool"
+                description="Finance dashboard PK Tax, payout allocation, shared-pool outputs."
+                compact
                 icon={
                   <>
                     <path d="M12 2v20" />
@@ -67,8 +66,8 @@ export default function Home() {
               <NavigationCard
                 href="/hub/referrals"
                 title="Refferals"
-                description="Referral planning, scenario modelling, and CRM-style team operations."
-                badge="Open Tool"
+                description="Referral planning, scenario modelling, CRM-style team operations."
+                compact
                 icon={
                   <>
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -82,8 +81,8 @@ export default function Home() {
               <NavigationCard
                 href="/hub/reference"
                 title="Quick Reference"
-                description="Operational copy, delivery and import data, saved messages, and supplier emails."
-                badge="Open Tool"
+                description="Operational copy, delivery import data, saved messages, supplier emails."
+                compact
                 icon={
                   <>
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -95,9 +94,10 @@ export default function Home() {
 
               <NavigationCard
                 title="Order Management"
-                description="Reserved for the upcoming order workflow surface."
+                description="Reserved for upcoming order workflow surface."
                 badge="Coming Soon"
                 disabled
+                compact
                 icon={
                   <>
                     <circle cx="8" cy="21" r="1" />

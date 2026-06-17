@@ -1,0 +1,331 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 6,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/app/hub/layout.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 14,
+      "nonEmptyLines": 12,
+      "functions": [
+        {
+          "name": "HubLayout",
+          "startLine": 5,
+          "endLine": 14,
+          "params": [
+            "{ children }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "HubLayout",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 35,
+      "nonEmptyLines": 31,
+      "functions": [
+        {
+          "name": "RootLayout",
+          "startLine": 14,
+          "endLine": 35,
+          "params": [
+            "{\n  children,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "metadata",
+          "line": 9,
+          "isDefault": false
+        },
+        {
+          "name": "RootLayout",
+          "line": 14,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 115,
+      "nonEmptyLines": 107,
+      "functions": [
+        {
+          "name": "Home",
+          "startLine": 6,
+          "endLine": 115,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "Home",
+          "line": 6,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/components/HubSidebar.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 151,
+      "nonEmptyLines": 142,
+      "functions": [
+        {
+          "name": "isActive",
+          "startLine": 68,
+          "endLine": 71,
+          "params": [
+            "pathname",
+            "href"
+          ]
+        },
+        {
+          "name": "HubSidebar",
+          "startLine": 73,
+          "endLine": 151,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "HubSidebar",
+          "line": 73,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isActive",
+          "callee": "pathname.startsWith",
+          "lineNumber": 70
+        },
+        {
+          "caller": "HubSidebar",
+          "callee": "usePathname",
+          "lineNumber": 74
+        },
+        {
+          "caller": "HubSidebar",
+          "callee": "navItems.map",
+          "lineNumber": 97
+        },
+        {
+          "caller": "HubSidebar",
+          "callee": "isActive",
+          "lineNumber": 98
+        },
+        {
+          "caller": "HubSidebar",
+          "callee": "[\n                \"hub-dashboard-nav-item group flex min-h-14 items-center gap-4 rounded-2xl px-4 text-sm font-bold transition\",\n                active ? \"hub-dashboard-nav-item-active\" : \"\",\n              ].join",
+          "lineNumber": 104
+        },
+        {
+          "caller": "HubSidebar",
+          "callee": "[\n                  \"h-5 w-5 shrink-0 transition\",\n                  active ? \"text-brand-red\" : \"text-brand-muted group-hover:text-brand-cream\",\n                ].join",
+          "lineNumber": 110
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/components/theme/HubThemeProvider.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 104,
+      "nonEmptyLines": 84,
+      "functions": [
+        {
+          "name": "isHubTheme",
+          "startLine": 26,
+          "endLine": 28,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "applyTheme",
+          "startLine": 30,
+          "endLine": 35,
+          "params": [
+            "theme"
+          ]
+        },
+        {
+          "name": "getInitialTheme",
+          "startLine": 37,
+          "endLine": 44,
+          "params": []
+        },
+        {
+          "name": "HubThemeProvider",
+          "startLine": 69,
+          "endLine": 94,
+          "params": [
+            "{ children }"
+          ]
+        },
+        {
+          "name": "useHubTheme",
+          "startLine": 96,
+          "endLine": 104,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "HUB_THEME_STORAGE_KEY",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "hubThemeBootstrapScript",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "HubThemeProvider",
+          "line": 69,
+          "isDefault": false
+        },
+        {
+          "name": "useHubTheme",
+          "line": 96,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "applyTheme",
+          "callee": "root.classList.remove",
+          "lineNumber": 33
+        },
+        {
+          "caller": "applyTheme",
+          "callee": "root.classList.add",
+          "lineNumber": 34
+        },
+        {
+          "caller": "getInitialTheme",
+          "callee": "isHubTheme",
+          "lineNumber": 43
+        },
+        {
+          "caller": "HubThemeProvider",
+          "callee": "useState",
+          "lineNumber": 70
+        },
+        {
+          "caller": "HubThemeProvider",
+          "callee": "useEffect",
+          "lineNumber": 72
+        },
+        {
+          "caller": "HubThemeProvider",
+          "callee": "applyTheme",
+          "lineNumber": 73
+        },
+        {
+          "caller": "HubThemeProvider",
+          "callee": "window.localStorage.setItem",
+          "lineNumber": 76
+        },
+        {
+          "caller": "HubThemeProvider",
+          "callee": "useMemo",
+          "lineNumber": 82
+        },
+        {
+          "caller": "HubThemeProvider",
+          "callee": "setTheme",
+          "lineNumber": 87
+        },
+        {
+          "caller": "useHubTheme",
+          "callee": "useContext",
+          "lineNumber": 97
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 4,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/components/theme/ThemeToggle.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 32,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "ThemeToggle",
+          "startLine": 9,
+          "endLine": 32,
+          "params": [
+            "{ compact = false }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ThemeToggle",
+          "line": 9,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ThemeToggle",
+          "callee": "useHubTheme",
+          "lineNumber": 10
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    }
+  ]
+}

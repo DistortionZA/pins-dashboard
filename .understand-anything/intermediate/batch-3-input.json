@@ -1,0 +1,103 @@
+{
+  "projectRoot": "/home/duncan/Documents/pins-dashboard",
+  "batchFiles": [
+    {
+      "path": "src/app/hub/calculators/eu/page.tsx",
+      "language": "typescript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/page.tsx",
+      "language": "typescript",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/page.tsx",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/loading.tsx",
+      "language": "typescript",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx",
+      "language": "typescript",
+      "sizeLines": 1271,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/pk-tax/page.tsx",
+      "language": "typescript",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/reference/ReferenceClient.tsx",
+      "language": "typescript",
+      "sizeLines": 727,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/reference/page.tsx",
+      "language": "typescript",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/reference/referenceData.ts",
+      "language": "typescript",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/BackLink.tsx",
+      "language": "typescript",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/NavigationCard.tsx",
+      "language": "typescript",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "src/app/hub/calculators/eu/page.tsx": [
+      "src/components/BackLink.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/hub/calculators/page.tsx": [
+      "src/components/BackLink.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/hub/calculators/uk/page.tsx": [
+      "src/components/BackLink.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/hub/loading.tsx": [
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx": [],
+    "src/app/hub/pk-tax/page.tsx": [
+      "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/reference/ReferenceClient.tsx": [
+      "src/app/hub/reference/referenceData.ts",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/reference/page.tsx": [
+      "src/app/hub/reference/ReferenceClient.tsx"
+    ],
+    "src/app/hub/reference/referenceData.ts": [],
+    "src/components/BackLink.tsx": [],
+    "src/components/NavigationCard.tsx": []
+  }
+}

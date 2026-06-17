@@ -1,6 +1,8 @@
 import type { Garment } from "@prisma/client"
+
 import type { Design, DesignCostBreakdown } from "@/components/DesignCard"
-import { PRINT_POSITIONS } from "@/components/DesignCard"
+
+import { getBreakdownItemLabel, getPrintPositionLabel } from "./displayStandards"
 
 type FormatQuoteBaseParams = {
   designs: Design[]
@@ -13,6 +15,27 @@ type FormatUsQuoteParams = FormatQuoteBaseParams & {
   vatRate: number
 }
 
+type FormatUkTradeQuoteParams = {
+  designs: Array<{
+    garmentId?: string
+    quantity: number
+    positions: Record<string, number>
+    itemLabel?: string
+  }>
+  breakdowns: Array<{
+    totalCost: number
+    hasValidPrice: boolean
+  }>
+  garments: Array<{
+    id: string
+    code: string
+    brandName: string
+    name: string
+    color: string
+  }>
+  currency: string
+}
+
 type FormatDeliveryParams = {
   country: string
   deliveryTime: string
@@ -22,19 +45,43 @@ type FormatDeliveryParams = {
   currency: string
 }
 
-function getPositionLabel(position: string) {
-  return PRINT_POSITIONS.find((pos) => pos.value === position)?.label || position
+function formatPositionSummary(positions: Record<string, number>, variant: "eu" | "us") {
+  return Object.entries(positions)
+    .filter(([, colorCount]) => colorCount > 0)
+    .map(([position, colorCount]) => {
+      const label = getPrintPositionLabel(position)
+
+      if (variant === "us") {
+        return `${colorCount}c ${label.toLowerCase()}`
+      }
+
+      return `${colorCount} Col ${label}`
+    })
+    .join(", ")
 }
 
-function getItemLabel(design: Design, index: number) {
-  return design.itemLabel?.trim() || `Item #${index + 1}`
+function formatGarmentSummary(
+  garment: { code?: string; brandName?: string; name?: string; color?: string } | undefined,
+  positionsText: string,
+  suffix = "",
+) {
+  const garmentParts = [
+    garment?.code?.trim(),
+    garment?.brandName?.trim(),
+    garment?.name?.trim(),
+    garment?.color?.trim(),
+  ].filter(Boolean)
+
+  const garmentSummary = garmentParts.length > 0 ? garmentParts.join(" ") : "No garment"
+
+  return `${garmentSummary}${positionsText ? ` (${positionsText}${suffix})` : ""}`
 }
 
 export function formatEuQuoteCopy({
   designs,
   breakdowns,
   garments,
-  currency
+  currency,
 }: FormatQuoteBaseParams): string {
   return breakdowns
     .map((breakdown, index) => {
@@ -42,23 +89,17 @@ export function formatEuQuoteCopy({
       if (!design) return null
 
       const garment = garments.find((item) => item.id === design.garmentId)
-      const garmentCode = garment?.code || ""
-      const garmentName = garment?.name || "No garment"
-      const positionsText = Object.entries(design.positions)
-        .filter(([, colorCount]) => colorCount > 0)
-        .map(([position, colorCount]) => `${colorCount} Col ${getPositionLabel(position)}`)
-        .join(", ")
-
+      const positionsText = formatPositionSummary(design.positions, "eu")
       const subtotalExclVat =
         breakdown.baseCost + breakdown.pinsCost + breakdown.markupCost + breakdown.pkMarkupCost
       const unitExclVat = design.quantity > 0 ? subtotalExclVat / design.quantity : 0
-      const subtotalInclVat = subtotalExclVat * 1.27 // or use vatRate if available
+      const subtotalInclVat = subtotalExclVat * 1.27
 
       return [
-        `${getItemLabel(design, index)}:`,
+        `${getBreakdownItemLabel(design.itemLabel, index)}:`,
         "",
-        `${garmentCode} ${garmentName}${positionsText ? ` (${positionsText})` : ""}`,
-        `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} (excl vat) ea = ${currency}${subtotalInclVat.toFixed(2)}`
+        formatGarmentSummary(garment, positionsText),
+        `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} (excl vat) ea = ${currency}${subtotalInclVat.toFixed(2)}`,
       ].join("\n")
     })
     .filter((entry): entry is string => Boolean(entry))
@@ -70,7 +111,7 @@ export function formatUsClientQuoteCopy({
   breakdowns,
   garments,
   currency,
-  vatRate
+  vatRate,
 }: FormatUsQuoteParams): string {
   return breakdowns
     .map((breakdown, index) => {
@@ -78,14 +119,7 @@ export function formatUsClientQuoteCopy({
       if (!design) return null
 
       const garment = garments.find((item) => item.id === design.garmentId)
-      const garmentCode = garment?.code || ""
-      const garmentName = garment?.name || "No garment"
-      const positionsText = Object.entries(design.positions)
-        .filter(([, colorCount]) => colorCount > 0)
-        .map(([position, colorCount]) => `${colorCount}c ${getPositionLabel(position).toLowerCase()}`)
-        .join(", ")
-
-      const baseCost  =breakdown.baseCost
+      const positionsText = formatPositionSummary(design.positions, "us")
       const subtotalExclVat =
         breakdown.baseCost + breakdown.pinsCost + breakdown.markupCost + breakdown.pkMarkupCost
       const unitExclVat = design.quantity > 0 ? subtotalExclVat / design.quantity : 0
@@ -93,12 +127,38 @@ export function formatUsClientQuoteCopy({
       const vatAmount = totalInclVat - subtotalExclVat
 
       return [
-        `${getItemLabel(design, index)}:`,
+        `${getBreakdownItemLabel(design.itemLabel, index)}:`,
         "",
-        `${garmentCode} ${garmentName}${positionsText ? ` (${positionsText} + base) ` : ""}`,
+        formatGarmentSummary(garment, positionsText, " + base"),
         `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} each (${currency}${subtotalExclVat.toFixed(2)} ex vat)`,
         `VAT = ${currency}${vatAmount.toFixed(2)}`,
-        `TOTAL = ${currency}${totalInclVat.toFixed(2)}`
+        `TOTAL = ${currency}${totalInclVat.toFixed(2)}`,
+      ].join("\n")
+    })
+    .filter((entry): entry is string => Boolean(entry))
+    .join("\n\n")
+}
+
+export function formatUkTradeQuoteCopy({
+  designs,
+  breakdowns,
+  garments,
+  currency,
+}: FormatUkTradeQuoteParams): string {
+  return breakdowns
+    .map((breakdown, index) => {
+      const design = designs[index]
+      if (!design || !breakdown.hasValidPrice) return null
+
+      const garment = garments.find((item) => item.id === design.garmentId)
+      const positionsText = formatPositionSummary(design.positions, "eu")
+      const unitExclVat = design.quantity > 0 ? breakdown.totalCost / design.quantity : 0
+
+      return [
+        `${getBreakdownItemLabel(design.itemLabel, index)}:`,
+        "",
+        formatGarmentSummary(garment, positionsText),
+        `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} each (${currency}${breakdown.totalCost.toFixed(2)} ex vat)`,
       ].join("\n")
     })
     .filter((entry): entry is string => Boolean(entry))
@@ -111,16 +171,16 @@ export function formatDeliveryCopy({
   boxCount,
   costPerBox,
   totalInclVat,
-  currency
+  currency,
 }: FormatDeliveryParams): string {
   return [
-    `Delivery Helper`,
+    "Delivery Helper",
     "",
     `Delivery Country: ${country}`,
     `Delivery Time: ${deliveryTime}`,
     `Boxes: ${boxCount}`,
     `Cost Per Box: ${currency}${costPerBox.toFixed(2)} excl. VAT`,
-    `Total Delivery Cost Incl. VAT: ${currency}${totalInclVat.toFixed(2)}`
+    `Total Delivery Cost Incl. VAT: ${currency}${totalInclVat.toFixed(2)}`,
   ].join("\n")
 }
 

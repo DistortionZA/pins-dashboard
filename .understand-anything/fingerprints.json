@@ -1,0 +1,3444 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "6482ec42c97410e3441e63eb3ef75cd6f5bad766",
+  "generatedAt": "2026-06-16T10:27:34.702Z",
+  "files": {
+    ".agents/skills/neon-postgres/SKILL.md": {
+      "filePath": ".agents/skills/neon-postgres/SKILL.md",
+      "contentHash": "580ceb3e2805066a7be34d8b83d66de1ac1916714383bd7bcc7da3ce4feeb704",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 277,
+      "hasStructuralAnalysis": true
+    },
+    ".env.example": {
+      "filePath": ".env.example",
+      "contentHash": "fc9c5c5cbf6864689e2301aa6a9fd25165574cc9df62c250637c7d8b2cea20bf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    ".serena/memories/memory_maintenance.md": {
+      "filePath": ".serena/memories/memory_maintenance.md",
+      "contentHash": "09d514088a02af6dd4487f6538011e398601f5397a8e68b901c0d7cf29a30177",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 33,
+      "hasStructuralAnalysis": true
+    },
+    ".serena/memories/project_context/current_state.md": {
+      "filePath": ".serena/memories/project_context/current_state.md",
+      "contentHash": "e2f89f48834a209198b76bd50b0431da951e437da7969abdf805dedb3bbfabb7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 57,
+      "hasStructuralAnalysis": true
+    },
+    ".serena/project.yml": {
+      "filePath": ".serena/project.yml",
+      "contentHash": "6da01ff9a7125a4ad3053ed7fceec5c1c678fc8f4fbc3a4bbf4f6a70421b94ea",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    ".understand-anything/config.json": {
+      "filePath": ".understand-anything/config.json",
+      "contentHash": "08d37f20ea0af2233ae24f094723759f952381ecb6dd7f2aaa05ef96e95eae6b",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "AGENTS.md": {
+      "filePath": "AGENTS.md",
+      "contentHash": "4b9cd3a15e8624a0700fc5263c258fb4e5b40d48ed61a1367854c96ccbc6352d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 104,
+      "hasStructuralAnalysis": true
+    },
+    "CLAUDE.md": {
+      "filePath": "CLAUDE.md",
+      "contentHash": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "docs/ai-context/PROJECT_CONTEXT.md": {
+      "filePath": "docs/ai-context/PROJECT_CONTEXT.md",
+      "contentHash": "8893eab98d8464fb0629b1422948feb21aedf9a8ed3e7ab1403ac3d614aebf58",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 202,
+      "hasStructuralAnalysis": true
+    },
+    "docs/ai-context/UI_MANUAL_UPDATE_GUIDE.md": {
+      "filePath": "docs/ai-context/UI_MANUAL_UPDATE_GUIDE.md",
+      "contentHash": "de6efd78b4c8368c8fcb17be57c1481afb7d8e2ad484cf67053d0108e5ee4568",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 669,
+      "hasStructuralAnalysis": true
+    },
+    "eslint.config.mjs": {
+      "filePath": "eslint.config.mjs",
+      "contentHash": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "eslint/config",
+          "specifiers": [
+            "defineConfig",
+            "globalIgnores"
+          ]
+        },
+        {
+          "source": "eslint-config-next/core-web-vitals",
+          "specifiers": [
+            "nextVitals"
+          ]
+        },
+        {
+          "source": "eslint-config-next/typescript",
+          "specifiers": [
+            "nextTs"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 19,
+      "hasStructuralAnalysis": true
+    },
+    "next.config.ts": {
+      "filePath": "next.config.ts",
+      "contentHash": "990568301060456fd2eb34f81ade8a12d244de3cf08ed4437f11c593b958dabd",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "NextConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "package.json": {
+      "filePath": "package.json",
+      "contentHash": "e2558236672f0cee58e2b8eeae056adb9e5249ac5df50549580c8a7226c9a741",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "postcss.config.mjs": {
+      "filePath": "postcss.config.mjs",
+      "contentHash": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "prisma.config.ts": {
+      "filePath": "prisma.config.ts",
+      "contentHash": "7568f52ac8cb056a93b5efcebff174955b427bf1f5bd2dc0e76fd0b12ceda2b0",
+      "functions": [
+        {
+          "name": "assertDeployableDatabaseUrl",
+          "params": [
+            "value",
+            "envName"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "getMigrationDatabaseUrl",
+          "params": [],
+          "exported": false,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "prisma/config",
+          "specifiers": [
+            "defineConfig"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/migrations/0_init/migration.sql": {
+      "filePath": "prisma/migrations/0_init/migration.sql",
+      "contentHash": "4f0f8911c0223d85b054acf7f5629214d3d9c023a4cefaf939c924480f6c3ceb",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 84,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/migrations/20260608143000_add_referral_models/migration.sql": {
+      "filePath": "prisma/migrations/20260608143000_add_referral_models/migration.sql",
+      "contentHash": "34f1f6a803be7b84bb4055ab6ce3a2b7148ed8631b48c2b4a9ca613ce926cac4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 73,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/migrations/20260610120000_add_calculator_profiles/migration.sql": {
+      "filePath": "prisma/migrations/20260610120000_add_calculator_profiles/migration.sql",
+      "contentHash": "5100c58a2a3b6cb473890577a68ab437058e2bd2461b6a3b2b73276b33366222",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/migrations/20260611101832_add_referral_scenarios/migration.sql": {
+      "filePath": "prisma/migrations/20260611101832_add_referral_scenarios/migration.sql",
+      "contentHash": "821efc0309c47abe4203610b5d8330c4b0ec1ed5ced5842020126c632e86471a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/migrations/20260616120000_add_garment_gbp_price/migration.sql": {
+      "filePath": "prisma/migrations/20260616120000_add_garment_gbp_price/migration.sql",
+      "contentHash": "0a9dcab70fcb9fbed0774f7fa0bda6afa0a632d40bad5ebc39d45792a02056c8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/migrations/migration_lock.toml": {
+      "filePath": "prisma/migrations/migration_lock.toml",
+      "contentHash": "99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/schema.prisma": {
+      "filePath": "prisma/schema.prisma",
+      "contentHash": "9c7bed3a6c8f2a2e1e63cfc4d2923417bbf991e3524fedeb9d111f3ef08270f5",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 161,
+      "hasStructuralAnalysis": false
+    },
+    "prisma/seed-data.ts": {
+      "filePath": "prisma/seed-data.ts",
+      "contentHash": "1520af03c5fdc4b47fd569523df04c7eff16df4434efc481f602cc7f8908d491",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "GarmentType",
+            "Prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "garmentSeedData",
+        "calculatorProfileSeedData",
+        "garmentMarkupSeedDataByCalculatorCode",
+        "printPriceSeedData"
+      ],
+      "totalLines": 129,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/seed.ts": {
+      "filePath": "prisma/seed.ts",
+      "contentHash": "98334ac3ece2dca1182d06d3f10b8e312c06f668cfdcd372b3bb84fda95bc908",
+      "functions": [
+        {
+          "name": "main",
+          "params": [],
+          "exported": false,
+          "lineCount": 40
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "PrismaClient"
+          ]
+        },
+        {
+          "source": "@prisma/adapter-pg",
+          "specifiers": [
+            "PrismaPg"
+          ]
+        },
+        {
+          "source": "pg",
+          "specifiers": [
+            "Pool"
+          ]
+        },
+        {
+          "source": "dotenv/config",
+          "specifiers": []
+        },
+        {
+          "source": "./seed-data",
+          "specifiers": [
+            "calculatorProfileSeedData",
+            "garmentMarkupSeedDataByCalculatorCode",
+            "garmentSeedData",
+            "printPriceSeedData"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 77,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/sqlite-migrations-archive/20260602151830_init/migration.sql": {
+      "filePath": "prisma/sqlite-migrations-archive/20260602151830_init/migration.sql",
+      "contentHash": "0fd2837823d26bcc3e7b06549522caff4c4f5fe95d29792124f58df11c5dec5d",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/sqlite-migrations-archive/20260602155246_add_garments/migration.sql": {
+      "filePath": "prisma/sqlite-migrations-archive/20260602155246_add_garments/migration.sql",
+      "contentHash": "89ab7ccfcede367b0dc1fafcc9d2e8ca0a6854bc5031d683f5aa1bfaf3f36bac",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/sqlite-migrations-archive/20260604120000_add_garment_tags/migration.sql": {
+      "filePath": "prisma/sqlite-migrations-archive/20260604120000_add_garment_tags/migration.sql",
+      "contentHash": "fd07bc3f1645a9f82b6e51e78af448f05337b6f1495f8b186f0dd91557290245",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 3,
+      "hasStructuralAnalysis": true
+    },
+    "prisma/sqlite-migrations-archive/20260604130000_add_garment_detail_fields/migration.sql": {
+      "filePath": "prisma/sqlite-migrations-archive/20260604130000_add_garment_detail_fields/migration.sql",
+      "contentHash": "72a8e0d7445589a7c752ad092a1767f4423809175b23f51ea8de66b3b6237486",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "fb79537bd38d16abda57c4b379b8c31596b3fcd0cdf016b819b1bb93807c0d8c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 91,
+      "hasStructuralAnalysis": true
+    },
+    "skills-lock.json": {
+      "filePath": "skills-lock.json",
+      "contentHash": "5fb6e3580d5a730a495bbe87a3b063f439742e7dbe91d0de0969f64de44b16be",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/globals.css": {
+      "filePath": "src/app/globals.css",
+      "contentHash": "e24413908e35c6907034c4cb4deb848e991e2b63834cfc8fca3b0f1a560ca70c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 516,
+      "hasStructuralAnalysis": false
+    },
+    "src/app/hub/calculators/CalculatorClient.tsx": {
+      "filePath": "src/app/hub/calculators/CalculatorClient.tsx",
+      "contentHash": "cabaae80dfdba7c6d814a4ef9ed3708a3fe6a29c4c07ca559c8251aee2aecf62",
+      "functions": [
+        {
+          "name": "CalculatorClient",
+          "params": [
+            "{\n  garments,\n  printPrices,\n  garmentMarkups,\n  calculatorTitle,\n}"
+          ],
+          "exported": true,
+          "lineCount": 749
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "sonner",
+          "specifiers": [
+            "toast"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useId",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "@/components/DesignCard",
+          "specifiers": [
+            "DesignCard",
+            "Design",
+            "calculateDesignCosts",
+            "DesignCostBreakdown",
+            "getPrintUnitPrices",
+            "PRINT_POSITIONS"
+          ]
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment",
+            "GarmentMarkup",
+            "PrintPrice"
+          ]
+        },
+        {
+          "source": "./copyFormatters",
+          "specifiers": [
+            "formatDeliveryCopy",
+            "getQuoteFormatter"
+          ]
+        }
+      ],
+      "exports": [
+        "CalculatorClient"
+      ],
+      "totalLines": 800,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/CalculatorLoading.tsx": {
+      "filePath": "src/app/hub/calculators/CalculatorLoading.tsx",
+      "contentHash": "b39f15180b67e59887cb83a0041a81b04635bf9bcefc4e9926954c1521eec2f8",
+      "functions": [
+        {
+          "name": "Loading",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "Loading"
+      ],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/CalculatorPageContent.tsx": {
+      "filePath": "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "contentHash": "0df7c4ba946ce6fef0aad74b82bb64567c6a331422f5fc42314e2d1a76ceaf19",
+      "functions": [
+        {
+          "name": "CalculatorPageContent",
+          "params": [
+            "{\n  calculatorCode,\n  title,\n  backHref,\n}"
+          ],
+          "exported": true,
+          "lineCount": 28
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/server",
+          "specifiers": [
+            "connection"
+          ]
+        },
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "@/lib/calculator-profiles",
+          "specifiers": [
+            "CalculatorProfileCode"
+          ]
+        },
+        {
+          "source": "./CalculatorClient",
+          "specifiers": [
+            "CalculatorClient"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "getCalculatorReferenceData"
+          ]
+        }
+      ],
+      "exports": [
+        "CalculatorPageContent"
+      ],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/copyFormatters.ts": {
+      "filePath": "src/app/hub/calculators/copyFormatters.ts",
+      "contentHash": "98405be6460ce689ddce74f284c35684713384695d0981acf6611b22e1032353",
+      "functions": [
+        {
+          "name": "getPositionLabel",
+          "params": [
+            "position"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getItemLabel",
+          "params": [
+            "design",
+            "index"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "formatEuQuoteCopy",
+          "params": [
+            "{\n  designs,\n  breakdowns,\n  garments,\n  currency\n}"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "formatUsClientQuoteCopy",
+          "params": [
+            "{\n  designs,\n  breakdowns,\n  garments,\n  currency,\n  vatRate\n}"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 39
+        },
+        {
+          "name": "formatDeliveryCopy",
+          "params": [
+            "{\n  country,\n  deliveryTime,\n  boxCount,\n  costPerBox,\n  totalInclVat,\n  currency\n}"
+          ],
+          "returnType": "string",
+          "exported": true,
+          "lineCount": 18
+        },
+        {
+          "name": "getQuoteFormatter",
+          "params": [
+            "calculatorTitle"
+          ],
+          "exported": true,
+          "lineCount": 7
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment"
+          ]
+        },
+        {
+          "source": "@/components/DesignCard",
+          "specifiers": [
+            "Design",
+            "DesignCostBreakdown"
+          ]
+        },
+        {
+          "source": "@/components/DesignCard",
+          "specifiers": [
+            "PRINT_POSITIONS"
+          ]
+        }
+      ],
+      "exports": [
+        "formatEuQuoteCopy",
+        "formatUsClientQuoteCopy",
+        "formatDeliveryCopy",
+        "getQuoteFormatter"
+      ],
+      "totalLines": 134,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/data.ts": {
+      "filePath": "src/app/hub/calculators/data.ts",
+      "contentHash": "c6e572cfcf070e75779d2ccbf0bd3b0d852cfc9b6f4c0ff468dda877e81236ed",
+      "functions": [
+        {
+          "name": "loadCalculatorReferenceData",
+          "params": [
+            "calculatorCode"
+          ],
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "getCalculatorReferenceTag",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/cache",
+          "specifiers": [
+            "unstable_cache"
+          ]
+        },
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "@/lib/calculator-profiles",
+          "specifiers": [
+            "CalculatorProfileCode"
+          ]
+        }
+      ],
+      "exports": [
+        "getCalculatorReferenceData",
+        "getCalculatorReferenceTag"
+      ],
+      "totalLines": 44,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/eu/page.tsx": {
+      "filePath": "src/app/hub/calculators/eu/page.tsx",
+      "contentHash": "7f98da2cc4b779aefff3f6f6f0fb84a520c452e8bf39f862afb48bc7e6d9ace4",
+      "functions": [
+        {
+          "name": "EuCalculatorsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 70
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "@/components/NavigationCard",
+          "specifiers": [
+            "NavigationCard"
+          ]
+        }
+      ],
+      "exports": [
+        "EuCalculatorsPage"
+      ],
+      "totalLines": 74,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/eu/standard/loading.tsx": {
+      "filePath": "src/app/hub/calculators/eu/standard/loading.tsx",
+      "contentHash": "59a7c21c65056a0e2e722fff88d4f69c520f720273b9d21a54ccd38a4e7777b4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "default"
+      ],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/eu/standard/page.tsx": {
+      "filePath": "src/app/hub/calculators/eu/standard/page.tsx",
+      "contentHash": "75ad3625a8a9611bff14df17405c0554c9e7d84dc39385dfe19ac48d407724ae",
+      "functions": [
+        {
+          "name": "StandardEuCalculatorPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        },
+        {
+          "source": "../../CalculatorPageContent",
+          "specifiers": [
+            "CalculatorPageContent"
+          ]
+        },
+        {
+          "source": "@/lib/calculator-profiles",
+          "specifiers": [
+            "CALCULATOR_PROFILE_CODES"
+          ]
+        }
+      ],
+      "exports": [
+        "metadata",
+        "StandardEuCalculatorPage"
+      ],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/eu/us-clients/loading.tsx": {
+      "filePath": "src/app/hub/calculators/eu/us-clients/loading.tsx",
+      "contentHash": "59a7c21c65056a0e2e722fff88d4f69c520f720273b9d21a54ccd38a4e7777b4",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "default"
+      ],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/eu/us-clients/page.tsx": {
+      "filePath": "src/app/hub/calculators/eu/us-clients/page.tsx",
+      "contentHash": "87b306f6b6cf1d9110059513618652601de6d33aca2a8586249a6b2325530157",
+      "functions": [
+        {
+          "name": "UsClientsCalculatorPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        },
+        {
+          "source": "../../CalculatorPageContent",
+          "specifiers": [
+            "CalculatorPageContent"
+          ]
+        },
+        {
+          "source": "@/lib/calculator-profiles",
+          "specifiers": [
+            "CALCULATOR_PROFILE_CODES"
+          ]
+        }
+      ],
+      "exports": [
+        "metadata",
+        "UsClientsCalculatorPage"
+      ],
+      "totalLines": 21,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/page.tsx": {
+      "filePath": "src/app/hub/calculators/page.tsx",
+      "contentHash": "7d94a2f5da8559bf289c0161a70721c0a2426a37ad2f4f202bf803e7308893b0",
+      "functions": [
+        {
+          "name": "CalculatorsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "@/components/NavigationCard",
+          "specifiers": [
+            "NavigationCard"
+          ]
+        }
+      ],
+      "exports": [
+        "CalculatorsPage"
+      ],
+      "totalLines": 70,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/uk/page.tsx": {
+      "filePath": "src/app/hub/calculators/uk/page.tsx",
+      "contentHash": "2388d29a83d5da89a11b48c9eed03cb2058cc9076132727074dea52155599128",
+      "functions": [
+        {
+          "name": "UkCalculatorsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 33
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "@/components/NavigationCard",
+          "specifiers": [
+            "NavigationCard"
+          ]
+        }
+      ],
+      "exports": [
+        "UkCalculatorsPage"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/uk/trade/data.ts": {
+      "filePath": "src/app/hub/calculators/uk/trade/data.ts",
+      "contentHash": "5acf502a7aeb64c918c2b93dbb519980fedebb1324f4271202fc40726dd75f7c",
+      "functions": [
+        {
+          "name": "loadUkTradeCalculatorGarments",
+          "params": [],
+          "returnType": "Promise<Garment[]>",
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getUkTradeGarmentsTag",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/cache",
+          "specifiers": [
+            "unstable_cache"
+          ]
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment"
+          ]
+        },
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "getUkTradeCalculatorGarments",
+        "getUkTradeGarmentsTag"
+      ],
+      "totalLines": 24,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/uk/trade/page.tsx": {
+      "filePath": "src/app/hub/calculators/uk/trade/page.tsx",
+      "contentHash": "05954fa110a4a512382df52883a12882a236319e711521b2d159d3050f291c37",
+      "functions": [
+        {
+          "name": "UkTradeCalculatorPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 23
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        },
+        {
+          "source": "next/server",
+          "specifiers": [
+            "connection"
+          ]
+        },
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "./UkTradeCalculatorClient",
+          "specifiers": [
+            "UkTradeCalculatorClient"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "getUkTradeCalculatorGarments"
+          ]
+        }
+      ],
+      "exports": [
+        "metadata",
+        "UkTradeCalculatorPage"
+      ],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/uk/trade/UkTradeCalculatorClient.tsx": {
+      "filePath": "src/app/hub/calculators/uk/trade/UkTradeCalculatorClient.tsx",
+      "contentHash": "facb248baaab9c616d62760af3e7b52fd84c90880e6ee03fee1b3e87448bd047",
+      "functions": [
+        {
+          "name": "createDefaultDesign",
+          "params": [],
+          "returnType": "UkTradeDesign",
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "formatCurrency",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getSelectedPositionEntries",
+          "params": [
+            "positions"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getGarmentDisplayName",
+          "params": [
+            "garment"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "calculateUkTradeItemBreakdown",
+          "params": [
+            "design",
+            "garments"
+          ],
+          "returnType": "UkTradeItemBreakdown",
+          "exported": false,
+          "lineCount": 59
+        },
+        {
+          "name": "UkTradeCalculatorClient",
+          "params": [
+            "{\n  garments,\n}"
+          ],
+          "exported": true,
+          "lineCount": 240
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment"
+          ]
+        },
+        {
+          "source": "../tradeScreenPrintData",
+          "specifiers": [
+            "getUkTradeScreenPrintPrice",
+            "UK_TRADE_SCREEN_SETUP_PER_COLOUR"
+          ]
+        },
+        {
+          "source": "./UkTradeDesignCard",
+          "specifiers": [
+            "UkTradeDesignCard",
+            "UkTradeDesign"
+          ]
+        }
+      ],
+      "exports": [
+        "UkTradeCalculatorClient"
+      ],
+      "totalLines": 345,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/uk/trade/UkTradeDesignCard.tsx": {
+      "filePath": "src/app/hub/calculators/uk/trade/UkTradeDesignCard.tsx",
+      "contentHash": "88fd467d222886166f2ed64051f433e3392312ba78b1758b8f8255df0afcd198",
+      "functions": [
+        {
+          "name": "normalizeSearch",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getGarmentLabel",
+          "params": [
+            "garment"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getDefaultItemLabel",
+          "params": [
+            "itemNumber"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getColorInputState",
+          "params": [
+            "positions"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "GarmentSelector",
+          "params": [
+            "{\n  garments,\n  value,\n  onChange,\n}"
+          ],
+          "exported": false,
+          "lineCount": 87
+        },
+        {
+          "name": "UkTradeDesignCard",
+          "params": [
+            "{\n  design,\n  garments,\n  itemNumber,\n  onChange,\n  onRemove,\n}"
+          ],
+          "exported": true,
+          "lineCount": 241
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment"
+          ]
+        },
+        {
+          "source": "@/components/DesignCard",
+          "specifiers": [
+            "PRINT_POSITIONS"
+          ]
+        }
+      ],
+      "exports": [
+        "UkTradeDesignCard"
+      ],
+      "totalLines": 369,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/calculators/uk/tradeScreenPrintData.ts": {
+      "filePath": "src/app/hub/calculators/uk/tradeScreenPrintData.ts",
+      "contentHash": "84f39aff3bb2faf561fe1a565bee64295d4e7f5f3e7cd47ad2d75c3825f8c53e",
+      "functions": [
+        {
+          "name": "getUkTradeScreenPrintPrice",
+          "params": [
+            "quantity",
+            "colorCount"
+          ],
+          "returnType": "UkTradeScreenPrintPriceLookupResult",
+          "exported": true,
+          "lineCount": 30
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "UK_TRADE_SCREEN_SETUP_PER_COLOUR",
+        "UK_TRADE_SCREEN_PRINT_QUANTITY_TIERS",
+        "UK_TRADE_SCREEN_PRINT_COLOUR_COUNTS",
+        "ukTradeScreenPrintPrices",
+        "getUkTradeScreenPrintPrice"
+      ],
+      "totalLines": 211,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/garments/actions.ts": {
+      "filePath": "src/app/hub/garments/actions.ts",
+      "contentHash": "03ef3d9fecce51757ab52be03d5daf3739fc82fd38194330d69ef6396093890d",
+      "functions": [
+        {
+          "name": "normalizeTags",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "normalizeText",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizeCode",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizeOptionalFloat",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "addGarment",
+          "params": [
+            "formData"
+          ],
+          "exported": true,
+          "lineCount": 33
+        },
+        {
+          "name": "updateGarmentDetails",
+          "params": [
+            "formData"
+          ],
+          "exported": true,
+          "lineCount": 29
+        },
+        {
+          "name": "deleteGarment",
+          "params": [
+            "id"
+          ],
+          "exported": true,
+          "lineCount": 15
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "next/cache",
+          "specifiers": [
+            "revalidatePath",
+            "revalidateTag"
+          ]
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "GarmentType"
+          ]
+        },
+        {
+          "source": "../calculators/data",
+          "specifiers": [
+            "getCalculatorReferenceTag"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "getGarmentDirectoryTag"
+          ]
+        }
+      ],
+      "exports": [
+        "addGarment",
+        "updateGarmentDetails",
+        "deleteGarment"
+      ],
+      "totalLines": 128,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/garments/data.ts": {
+      "filePath": "src/app/hub/garments/data.ts",
+      "contentHash": "7051f3cd94c82201fada7ea6a23db1cfd90dfc95e3d8b0da07aaf2058c37431b",
+      "functions": [
+        {
+          "name": "loadGarmentDirectoryData",
+          "params": [],
+          "returnType": "Promise<GarmentDirectoryItem[]>",
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "getGarmentDirectoryTag",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/cache",
+          "specifiers": [
+            "unstable_cache"
+          ]
+        },
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment"
+          ]
+        },
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "@/lib/calculator-profiles",
+          "specifiers": [
+            "CALCULATOR_PROFILE_CODES"
+          ]
+        }
+      ],
+      "exports": [
+        "getGarmentDirectoryData",
+        "getGarmentDirectoryTag"
+      ],
+      "totalLines": 47,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/garments/GarmentDirectoryClient.tsx": {
+      "filePath": "src/app/hub/garments/GarmentDirectoryClient.tsx",
+      "contentHash": "f0933d3ec450004362dbdfeca6572a7a41700ac2542a6e1d352ae411d7b61830",
+      "functions": [
+        {
+          "name": "getTagList",
+          "params": [
+            "tags"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "normalizeSearch",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getGbpPriceDisplay",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizeGarmentDirectoryItem",
+          "params": [
+            "garment"
+          ],
+          "returnType": "GarmentDirectoryItem",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "GarmentDirectoryClient",
+          "params": [
+            "{\n  initialGarments\n}"
+          ],
+          "exported": true,
+          "lineCount": 482
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "useRouter"
+          ]
+        },
+        {
+          "source": "./actions",
+          "specifiers": [
+            "addGarment",
+            "updateGarmentDetails",
+            "deleteGarment"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "GarmentDirectoryItem"
+          ]
+        }
+      ],
+      "exports": [
+        "GarmentDirectoryClient"
+      ],
+      "totalLines": 514,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/garments/loading.tsx": {
+      "filePath": "src/app/hub/garments/loading.tsx",
+      "contentHash": "72949fe663a3b5e063b7e72758ce9609c678916566c3cab8a3958e9b44893b07",
+      "functions": [
+        {
+          "name": "Loading",
+          "params": [],
+          "exported": true,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "Loading"
+      ],
+      "totalLines": 37,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/garments/page.tsx": {
+      "filePath": "src/app/hub/garments/page.tsx",
+      "contentHash": "035f5ae52142d0e053292465b109f43dd10f4f5fac1609ab13f23aba63b88996",
+      "functions": [
+        {
+          "name": "GarmentDirectoryPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/server",
+          "specifiers": [
+            "connection"
+          ]
+        },
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "./GarmentDirectoryClient",
+          "specifiers": [
+            "GarmentDirectoryClient"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "getGarmentDirectoryData"
+          ]
+        }
+      ],
+      "exports": [
+        "GarmentDirectoryPage"
+      ],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/layout.tsx": {
+      "filePath": "src/app/hub/layout.tsx",
+      "contentHash": "07757b00990d3eccd70a94c59ba00099cf1db7c58a52aadd2f027cf13038174a",
+      "functions": [
+        {
+          "name": "HubLayout",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode"
+          ]
+        },
+        {
+          "source": "@/components/HubSidebar",
+          "specifiers": [
+            "HubSidebar"
+          ]
+        }
+      ],
+      "exports": [
+        "HubLayout"
+      ],
+      "totalLines": 15,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/loading.tsx": {
+      "filePath": "src/app/hub/loading.tsx",
+      "contentHash": "ace01c0e1965ed411f7a5e94e9d014201f9c5b7a5081ae6bbfa748b59fe5ebad",
+      "functions": [
+        {
+          "name": "Loading",
+          "params": [],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        }
+      ],
+      "exports": [
+        "Loading"
+      ],
+      "totalLines": 27,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/pk-tax/page.tsx": {
+      "filePath": "src/app/hub/pk-tax/page.tsx",
+      "contentHash": "87cff186d6ce1649f8b18f8fd1f316ae1dc10e5c64fd586d82b7c50646211430",
+      "functions": [
+        {
+          "name": "PkTaxPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 18
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "./PkTaxCalculatorClient",
+          "specifiers": [
+            "PkTaxCalculatorClient"
+          ]
+        }
+      ],
+      "exports": [
+        "PkTaxPage"
+      ],
+      "totalLines": 22,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx": {
+      "filePath": "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx",
+      "contentHash": "ebd1e25510c6ca7e42dfa3da7379aed6897d36c8af41696d57b1c53ccf4274d1",
+      "functions": [
+        {
+          "name": "AccordionSection",
+          "params": [
+            "{\n  title,\n  description,\n  isOpen,\n  onToggle,\n  children,\n}"
+          ],
+          "exported": false,
+          "lineCount": 37
+        },
+        {
+          "name": "createDefaultRows",
+          "params": [],
+          "returnType": "AccountManagerMonthlyInput[]",
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "createRow",
+          "params": [
+            "id",
+            "name",
+            "eligibility",
+            "removable",
+            "code"
+          ],
+          "returnType": "AccountManagerMonthlyInput",
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "parseCurrencyInput",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "parseOrdersInput",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "clampNumberInput",
+          "params": [
+            "value",
+            "wholeNumber"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getShare",
+          "params": [
+            "value",
+            "total"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "formatCurrencyGbp",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "formatCurrencyZar",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "formatPercent",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "copyToClipboard",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "getInputClassName",
+          "params": [],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isIncludedRow",
+          "params": [
+            "row"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isEligiblePoolRecipient",
+          "params": [
+            "row"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isContributionOnlyPoolIncluded",
+          "params": [
+            "row"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isJohanSeparate",
+          "params": [
+            "row"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isSharedPoolBaseRow",
+          "params": [
+            "row"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "isNonRecipientRow",
+          "params": [
+            "row"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "PkTaxCalculatorClient",
+          "params": [],
+          "exported": true,
+          "lineCount": 970
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useEffect",
+            "useId",
+            "useMemo",
+            "useRef",
+            "useState"
+          ]
+        },
+        {
+          "source": "sonner",
+          "specifiers": [
+            "toast"
+          ]
+        }
+      ],
+      "exports": [
+        "PkTaxCalculatorClient"
+      ],
+      "totalLines": 1272,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/reference/page.tsx": {
+      "filePath": "src/app/hub/reference/page.tsx",
+      "contentHash": "544f16b8322eb43f7fe88ca75bbe49a569e6a4f418624a6dacf5f8e0b5a77aa2",
+      "functions": [
+        {
+          "name": "ReferencePage",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./ReferenceClient",
+          "specifiers": [
+            "ReferenceClient"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferencePage"
+      ],
+      "totalLines": 6,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/reference/ReferenceClient.tsx": {
+      "filePath": "src/app/hub/reference/ReferenceClient.tsx",
+      "contentHash": "df153f8fa0255591e350110173f61c8494f5221880f265fcbfd239cf7e3686ac",
+      "functions": [
+        {
+          "name": "isSavedMessageItem",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "getMessageId",
+          "params": [],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "copyText",
+          "params": [
+            "text",
+            "label"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "validateMessage",
+          "params": [
+            "title",
+            "body"
+          ],
+          "returnType": "FormErrors",
+          "exported": false,
+          "lineCount": 13
+        },
+        {
+          "name": "parseSavedMessages",
+          "params": [
+            "value"
+          ],
+          "returnType": "SavedMessage[]",
+          "exported": false,
+          "lineCount": 37
+        },
+        {
+          "name": "getSavedMessagesSnapshot",
+          "params": [],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "subscribeToSavedMessages",
+          "params": [
+            "onStoreChange"
+          ],
+          "exported": false,
+          "lineCount": 23
+        },
+        {
+          "name": "updateSavedMessagesStorage",
+          "params": [
+            "updater"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "formatSavedMessageForCopy",
+          "params": [
+            "item"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "ReferenceClient",
+          "params": [],
+          "exported": true,
+          "lineCount": 533
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState",
+            "useSyncExternalStore"
+          ]
+        },
+        {
+          "source": "sonner",
+          "specifiers": [
+            "toast"
+          ]
+        },
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "./referenceData",
+          "specifiers": [
+            "referenceItems",
+            "ReferenceItem"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferenceClient"
+      ],
+      "totalLines": 728,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/reference/referenceData.ts": {
+      "filePath": "src/app/hub/reference/referenceData.ts",
+      "contentHash": "d0f5323930941c2b66cf0d8caa52819aaea054810dfe187493832293d76bff68",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "referenceItems"
+      ],
+      "totalLines": 78,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/AccordionSection.tsx": {
+      "filePath": "src/app/hub/referrals/AccordionSection.tsx",
+      "contentHash": "35897afd5256fecf6195be58afd0281212c0abd908f17f6d0060848a3f02b209",
+      "functions": [
+        {
+          "name": "AccordionSection",
+          "params": [
+            "{\n  title,\n  summary,\n  badge,\n  defaultOpen = false,\n  children,\n}"
+          ],
+          "exported": true,
+          "lineCount": 43
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode"
+          ]
+        }
+      ],
+      "exports": [
+        "AccordionSection"
+      ],
+      "totalLines": 54,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/actions.ts": {
+      "filePath": "src/app/hub/referrals/actions.ts",
+      "contentHash": "61bb0630bc27c590b35a3caf653b848ad8257fb699971ad386cc2a7964409e6c",
+      "functions": [
+        {
+          "name": "normalizeText",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizeEmail",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizePhone",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "normalizeReferralCode",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "normalizeNameKey",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "revalidateReferralsViews",
+          "params": [],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "generateUniqueReferralCode",
+          "params": [
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "resolveReferralCode",
+          "params": [
+            "name",
+            "requestedCode"
+          ],
+          "exported": false,
+          "lineCount": 16
+        },
+        {
+          "name": "findExistingCustomerByIdentity",
+          "params": [
+            "email",
+            "phone"
+          ],
+          "exported": false,
+          "lineCount": 21
+        },
+        {
+          "name": "createCustomer",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ActionResult>",
+          "exported": true,
+          "lineCount": 45
+        },
+        {
+          "name": "createReferral",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ActionResult>",
+          "exported": true,
+          "lineCount": 95
+        },
+        {
+          "name": "adjustLoyaltyPoints",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ActionResult>",
+          "exported": true,
+          "lineCount": 72
+        },
+        {
+          "name": "updateReferralStatus",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ActionResult>",
+          "exported": true,
+          "lineCount": 84
+        },
+        {
+          "name": "parseJsonString",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "saveReferralScenario",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ScenarioActionResult>",
+          "exported": true,
+          "lineCount": 56
+        },
+        {
+          "name": "duplicateReferralScenario",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ScenarioActionResult>",
+          "exported": true,
+          "lineCount": 37
+        },
+        {
+          "name": "deleteReferralScenario",
+          "params": [
+            "formData"
+          ],
+          "returnType": "Promise<ActionResult>",
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "LoyaltyTransactionType",
+            "ReferralStatus",
+            "Prisma"
+          ]
+        },
+        {
+          "source": "next/cache",
+          "specifiers": [
+            "revalidatePath",
+            "revalidateTag"
+          ]
+        },
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "./constants",
+          "specifiers": [
+            "REFERRAL_BONUS_POINTS"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "getReferralsTag"
+          ]
+        }
+      ],
+      "exports": [
+        "createCustomer",
+        "createReferral",
+        "adjustLoyaltyPoints",
+        "updateReferralStatus",
+        "saveReferralScenario",
+        "duplicateReferralScenario",
+        "deleteReferralScenario"
+      ],
+      "totalLines": 534,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/constants.ts": {
+      "filePath": "src/app/hub/referrals/constants.ts",
+      "contentHash": "a42b941ba2a5364234523518238ea1b7b0d83ab9df59ebce1a8b856d55697763",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "REFERRAL_BONUS_POINTS"
+      ],
+      "totalLines": 2,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/data.ts": {
+      "filePath": "src/app/hub/referrals/data.ts",
+      "contentHash": "13d48dbc80dd71b61a2b7b7f4eda238d95b2863736f7327fd630a6029f378fa9",
+      "functions": [
+        {
+          "name": "isRecord",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "parseScenarioRow",
+          "params": [
+            "row"
+          ],
+          "returnType": "ReferralScenarioData",
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "hasReferralScenarioDelegate",
+          "params": [],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "loadReferralsData",
+          "params": [],
+          "exported": false,
+          "lineCount": 33
+        },
+        {
+          "name": "getReferralsTag",
+          "params": [],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Prisma"
+          ]
+        },
+        {
+          "source": "next/cache",
+          "specifiers": [
+            "unstable_cache"
+          ]
+        },
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        },
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "ReferralScenarioData"
+          ]
+        }
+      ],
+      "exports": [
+        "getReferralsData",
+        "getReferralsTag"
+      ],
+      "totalLines": 99,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/loading.tsx": {
+      "filePath": "src/app/hub/referrals/loading.tsx",
+      "contentHash": "6f85eb4f9fd1b661e314c75f423a911f656195526ee2e8d6086a9d45cc91e63b",
+      "functions": [
+        {
+          "name": "Loading",
+          "params": [],
+          "exported": true,
+          "lineCount": 39
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        }
+      ],
+      "exports": [
+        "Loading"
+      ],
+      "totalLines": 42,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/page.tsx": {
+      "filePath": "src/app/hub/referrals/page.tsx",
+      "contentHash": "3115a94c59bede05edf971c8f11b96a0f4acb9e358c3973e2317075032e66620",
+      "functions": [
+        {
+          "name": "ReferralsPage",
+          "params": [],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/server",
+          "specifiers": [
+            "connection"
+          ]
+        },
+        {
+          "source": "@/components/BackLink",
+          "specifiers": [
+            "BackLink"
+          ]
+        },
+        {
+          "source": "./ReferralsClient",
+          "specifiers": [
+            "ReferralsClient"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "getReferralsData"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralsPage"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralRuleCard.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralRuleCard.tsx",
+      "contentHash": "9d5315656dee99994ad3dd2983b595b801bfa3afc31841394ac3686f71c0fef8",
+      "functions": [
+        {
+          "name": "parseNonNegativeNumber",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "ReferralRuleCard",
+          "params": [
+            "{\n  rule,\n  onChange,\n  onDuplicate,\n  onDelete,\n}"
+          ],
+          "exported": true,
+          "lineCount": 180
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "CURRENCY_OPTIONS",
+            "REWARD_TYPE_OPTIONS",
+            "RULE_TYPE_OPTIONS",
+            "getRuleTypeDescription",
+            "ReferralRuleCardData"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralRuleCard"
+      ],
+      "totalLines": 205,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralScenarioComparison.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralScenarioComparison.tsx",
+      "contentHash": "0759651d7fa0ce073147160ea3eb61c033b34c3bba811b546a65a24f0b4b8b7d",
+      "functions": [
+        {
+          "name": "ReferralScenarioComparison",
+          "params": [
+            "{\n  scenarios,\n  onCopy,\n}"
+          ],
+          "exported": true,
+          "lineCount": 110
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "buildScenarioComparisonSummary",
+            "formatSimulatorMoney",
+            "ReferralScenarioData"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralScenarioComparison"
+      ],
+      "totalLines": 122,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralScenarioManager.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralScenarioManager.tsx",
+      "contentHash": "bc051ab96ea187b6907e5964a97ddcb9ac9c3279bf23a83aac6068eabeab79a8",
+      "functions": [
+        {
+          "name": "ReferralScenarioManager",
+          "params": [
+            "{\n  activeScenarioId,\n  scenarioName,\n  scenarioNotes,\n  savedScenarios,\n  onScenarioNameChange,\n  onScenarioNotesChange,\n  onSave,\n  onLoad,\n  onDuplicate,\n  onDelete,\n}"
+          ],
+          "exported": true,
+          "lineCount": 135
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "ReferralScenarioData"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralScenarioManager"
+      ],
+      "totalLines": 151,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralsClient.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralsClient.tsx",
+      "contentHash": "aad4ebe5e2454f973979b716f803a251877867ac9975fb38dedf3eb694ee93aa",
+      "functions": [
+        {
+          "name": "copyToClipboard",
+          "params": [
+            "text"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "makeLocalId",
+          "params": [
+            "prefix"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "cloneRule",
+          "params": [
+            "rule"
+          ],
+          "returnType": "ReferralRuleCardData",
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "downloadJsonFile",
+          "params": [
+            "filename",
+            "content"
+          ],
+          "exported": false,
+          "lineCount": 11
+        },
+        {
+          "name": "sanitizeFileName",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "ReferralsClient",
+          "params": [
+            "{ initialData }"
+          ],
+          "exported": true,
+          "lineCount": 582
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "useMemo",
+            "useState",
+            "useTransition"
+          ]
+        },
+        {
+          "source": "sonner",
+          "specifiers": [
+            "toast"
+          ]
+        },
+        {
+          "source": "./AccordionSection",
+          "specifiers": [
+            "AccordionSection"
+          ]
+        },
+        {
+          "source": "./actions",
+          "specifiers": [
+            "deleteReferralScenario",
+            "duplicateReferralScenario",
+            "saveReferralScenario"
+          ]
+        },
+        {
+          "source": "./data",
+          "specifiers": [
+            "ReferralsHubData"
+          ]
+        },
+        {
+          "source": "./ReferralRuleCard",
+          "specifiers": [
+            "ReferralRuleCard"
+          ]
+        },
+        {
+          "source": "./ReferralScenarioManager",
+          "specifiers": [
+            "ReferralScenarioManager"
+          ]
+        },
+        {
+          "source": "./ReferralSimulationSummary",
+          "specifiers": [
+            "ReferralSimulationSummary"
+          ]
+        },
+        {
+          "source": "./ReferralTabs",
+          "specifiers": [
+            "ReferralTabs"
+          ]
+        },
+        {
+          "source": "./ReferralTestCaseCard",
+          "specifiers": [
+            "ReferralTestCaseCard"
+          ]
+        },
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "applyReferralCodeTemplate",
+            "buildPlanningSummary",
+            "buildReferralCodePreview",
+            "buildScenarioExportPayload",
+            "createBlankRule",
+            "createBlankTestCase",
+            "createDefaultRules",
+            "createDefaultTestCases",
+            "simulateReferralRules",
+            "ReferralCodeStyle",
+            "ReferralRuleCardData",
+            "ReferralTestCaseData",
+            "SimulatorTab"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "useRouter"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralsClient"
+      ],
+      "totalLines": 671,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralSimulationSummary.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralSimulationSummary.tsx",
+      "contentHash": "42547fd4d6b8b089b1c1961cfd503e411031b26a6a58b5ac1d62dbd965a85461",
+      "functions": [
+        {
+          "name": "ReferralSimulationSummary",
+          "params": [
+            "{\n  rules,\n  testCases,\n  aggregate,\n  savedScenarios,\n  onCopyPlanningSummary,\n  onExportJson,\n  onCopyScenarioComparison,\n}"
+          ],
+          "exported": true,
+          "lineCount": 220
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./AccordionSection",
+          "specifiers": [
+            "AccordionSection"
+          ]
+        },
+        {
+          "source": "./ReferralScenarioComparison",
+          "specifiers": [
+            "ReferralScenarioComparison"
+          ]
+        },
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "formatSimulatorMoney",
+            "getRewardTypeLabel",
+            "getRuleTypeLabel",
+            "ReferralRuleCardData",
+            "ReferralScenarioData",
+            "ReferralTestCaseData",
+            "SimulatorAggregate"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralSimulationSummary"
+      ],
+      "totalLines": 243,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralTabs.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralTabs.tsx",
+      "contentHash": "850fb0ec3cea8fe5f34438016e0562c32fbee639af5487fa08a02aa0fa927a15",
+      "functions": [
+        {
+          "name": "ReferralTabs",
+          "params": [
+            "{ activeTab, onChange }"
+          ],
+          "exported": true,
+          "lineCount": 26
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "TAB_OPTIONS",
+            "SimulatorTab"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralTabs"
+      ],
+      "totalLines": 34,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/ReferralTestCaseCard.tsx": {
+      "filePath": "src/app/hub/referrals/ReferralTestCaseCard.tsx",
+      "contentHash": "49d04aabfab49ad805f9e041792e882a7abddf5508cebbf590586ba299505b4b",
+      "functions": [
+        {
+          "name": "parseNonNegativeNumber",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "ReferralTestCaseCard",
+          "params": [
+            "{\n  testCase,\n  result,\n  referrerOptions,\n  onChange,\n  onDelete,\n}"
+          ],
+          "exported": true,
+          "lineCount": 217
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "./simulator",
+          "specifiers": [
+            "formatSimulatorMoney",
+            "ReferralTestCaseData",
+            "TestCaseSimulationResult"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralTestCaseCard"
+      ],
+      "totalLines": 246,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/hub/referrals/simulator.ts": {
+      "filePath": "src/app/hub/referrals/simulator.ts",
+      "contentHash": "c1ed20e8fd8b0532eddae10604c8a11ef7545037d5860f7c1cc46acfbb24d9ed",
+      "functions": [
+        {
+          "name": "formatSimulatorMoney",
+          "params": [
+            "value",
+            "currency"
+          ],
+          "exported": true,
+          "lineCount": 17
+        },
+        {
+          "name": "getRuleTypeLabel",
+          "params": [
+            "ruleType"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getRewardTypeLabel",
+          "params": [
+            "rewardType"
+          ],
+          "exported": true,
+          "lineCount": 3
+        },
+        {
+          "name": "getRuleTypeDescription",
+          "params": [
+            "ruleType"
+          ],
+          "exported": true,
+          "lineCount": 6
+        },
+        {
+          "name": "createDefaultRules",
+          "params": [],
+          "returnType": "ReferralRuleCardData[]",
+          "exported": true,
+          "lineCount": 40
+        },
+        {
+          "name": "createDefaultTestCases",
+          "params": [],
+          "returnType": "ReferralTestCaseData[]",
+          "exported": true,
+          "lineCount": 24
+        },
+        {
+          "name": "createBlankRule",
+          "params": [],
+          "returnType": "ReferralRuleCardData",
+          "exported": true,
+          "lineCount": 14
+        },
+        {
+          "name": "createBlankTestCase",
+          "params": [],
+          "returnType": "ReferralTestCaseData",
+          "exported": true,
+          "lineCount": 12
+        },
+        {
+          "name": "clampNumber",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "getRewardAmount",
+          "params": [
+            "rule",
+            "testCase"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "buildExplanation",
+          "params": [
+            "rule",
+            "testCase"
+          ],
+          "exported": false,
+          "lineCount": 20
+        },
+        {
+          "name": "qualifiesForRule",
+          "params": [
+            "rule",
+            "testCase"
+          ],
+          "exported": false,
+          "lineCount": 18
+        },
+        {
+          "name": "simulateReferralRules",
+          "params": [
+            "rules",
+            "testCases"
+          ],
+          "returnType": "SimulatorAggregate",
+          "exported": true,
+          "lineCount": 112
+        },
+        {
+          "name": "buildPlanningSummary",
+          "params": [
+            "rules",
+            "testCases",
+            "aggregate"
+          ],
+          "exported": true,
+          "lineCount": 48
+        },
+        {
+          "name": "buildScenarioExportPayload",
+          "params": [
+            "input"
+          ],
+          "returnType": "ReferralScenarioExport",
+          "exported": true,
+          "lineCount": 47
+        },
+        {
+          "name": "buildScenarioComparisonSummary",
+          "params": [
+            "scenarios"
+          ],
+          "exported": true,
+          "lineCount": 37
+        },
+        {
+          "name": "buildReferralCodePreview",
+          "params": [
+            "input"
+          ],
+          "exported": true,
+          "lineCount": 31
+        },
+        {
+          "name": "applyReferralCodeTemplate",
+          "params": [
+            "template",
+            "code"
+          ],
+          "exported": true,
+          "lineCount": 3
+        }
+      ],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "RULE_TYPE_OPTIONS",
+        "REWARD_TYPE_OPTIONS",
+        "CURRENCY_OPTIONS",
+        "TAB_OPTIONS",
+        "SIMULATOR_STORAGE_KEY",
+        "formatSimulatorMoney",
+        "getRuleTypeLabel",
+        "getRewardTypeLabel",
+        "getRuleTypeDescription",
+        "createDefaultRules",
+        "createDefaultTestCases",
+        "createBlankRule",
+        "createBlankTestCase",
+        "simulateReferralRules",
+        "buildPlanningSummary",
+        "buildScenarioExportPayload",
+        "buildScenarioComparisonSummary",
+        "buildReferralCodePreview",
+        "applyReferralCodeTemplate"
+      ],
+      "totalLines": 625,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/layout.tsx": {
+      "filePath": "src/app/layout.tsx",
+      "contentHash": "4d53e152e543ff737ecf0c06251cdc63d5e31903f35023f177fd242f80f92f23",
+      "functions": [
+        {
+          "name": "RootLayout",
+          "params": [
+            "{\n  children,\n}"
+          ],
+          "exported": true,
+          "lineCount": 22
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next",
+          "specifiers": [
+            "Metadata"
+          ]
+        },
+        {
+          "source": "next/script",
+          "specifiers": [
+            "Script"
+          ]
+        },
+        {
+          "source": "sonner",
+          "specifiers": [
+            "Toaster"
+          ]
+        },
+        {
+          "source": "@/components/theme/HubThemeProvider",
+          "specifiers": [
+            "HubThemeProvider",
+            "hubThemeBootstrapScript"
+          ]
+        },
+        {
+          "source": "./globals.css",
+          "specifiers": []
+        }
+      ],
+      "exports": [
+        "metadata",
+        "RootLayout"
+      ],
+      "totalLines": 36,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/page.tsx": {
+      "filePath": "src/app/page.tsx",
+      "contentHash": "6e70d9a495864c908463253f36bd1d9622d51361fd00bfe7e53b1a59047cc013",
+      "functions": [
+        {
+          "name": "Home",
+          "params": [],
+          "exported": true,
+          "lineCount": 110
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "@/components/HubSidebar",
+          "specifiers": [
+            "HubSidebar"
+          ]
+        },
+        {
+          "source": "@/components/NavigationCard",
+          "specifiers": [
+            "NavigationCard"
+          ]
+        },
+        {
+          "source": "@/assets/P&K_LOGO.png",
+          "specifiers": [
+            "PkLogo"
+          ]
+        }
+      ],
+      "exports": [
+        "Home"
+      ],
+      "totalLines": 115,
+      "hasStructuralAnalysis": true
+    },
+    "src/app/ref/[code]/page.tsx": {
+      "filePath": "src/app/ref/[code]/page.tsx",
+      "contentHash": "5de3167eb321d3fd69505917dcde50d4c962ee817ab422fe59e1c92bb7eb1e09",
+      "functions": [
+        {
+          "name": "ReferralLandingPage",
+          "params": [
+            "{\n  params\n}"
+          ],
+          "exported": true,
+          "lineCount": 66
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "next/server",
+          "specifiers": [
+            "connection"
+          ]
+        },
+        {
+          "source": "@/lib/db",
+          "specifiers": [
+            "prisma"
+          ]
+        }
+      ],
+      "exports": [
+        "ReferralLandingPage"
+      ],
+      "totalLines": 71,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/BackLink.tsx": {
+      "filePath": "src/components/BackLink.tsx",
+      "contentHash": "72784ce5fa833601fd5b41fdfe4c071dc7ac85879e4609932aa181267f5dd5e1",
+      "functions": [
+        {
+          "name": "BackLink",
+          "params": [
+            "{ href, children }"
+          ],
+          "exported": true,
+          "lineCount": 19
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode"
+          ]
+        }
+      ],
+      "exports": [
+        "BackLink"
+      ],
+      "totalLines": 28,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/BrandLogo.tsx": {
+      "filePath": "src/components/BrandLogo.tsx",
+      "contentHash": "e9d72132e267c97552b982ca4592c9ed4066f4637f8616802e1620e3fa7eb0d3",
+      "functions": [
+        {
+          "name": "BrandLogo",
+          "params": [
+            "{ compact = false, className = \"\" }"
+          ],
+          "exported": true,
+          "lineCount": 21
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "@/assets/P&K_LOGO.png",
+          "specifiers": [
+            "logoFull"
+          ]
+        },
+        {
+          "source": "@/assets/P&K_ICON.png",
+          "specifiers": [
+            "logoIcon"
+          ]
+        }
+      ],
+      "exports": [
+        "BrandLogo"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/DesignCard.tsx": {
+      "filePath": "src/components/DesignCard.tsx",
+      "contentHash": "3477a1a19e0c90ffb0d0c47f5e58d9bc6e752461f8f1ecab2963a4bba3c0fea3",
+      "functions": [
+        {
+          "name": "getDefaultItemLabel",
+          "params": [
+            "itemNumber"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getColorInputState",
+          "params": [
+            "positions"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "getPrintUnitPrices",
+          "params": [
+            "position",
+            "design",
+            "printPrices"
+          ],
+          "exported": true,
+          "lineCount": 28
+        },
+        {
+          "name": "calculateDesignCosts",
+          "params": [
+            "design",
+            "garments",
+            "printPrices",
+            "garmentMarkups"
+          ],
+          "returnType": "DesignCostBreakdown",
+          "exported": true,
+          "lineCount": 37
+        },
+        {
+          "name": "normalizeSearch",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "getGarmentLabel",
+          "params": [
+            "garment"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "GarmentSelector",
+          "params": [
+            "{\n  garments,\n  value,\n  onChange\n}"
+          ],
+          "exported": false,
+          "lineCount": 78
+        },
+        {
+          "name": "DesignCard",
+          "params": [
+            "{\n  design,\n  garments,\n  itemNumber,\n  onChange,\n  onRemove\n}"
+          ],
+          "exported": true,
+          "lineCount": 279
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "Garment",
+            "GarmentMarkup",
+            "PrintPrice"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "useState"
+          ]
+        }
+      ],
+      "exports": [
+        "PRINT_POSITIONS",
+        "NECK_PRINT_UNIT_PRICE",
+        "getPrintUnitPrices",
+        "calculateDesignCosts",
+        "DesignCard"
+      ],
+      "totalLines": 483,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/HubSidebar.tsx": {
+      "filePath": "src/components/HubSidebar.tsx",
+      "contentHash": "156dac58f4050caff01a6822e462a2c1f67e94b796a6ad4de67d4cf150ce5f27",
+      "functions": [
+        {
+          "name": "isActive",
+          "params": [
+            "pathname",
+            "href"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "HubSidebar",
+          "params": [],
+          "exported": true,
+          "lineCount": 79
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/image",
+          "specifiers": [
+            "Image"
+          ]
+        },
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "next/navigation",
+          "specifiers": [
+            "usePathname"
+          ]
+        },
+        {
+          "source": "@/assets/P&K_ICON.png",
+          "specifiers": [
+            "PkIcon"
+          ]
+        },
+        {
+          "source": "@/assets/P&K_LOGO.png",
+          "specifiers": [
+            "PkLogo"
+          ]
+        },
+        {
+          "source": "@/components/theme/ThemeToggle",
+          "specifiers": [
+            "ThemeToggle"
+          ]
+        }
+      ],
+      "exports": [
+        "HubSidebar"
+      ],
+      "totalLines": 151,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/NavigationCard.tsx": {
+      "filePath": "src/components/NavigationCard.tsx",
+      "contentHash": "863ca27592be9c42bee790824acf228acff46c0de7693da2f2024582e9dbaf27",
+      "functions": [
+        {
+          "name": "CardInner",
+          "params": [
+            "{\n  title,\n  description,\n  icon,\n  badge,\n  disabled,\n}"
+          ],
+          "exported": false,
+          "lineCount": 81
+        },
+        {
+          "name": "NavigationCard",
+          "params": [
+            "props"
+          ],
+          "exported": true,
+          "lineCount": 11
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "next/link",
+          "specifiers": [
+            "Link"
+          ]
+        },
+        {
+          "source": "react",
+          "specifiers": [
+            "ReactNode"
+          ]
+        }
+      ],
+      "exports": [
+        "NavigationCard"
+      ],
+      "totalLines": 105,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/theme/HubThemeProvider.tsx": {
+      "filePath": "src/components/theme/HubThemeProvider.tsx",
+      "contentHash": "f0fe572d22098104442a7f6d6c425f4b4fc3193f1bc5653056548410a7c95fd8",
+      "functions": [
+        {
+          "name": "isHubTheme",
+          "params": [
+            "value"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "applyTheme",
+          "params": [
+            "theme"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "getInitialTheme",
+          "params": [],
+          "returnType": "HubTheme",
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "HubThemeProvider",
+          "params": [
+            "{ children }"
+          ],
+          "exported": true,
+          "lineCount": 26
+        },
+        {
+          "name": "useHubTheme",
+          "params": [],
+          "exported": true,
+          "lineCount": 9
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "react",
+          "specifiers": [
+            "createContext",
+            "useContext",
+            "useEffect",
+            "useMemo",
+            "useState",
+            "ReactNode"
+          ]
+        }
+      ],
+      "exports": [
+        "HUB_THEME_STORAGE_KEY",
+        "hubThemeBootstrapScript",
+        "HubThemeProvider",
+        "useHubTheme"
+      ],
+      "totalLines": 105,
+      "hasStructuralAnalysis": true
+    },
+    "src/components/theme/ThemeToggle.tsx": {
+      "filePath": "src/components/theme/ThemeToggle.tsx",
+      "contentHash": "8fd0f37b8a907fd928a414c97b9b8f153448ad8eab45badd632ad25c936dcfab",
+      "functions": [
+        {
+          "name": "ThemeToggle",
+          "params": [
+            "{ compact = false }"
+          ],
+          "exported": true,
+          "lineCount": 24
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@/components/theme/HubThemeProvider",
+          "specifiers": [
+            "useHubTheme"
+          ]
+        }
+      ],
+      "exports": [
+        "ThemeToggle"
+      ],
+      "totalLines": 32,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/calculator-profiles.ts": {
+      "filePath": "src/lib/calculator-profiles.ts",
+      "contentHash": "a8111c9c51fcc98fffc9b007b7ca28d809b532da7f06f752839c169acfd52d1a",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [
+        "CALCULATOR_PROFILE_CODES"
+      ],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "src/lib/db.ts": {
+      "filePath": "src/lib/db.ts",
+      "contentHash": "117b0b6747e19038d84358d224ed6dfb0f7886415fe705cb489c4d444bfde48c",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "@prisma/client",
+          "specifiers": [
+            "PrismaClient"
+          ]
+        },
+        {
+          "source": "@prisma/adapter-pg",
+          "specifiers": [
+            "PrismaPg"
+          ]
+        },
+        {
+          "source": "pg",
+          "specifiers": [
+            "Pool"
+          ]
+        }
+      ],
+      "exports": [
+        "prisma"
+      ],
+      "totalLines": 52,
+      "hasStructuralAnalysis": true
+    },
+    "start.sh": {
+      "filePath": "start.sh",
+      "contentHash": "e22ad045df96903e5e94a622ddd4cb8268943214d243235e86f9e496fa0652d8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.json": {
+      "filePath": "tsconfig.json",
+      "contentHash": "5c51df4c59f4510d8c7dadf07a5c32132228826a3b331da5e286207b4df7ef9c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 35,
+      "hasStructuralAnalysis": true
+    },
+    "tsconfig.seed.json": {
+      "filePath": "tsconfig.seed.json",
+      "contentHash": "fe8ce32cc7e182542682a4100598ef425e05bc4ebca9a665897396b0d8f99883",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 8,
+      "hasStructuralAnalysis": true
+    },
+    "vercel.json": {
+      "filePath": "vercel.json",
+      "contentHash": "7776739ff53ccb339cefefcbe9c31214c2d99b068768db0ee2e7523adf5684bd",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 4,
+      "hasStructuralAnalysis": true
+    }
+  }
+}

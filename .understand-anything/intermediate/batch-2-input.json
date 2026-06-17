@@ -1,0 +1,114 @@
+{
+  "projectRoot": "/home/duncan/Documents/pins-dashboard",
+  "batchFiles": [
+    {
+      "path": "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "language": "typescript",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/data.ts",
+      "language": "typescript",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/standard/page.tsx",
+      "language": "typescript",
+      "sizeLines": 20,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/us-clients/page.tsx",
+      "language": "typescript",
+      "sizeLines": 20,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/GarmentDirectoryClient.tsx",
+      "language": "typescript",
+      "sizeLines": 513,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/actions.ts",
+      "language": "typescript",
+      "sizeLines": 127,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/data.ts",
+      "language": "typescript",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/page.tsx",
+      "language": "typescript",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/ref/[code]/page.tsx",
+      "language": "typescript",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/lib/calculator-profiles.ts",
+      "language": "typescript",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/lib/db.ts",
+      "language": "typescript",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "src/app/hub/calculators/CalculatorPageContent.tsx": [
+      "src/app/hub/calculators/CalculatorClient.tsx",
+      "src/app/hub/calculators/data.ts",
+      "src/components/BackLink.tsx",
+      "src/lib/calculator-profiles.ts"
+    ],
+    "src/app/hub/calculators/data.ts": [
+      "src/lib/calculator-profiles.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/calculators/eu/standard/page.tsx": [
+      "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "src/lib/calculator-profiles.ts"
+    ],
+    "src/app/hub/calculators/eu/us-clients/page.tsx": [
+      "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "src/lib/calculator-profiles.ts"
+    ],
+    "src/app/hub/garments/GarmentDirectoryClient.tsx": [
+      "src/app/hub/garments/actions.ts",
+      "src/app/hub/garments/data.ts"
+    ],
+    "src/app/hub/garments/actions.ts": [
+      "src/app/hub/calculators/data.ts",
+      "src/app/hub/garments/data.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/garments/data.ts": [
+      "src/lib/calculator-profiles.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/garments/page.tsx": [
+      "src/app/hub/garments/data.ts",
+      "src/app/hub/garments/GarmentDirectoryClient.tsx",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/ref/[code]/page.tsx": [
+      "src/lib/db.ts"
+    ],
+    "src/lib/calculator-profiles.ts": [],
+    "src/lib/db.ts": []
+  }
+}

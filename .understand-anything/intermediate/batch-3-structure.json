@@ -1,0 +1,2388 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 11,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/app/hub/calculators/eu/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 69,
+      "functions": [
+        {
+          "name": "EuCalculatorsPage",
+          "startLine": 4,
+          "endLine": 73,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "EuCalculatorsPage",
+          "line": 4,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/calculators/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 69,
+      "nonEmptyLines": 65,
+      "functions": [
+        {
+          "name": "CalculatorsPage",
+          "startLine": 4,
+          "endLine": 69,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "CalculatorsPage",
+          "line": 4,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/calculators/uk/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 33,
+      "functions": [
+        {
+          "name": "UkCalculatorsPage",
+          "startLine": 4,
+          "endLine": 36,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "UkCalculatorsPage",
+          "line": 4,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/loading.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 22,
+      "functions": [
+        {
+          "name": "Loading",
+          "startLine": 3,
+          "endLine": 26,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "Loading",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "Loading",
+          "callee": "Array.from({ length: 6 }).map",
+          "lineNumber": 19
+        },
+        {
+          "caller": "Loading",
+          "callee": "Array.from",
+          "lineNumber": 19
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 1271,
+      "nonEmptyLines": 1166,
+      "functions": [
+        {
+          "name": "AccordionSection",
+          "startLine": 139,
+          "endLine": 175,
+          "params": [
+            "{\n  title,\n  description,\n  isOpen,\n  onToggle,\n  children,\n}"
+          ]
+        },
+        {
+          "name": "createDefaultRows",
+          "startLine": 177,
+          "endLine": 186,
+          "params": []
+        },
+        {
+          "name": "createRow",
+          "startLine": 188,
+          "endLine": 206,
+          "params": [
+            "id",
+            "name",
+            "eligibility",
+            "removable",
+            "code"
+          ]
+        },
+        {
+          "name": "parseCurrencyInput",
+          "startLine": 208,
+          "endLine": 213,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "parseOrdersInput",
+          "startLine": 215,
+          "endLine": 220,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "clampNumberInput",
+          "startLine": 222,
+          "endLine": 227,
+          "params": [
+            "value",
+            "wholeNumber"
+          ]
+        },
+        {
+          "name": "getShare",
+          "startLine": 229,
+          "endLine": 232,
+          "params": [
+            "value",
+            "total"
+          ]
+        },
+        {
+          "name": "formatCurrencyGbp",
+          "startLine": 234,
+          "endLine": 241,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "formatCurrencyZar",
+          "startLine": 243,
+          "endLine": 250,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "formatPercent",
+          "startLine": 252,
+          "endLine": 254,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "copyToClipboard",
+          "startLine": 256,
+          "endLine": 272,
+          "params": [
+            "text"
+          ]
+        },
+        {
+          "name": "getInputClassName",
+          "startLine": 274,
+          "endLine": 276,
+          "params": []
+        },
+        {
+          "name": "isIncludedRow",
+          "startLine": 278,
+          "endLine": 280,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "isEligiblePoolRecipient",
+          "startLine": 282,
+          "endLine": 284,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "isContributionOnlyPoolIncluded",
+          "startLine": 286,
+          "endLine": 288,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "isJohanSeparate",
+          "startLine": 290,
+          "endLine": 292,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "isSharedPoolBaseRow",
+          "startLine": 294,
+          "endLine": 296,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "isNonRecipientRow",
+          "startLine": 298,
+          "endLine": 300,
+          "params": [
+            "row"
+          ]
+        },
+        {
+          "name": "PkTaxCalculatorClient",
+          "startLine": 302,
+          "endLine": 1271,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "PkTaxCalculatorClient",
+          "line": 302,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createDefaultRows",
+          "callee": "createRow",
+          "lineNumber": 179
+        },
+        {
+          "caller": "createDefaultRows",
+          "callee": "createRow",
+          "lineNumber": 180
+        },
+        {
+          "caller": "createDefaultRows",
+          "callee": "createRow",
+          "lineNumber": 181
+        },
+        {
+          "caller": "createDefaultRows",
+          "callee": "createRow",
+          "lineNumber": 182
+        },
+        {
+          "caller": "createDefaultRows",
+          "callee": "createRow",
+          "lineNumber": 183
+        },
+        {
+          "caller": "createDefaultRows",
+          "callee": "createRow",
+          "lineNumber": 184
+        },
+        {
+          "caller": "parseCurrencyInput",
+          "callee": "value.trim",
+          "lineNumber": 209
+        },
+        {
+          "caller": "parseCurrencyInput",
+          "callee": "Number.parseFloat",
+          "lineNumber": 210
+        },
+        {
+          "caller": "parseCurrencyInput",
+          "callee": "Number.isFinite",
+          "lineNumber": 211
+        },
+        {
+          "caller": "parseOrdersInput",
+          "callee": "value.trim",
+          "lineNumber": 216
+        },
+        {
+          "caller": "parseOrdersInput",
+          "callee": "Number.parseInt",
+          "lineNumber": 217
+        },
+        {
+          "caller": "parseOrdersInput",
+          "callee": "Number.isFinite",
+          "lineNumber": 218
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "value.trim",
+          "lineNumber": 223
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "Number.parseInt",
+          "lineNumber": 224
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "Number.parseFloat",
+          "lineNumber": 224
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "Number.isFinite",
+          "lineNumber": 225
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "String",
+          "lineNumber": 226
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "Math.max",
+          "lineNumber": 226
+        },
+        {
+          "caller": "clampNumberInput",
+          "callee": "Math.trunc",
+          "lineNumber": 226
+        },
+        {
+          "caller": "formatCurrencyGbp",
+          "callee": "new Intl.NumberFormat(\"en-GB\", {\n    style: \"currency\",\n    currency: \"GBP\",\n    minimumFractionDigits: 2,\n    maximumFractionDigits: 2,\n  }).format",
+          "lineNumber": 235
+        },
+        {
+          "caller": "formatCurrencyZar",
+          "callee": "new Intl.NumberFormat(\"en-ZA\", {\n    style: \"currency\",\n    currency: \"ZAR\",\n    minimumFractionDigits: 2,\n    maximumFractionDigits: 2,\n  }).format",
+          "lineNumber": 244
+        },
+        {
+          "caller": "formatPercent",
+          "callee": "(value * 100).toFixed",
+          "lineNumber": 253
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "navigator.clipboard.writeText",
+          "lineNumber": 258
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "document.createElement",
+          "lineNumber": 262
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "document.body.appendChild",
+          "lineNumber": 267
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "textArea.focus",
+          "lineNumber": 268
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "textArea.select",
+          "lineNumber": 269
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "document.execCommand",
+          "lineNumber": 270
+        },
+        {
+          "caller": "copyToClipboard",
+          "callee": "document.body.removeChild",
+          "lineNumber": 271
+        },
+        {
+          "caller": "isSharedPoolBaseRow",
+          "callee": "isEligiblePoolRecipient",
+          "lineNumber": 295
+        },
+        {
+          "caller": "isSharedPoolBaseRow",
+          "callee": "isContributionOnlyPoolIncluded",
+          "lineNumber": 295
+        },
+        {
+          "caller": "isNonRecipientRow",
+          "callee": "isContributionOnlyPoolIncluded",
+          "lineNumber": 299
+        },
+        {
+          "caller": "isNonRecipientRow",
+          "callee": "isJohanSeparate",
+          "lineNumber": 299
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 303
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 304
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 305
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 306
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 307
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 308
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 309
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 310
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 311
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 312
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "createDefaultRows",
+          "lineNumber": 312
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useState",
+          "lineNumber": 313
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useId",
+          "lineNumber": 315
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useRef",
+          "lineNumber": 316
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useRef",
+          "lineNumber": 317
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 319
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 320
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "rows.filter",
+          "lineNumber": 320
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 321
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "includedRows.filter",
+          "lineNumber": 321
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useEffect",
+          "lineNumber": 323
+        },
+        {
+          "caller": "getFocusableElements",
+          "callee": "Array.from(\n        dialog.querySelectorAll<HTMLElement>(\n          'button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])'\n        )\n      ).filter",
+          "lineNumber": 336
+        },
+        {
+          "caller": "getFocusableElements",
+          "callee": "Array.from",
+          "lineNumber": 336
+        },
+        {
+          "caller": "getFocusableElements",
+          "callee": "dialog.querySelectorAll",
+          "lineNumber": 337
+        },
+        {
+          "caller": "getFocusableElements",
+          "callee": "element.hasAttribute",
+          "lineNumber": 340
+        },
+        {
+          "caller": "getFocusableElements",
+          "callee": "element.getAttribute",
+          "lineNumber": 340
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getFocusableElements()[0]?.focus",
+          "lineNumber": 343
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getFocusableElements",
+          "lineNumber": 343
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "event.preventDefault",
+          "lineNumber": 347
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "setIsGuideOpen",
+          "lineNumber": 348
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "getFocusableElements",
+          "lineNumber": 354
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "event.preventDefault",
+          "lineNumber": 356
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "event.preventDefault",
+          "lineNumber": 365
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "lastElement.focus",
+          "lineNumber": 366
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "event.preventDefault",
+          "lineNumber": 368
+        },
+        {
+          "caller": "handleKeyDown",
+          "callee": "firstElement.focus",
+          "lineNumber": 369
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "document.addEventListener",
+          "lineNumber": 373
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "document.removeEventListener",
+          "lineNumber": 377
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "triggerElement?.focus",
+          "lineNumber": 378
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 382
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "includedRows.reduce",
+          "lineNumber": 384
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 386
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 387
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 388
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseOrdersInput",
+          "lineNumber": 389
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 397
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "sharedPoolBaseRows.reduce",
+          "lineNumber": 398
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 398
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 402
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "includedRows.reduce",
+          "lineNumber": 404
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "isJohanSeparate",
+          "lineNumber": 405
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 406
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 411
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 428
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "includedRows.map",
+          "lineNumber": 429
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 430
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 431
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseCurrencyInput",
+          "lineNumber": 432
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "parseOrdersInput",
+          "lineNumber": 433
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getShare",
+          "lineNumber": 435
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getShare",
+          "lineNumber": 436
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getShare",
+          "lineNumber": 437
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getShare",
+          "lineNumber": 438
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "isJohanSeparate",
+          "lineNumber": 447
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "baseResults\n      .filter(isEligiblePoolRecipient)\n      .reduce",
+          "lineNumber": 467
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "baseResults\n      .filter",
+          "lineNumber": 467
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "baseResults\n      .filter(isNonRecipientRow)\n      .reduce",
+          "lineNumber": 471
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "baseResults\n      .filter",
+          "lineNumber": 471
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "baseResults.map",
+          "lineNumber": 475
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "isEligiblePoolRecipient",
+          "lineNumber": 476
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getShare",
+          "lineNumber": 487
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "useMemo",
+          "lineNumber": 503
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results.reduce",
+          "lineNumber": 504
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter(isEligiblePoolRecipient)\n      .reduce",
+          "lineNumber": 505
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter",
+          "lineNumber": 505
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter(isNonRecipientRow)\n      .reduce",
+          "lineNumber": 508
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter",
+          "lineNumber": 508
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter(isEligiblePoolRecipient)\n      .reduce",
+          "lineNumber": 511
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter",
+          "lineNumber": 511
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter(isEligiblePoolRecipient)\n      .reduce",
+          "lineNumber": 514
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter",
+          "lineNumber": 514
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter(isJohanSeparate)\n      .reduce",
+          "lineNumber": 517
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results\n      .filter",
+          "lineNumber": 517
+        },
+        {
+          "caller": "updateRow",
+          "callee": "setRows",
+          "lineNumber": 563
+        },
+        {
+          "caller": "updateRow",
+          "callee": "currentRows.map",
+          "lineNumber": 564
+        },
+        {
+          "caller": "updateRow",
+          "callee": "clampNumberInput",
+          "lineNumber": 568
+        },
+        {
+          "caller": "updateRow",
+          "callee": "clampNumberInput",
+          "lineNumber": 572
+        },
+        {
+          "caller": "applyCompanyProfitToAll",
+          "callee": "clampNumberInput",
+          "lineNumber": 581
+        },
+        {
+          "caller": "applyCompanyProfitToAll",
+          "callee": "setRows",
+          "lineNumber": 582
+        },
+        {
+          "caller": "applyCompanyProfitToAll",
+          "callee": "currentRows.map",
+          "lineNumber": 583
+        },
+        {
+          "caller": "applyCompanyProfitToAll",
+          "callee": "toast.success",
+          "lineNumber": 585
+        },
+        {
+          "caller": "addRow",
+          "callee": "setRows",
+          "lineNumber": 589
+        },
+        {
+          "caller": "addRow",
+          "callee": "createRow",
+          "lineNumber": 589
+        },
+        {
+          "caller": "addRow",
+          "callee": "setNextRowId",
+          "lineNumber": 590
+        },
+        {
+          "caller": "removeRow",
+          "callee": "setRows",
+          "lineNumber": 594
+        },
+        {
+          "caller": "removeRow",
+          "callee": "currentRows.filter",
+          "lineNumber": 594
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "setMonthLabel",
+          "lineNumber": 598
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "setExchangeRate",
+          "lineNumber": 599
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "setDefaultCompanyProfit",
+          "lineNumber": 600
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "setRows",
+          "lineNumber": 601
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "createDefaultRows",
+          "lineNumber": 601
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "setNextRowId",
+          "lineNumber": 602
+        },
+        {
+          "caller": "resetCalculator",
+          "callee": "toast.success",
+          "lineNumber": 603
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "monthLabel.trim",
+          "lineNumber": 608
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "monthLabel.trim",
+          "lineNumber": 608
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "breakdown.exchangeRate.toFixed",
+          "lineNumber": 609
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 612
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 613
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 614
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 615
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 616
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 617
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 618
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 619
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 620
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 621
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 622
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 623
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "results.map",
+          "lineNumber": 626
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatPercent",
+          "lineNumber": 627
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "results\n        .filter((row) => isEligiblePoolRecipient(row) || isJohanSeparate(row))\n        .map",
+          "lineNumber": 631
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "results\n        .filter",
+          "lineNumber": 631
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "isEligiblePoolRecipient",
+          "lineNumber": 632
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "isJohanSeparate",
+          "lineNumber": 632
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "isJohanSeparate",
+          "lineNumber": 634
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 635
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyZar",
+          "lineNumber": 635
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 638
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyZar",
+          "lineNumber": 638
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 641
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 642
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "formatCurrencyZar",
+          "lineNumber": 643
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "copyToClipboard",
+          "lineNumber": 647
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "summaryLines.join",
+          "lineNumber": 647
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "toast.success",
+          "lineNumber": 648
+        },
+        {
+          "caller": "handleCopySummary",
+          "callee": "toast.error",
+          "lineNumber": 650
+        },
+        {
+          "caller": "handleCopyFactoryInvoiceTotal",
+          "callee": "copyToClipboard",
+          "lineNumber": 656
+        },
+        {
+          "caller": "handleCopyFactoryInvoiceTotal",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 656
+        },
+        {
+          "caller": "handleCopyFactoryInvoiceTotal",
+          "callee": "toast.success",
+          "lineNumber": 657
+        },
+        {
+          "caller": "handleCopyFactoryInvoiceTotal",
+          "callee": "toast.error",
+          "lineNumber": 659
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "getInputClassName",
+          "lineNumber": 663
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsGuideOpen",
+          "lineNumber": 680
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setMonthLabel",
+          "lineNumber": 696
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setExchangeRate",
+          "lineNumber": 709
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "clampNumberInput",
+          "lineNumber": 709
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setDefaultCompanyProfit",
+          "lineNumber": 723
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "clampNumberInput",
+          "lineNumber": 723
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsInputsOpen",
+          "lineNumber": 747
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "rows.map",
+          "lineNumber": 780
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "updateRow",
+          "lineNumber": 786
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "updateRow",
+          "lineNumber": 794
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "Object.entries(ELIGIBILITY_LABELS).map",
+          "lineNumber": 798
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "Object.entries",
+          "lineNumber": 798
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "updateRow",
+          "lineNumber": 811
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "updateRow",
+          "lineNumber": 821
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "updateRow",
+          "lineNumber": 831
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "updateRow",
+          "lineNumber": 841
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "removeRow",
+          "lineNumber": 849
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsResultsOpen",
+          "lineNumber": 869
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "results.map",
+          "lineNumber": 918
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 922
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 923
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 924
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 925
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 926
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 927
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 928
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 929
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 930
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 931
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyZar",
+          "lineNumber": 932
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsBreakdownOpen",
+          "lineNumber": 944
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 954
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 958
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 962
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 966
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 970
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 974
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 984
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 988
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 992
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 996
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1006
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1010
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1014
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsTotalsOpen",
+          "lineNumber": 1025
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1031
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1035
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1039
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "breakdown.totalOrdersUsed.toFixed",
+          "lineNumber": 1043
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1047
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1051
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1055
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1059
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1066
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1070
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1074
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1078
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1082
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1086
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1090
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyZar",
+          "lineNumber": 1094
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1098
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 1102
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatPercent",
+          "lineNumber": 1106
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsFactoryInvoiceOpen",
+          "lineNumber": 1116
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1137
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1141
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1145
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1149
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "formatCurrencyGbp",
+          "lineNumber": 1158
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsGuideOpen",
+          "lineNumber": 1171
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "event.stopPropagation",
+          "lineNumber": 1179
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "setIsGuideOpen",
+          "lineNumber": 1193
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "ALLOCATION_RULES.map",
+          "lineNumber": 1221
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "REPORT_SOURCES.map",
+          "lineNumber": 1237
+        },
+        {
+          "caller": "PkTaxCalculatorClient",
+          "callee": "CHECKS_GUIDE.map",
+          "lineNumber": 1254
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 19,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/pk-tax/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 21,
+      "nonEmptyLines": 18,
+      "functions": [
+        {
+          "name": "PkTaxPage",
+          "startLine": 4,
+          "endLine": 21,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "PkTaxPage",
+          "line": 4,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/reference/ReferenceClient.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 727,
+      "nonEmptyLines": 634,
+      "functions": [
+        {
+          "name": "isSavedMessageItem",
+          "startLine": 64,
+          "endLine": 68,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "getMessageId",
+          "startLine": 70,
+          "endLine": 76,
+          "params": []
+        },
+        {
+          "name": "copyText",
+          "startLine": 78,
+          "endLine": 85,
+          "params": [
+            "text",
+            "label"
+          ]
+        },
+        {
+          "name": "validateMessage",
+          "startLine": 87,
+          "endLine": 99,
+          "params": [
+            "title",
+            "body"
+          ]
+        },
+        {
+          "name": "parseSavedMessages",
+          "startLine": 101,
+          "endLine": 137,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "getSavedMessagesSnapshot",
+          "startLine": 139,
+          "endLine": 155,
+          "params": []
+        },
+        {
+          "name": "subscribeToSavedMessages",
+          "startLine": 157,
+          "endLine": 179,
+          "params": [
+            "onStoreChange"
+          ]
+        },
+        {
+          "name": "updateSavedMessagesStorage",
+          "startLine": 181,
+          "endLine": 189,
+          "params": [
+            "updater"
+          ]
+        },
+        {
+          "name": "formatSavedMessageForCopy",
+          "startLine": 191,
+          "endLine": 193,
+          "params": [
+            "item"
+          ]
+        },
+        {
+          "name": "ReferenceClient",
+          "startLine": 195,
+          "endLine": 727,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ReferenceClient",
+          "line": 195,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getMessageId",
+          "callee": "crypto.randomUUID",
+          "lineNumber": 72
+        },
+        {
+          "caller": "getMessageId",
+          "callee": "Date.now",
+          "lineNumber": 75
+        },
+        {
+          "caller": "getMessageId",
+          "callee": "Math.random",
+          "lineNumber": 75
+        },
+        {
+          "caller": "copyText",
+          "callee": "navigator.clipboard.writeText",
+          "lineNumber": 80
+        },
+        {
+          "caller": "copyText",
+          "callee": "toast.success",
+          "lineNumber": 81
+        },
+        {
+          "caller": "copyText",
+          "callee": "toast.error",
+          "lineNumber": 83
+        },
+        {
+          "caller": "copyText",
+          "callee": "label.toLowerCase",
+          "lineNumber": 83
+        },
+        {
+          "caller": "validateMessage",
+          "callee": "title.trim",
+          "lineNumber": 90
+        },
+        {
+          "caller": "validateMessage",
+          "callee": "body.trim",
+          "lineNumber": 94
+        },
+        {
+          "caller": "parseSavedMessages",
+          "callee": "JSON.parse",
+          "lineNumber": 107
+        },
+        {
+          "caller": "parseSavedMessages",
+          "callee": "Array.isArray",
+          "lineNumber": 109
+        },
+        {
+          "caller": "parseSavedMessages",
+          "callee": "parsed\n      .filter((message): message is SavedMessage => {\n        return Boolean(\n          message &&\n            typeof message === \"object\" &&\n            typeof message.id === \"string\" &&\n            typeof message.title === \"string\" &&\n            typeof message.body === \"string\" &&\n            typeof message.createdAt === \"string\" &&\n            typeof message.updatedAt === \"string\",\n        )\n      })\n      .map",
+          "lineNumber": 113
+        },
+        {
+          "caller": "parseSavedMessages",
+          "callee": "parsed\n      .filter",
+          "lineNumber": 113
+        },
+        {
+          "caller": "parseSavedMessages",
+          "callee": "Boolean",
+          "lineNumber": 115
+        },
+        {
+          "caller": "getSavedMessagesSnapshot",
+          "callee": "window.localStorage.getItem",
+          "lineNumber": 144
+        },
+        {
+          "caller": "getSavedMessagesSnapshot",
+          "callee": "parseSavedMessages",
+          "lineNumber": 150
+        },
+        {
+          "caller": "handleStorageChange",
+          "callee": "onStoreChange",
+          "lineNumber": 164
+        },
+        {
+          "caller": "handleCustomChange",
+          "callee": "onStoreChange",
+          "lineNumber": 169
+        },
+        {
+          "caller": "subscribeToSavedMessages",
+          "callee": "window.addEventListener",
+          "lineNumber": 172
+        },
+        {
+          "caller": "subscribeToSavedMessages",
+          "callee": "window.addEventListener",
+          "lineNumber": 173
+        },
+        {
+          "caller": "subscribeToSavedMessages",
+          "callee": "window.removeEventListener",
+          "lineNumber": 176
+        },
+        {
+          "caller": "subscribeToSavedMessages",
+          "callee": "window.removeEventListener",
+          "lineNumber": 177
+        },
+        {
+          "caller": "updateSavedMessagesStorage",
+          "callee": "updater",
+          "lineNumber": 182
+        },
+        {
+          "caller": "updateSavedMessagesStorage",
+          "callee": "getSavedMessagesSnapshot",
+          "lineNumber": 182
+        },
+        {
+          "caller": "updateSavedMessagesStorage",
+          "callee": "JSON.stringify",
+          "lineNumber": 184
+        },
+        {
+          "caller": "updateSavedMessagesStorage",
+          "callee": "window.localStorage.setItem",
+          "lineNumber": 187
+        },
+        {
+          "caller": "updateSavedMessagesStorage",
+          "callee": "window.dispatchEvent",
+          "lineNumber": 188
+        },
+        {
+          "caller": "formatSavedMessageForCopy",
+          "callee": "[item.body, item.warning ? `WARNING: ${item.warning}` : \"\"].filter(Boolean).join",
+          "lineNumber": 192
+        },
+        {
+          "caller": "formatSavedMessageForCopy",
+          "callee": "[item.body, item.warning ? `WARNING: ${item.warning}` : \"\"].filter",
+          "lineNumber": 192
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 196
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 197
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 198
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 199
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 200
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 201
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 202
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 203
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useState",
+          "lineNumber": 204
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useSyncExternalStore",
+          "lineNumber": 206
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useMemo",
+          "lineNumber": 212
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "savedMessages.map",
+          "lineNumber": 214
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useMemo",
+          "lineNumber": 221
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useMemo",
+          "lineNumber": 226
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "uniqueCategories.add",
+          "lineNumber": 230
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "Array.from",
+          "lineNumber": 233
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "useMemo",
+          "lineNumber": 236
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "query.trim().toLowerCase",
+          "lineNumber": 237
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "query.trim",
+          "lineNumber": 237
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "allItems.filter",
+          "lineNumber": 239
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "[item.title, item.category, item.body, item.warning ?? \"\"]\n        .join(\"\\n\")\n        .toLowerCase()\n        .includes",
+          "lineNumber": 250
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "[item.title, item.category, item.body, item.warning ?? \"\"]\n        .join(\"\\n\")\n        .toLowerCase",
+          "lineNumber": 250
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "[item.title, item.category, item.body, item.warning ?? \"\"]\n        .join",
+          "lineNumber": 250
+        },
+        {
+          "caller": "resetCreateForm",
+          "callee": "setNewTitle",
+          "lineNumber": 258
+        },
+        {
+          "caller": "resetCreateForm",
+          "callee": "setNewBody",
+          "lineNumber": 259
+        },
+        {
+          "caller": "resetCreateForm",
+          "callee": "setNewErrors",
+          "lineNumber": 260
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "validateMessage",
+          "lineNumber": 264
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "setNewErrors",
+          "lineNumber": 267
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "toast.error",
+          "lineNumber": 268
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "new Date().toISOString",
+          "lineNumber": 272
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "updateSavedMessagesStorage",
+          "lineNumber": 274
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "getMessageId",
+          "lineNumber": 276
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "newTitle.trim",
+          "lineNumber": 277
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "newBody.trim",
+          "lineNumber": 278
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "resetCreateForm",
+          "lineNumber": 285
+        },
+        {
+          "caller": "handleCreateMessage",
+          "callee": "toast.success",
+          "lineNumber": 286
+        },
+        {
+          "caller": "startEditingMessage",
+          "callee": "setEditingId",
+          "lineNumber": 290
+        },
+        {
+          "caller": "startEditingMessage",
+          "callee": "setEditTitle",
+          "lineNumber": 291
+        },
+        {
+          "caller": "startEditingMessage",
+          "callee": "setEditBody",
+          "lineNumber": 292
+        },
+        {
+          "caller": "startEditingMessage",
+          "callee": "setEditErrors",
+          "lineNumber": 293
+        },
+        {
+          "caller": "cancelEditingMessage",
+          "callee": "setEditingId",
+          "lineNumber": 297
+        },
+        {
+          "caller": "cancelEditingMessage",
+          "callee": "setEditTitle",
+          "lineNumber": 298
+        },
+        {
+          "caller": "cancelEditingMessage",
+          "callee": "setEditBody",
+          "lineNumber": 299
+        },
+        {
+          "caller": "cancelEditingMessage",
+          "callee": "setEditErrors",
+          "lineNumber": 300
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "validateMessage",
+          "lineNumber": 304
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "setEditErrors",
+          "lineNumber": 307
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "toast.error",
+          "lineNumber": 308
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "updateSavedMessagesStorage",
+          "lineNumber": 312
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "current.map",
+          "lineNumber": 313
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "editTitle.trim",
+          "lineNumber": 317
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "editBody.trim",
+          "lineNumber": 318
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "new Date().toISOString",
+          "lineNumber": 319
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "cancelEditingMessage",
+          "lineNumber": 325
+        },
+        {
+          "caller": "handleUpdateMessage",
+          "callee": "toast.success",
+          "lineNumber": 326
+        },
+        {
+          "caller": "handleDeleteMessage",
+          "callee": "updateSavedMessagesStorage",
+          "lineNumber": 330
+        },
+        {
+          "caller": "handleDeleteMessage",
+          "callee": "current.filter",
+          "lineNumber": 330
+        },
+        {
+          "caller": "handleDeleteMessage",
+          "callee": "cancelEditingMessage",
+          "lineNumber": 333
+        },
+        {
+          "caller": "handleDeleteMessage",
+          "callee": "toast.success",
+          "lineNumber": 336
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "setEditTitle",
+          "lineNumber": 355
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "setEditErrors",
+          "lineNumber": 357
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "setEditBody",
+          "lineNumber": 373
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "setEditErrors",
+          "lineNumber": 375
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "handleUpdateMessage",
+          "lineNumber": 387
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "copyText",
+          "lineNumber": 431
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "startEditingMessage",
+          "lineNumber": 438
+        },
+        {
+          "caller": "renderSavedMessageCard",
+          "callee": "handleDeleteMessage",
+          "lineNumber": 445
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "setQuery",
+          "lineNumber": 478
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "categories.map",
+          "lineNumber": 487
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "setSelectedCategory",
+          "lineNumber": 494
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "setNewTitle",
+          "lineNumber": 537
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "setNewErrors",
+          "lineNumber": 539
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "setNewBody",
+          "lineNumber": 556
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "setNewErrors",
+          "lineNumber": 558
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "savedMessages.map",
+          "lineNumber": 588
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "renderSavedMessageCard",
+          "lineNumber": 588
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "SUPPLIER_LOGISTICS_EMAILS.reduce",
+          "lineNumber": 607
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "copyText",
+          "lineNumber": 615
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "SUPPLIER_LOGISTICS_EMAILS.map",
+          "lineNumber": 623
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "group.emails.map",
+          "lineNumber": 624
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "copyText",
+          "lineNumber": 658
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "filteredItems.map",
+          "lineNumber": 673
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "isSavedMessageItem",
+          "lineNumber": 674
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "renderSavedMessageCard",
+          "lineNumber": 675
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "copyText",
+          "lineNumber": 709
+        },
+        {
+          "caller": "ReferenceClient",
+          "callee": "formatSavedMessageForCopy",
+          "lineNumber": 709
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/reference/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 5,
+      "nonEmptyLines": 4,
+      "functions": [
+        {
+          "name": "ReferencePage",
+          "startLine": 3,
+          "endLine": 5,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "ReferencePage",
+          "line": 3,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/reference/referenceData.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 77,
+      "nonEmptyLines": 75,
+      "exports": [
+        {
+          "name": "referenceItems",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/components/BackLink.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 27,
+      "nonEmptyLines": 25,
+      "functions": [
+        {
+          "name": "BackLink",
+          "startLine": 9,
+          "endLine": 27,
+          "params": [
+            "{ href, children }"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "BackLink",
+          "line": 9,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/components/NavigationCard.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 105,
+      "nonEmptyLines": 97,
+      "functions": [
+        {
+          "name": "CardInner",
+          "startLine": 13,
+          "endLine": 93,
+          "params": [
+            "{\n  title,\n  description,\n  icon,\n  badge,\n  disabled,\n}"
+          ]
+        },
+        {
+          "name": "NavigationCard",
+          "startLine": 95,
+          "endLine": 105,
+          "params": [
+            "props"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "NavigationCard",
+          "line": 95,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "CardInner",
+          "callee": "[\n        \"group relative flex min-h-[210px] overflow-hidden rounded-[1.65rem] border p-6 shadow-[var(--shadow-card)] transition\",\n        disabled\n          ? \"border-brand-border bg-brand-panel/70 opacity-70\"\n          : \"border-brand-border bg-brand-panel hover:-translate-y-1 hover:border-brand-red/70\",\n      ].join",
+          "lineNumber": 22
+        },
+        {
+          "caller": "CardInner",
+          "callee": "[\n              \"flex h-12 w-12 items-center justify-center rounded-2xl border\",\n              disabled\n                ? \"border-brand-border bg-brand-panel-alt text-brand-muted\"\n                : \"border-brand-red/45 bg-brand-red/10 text-brand-red\",\n            ].join",
+          "lineNumber": 34
+        },
+        {
+          "caller": "CardInner",
+          "callee": "[\n                \"rounded-full border px-4 py-1.5 text-[0.68rem] font-black uppercase tracking-[0.18em]\",\n                disabled\n                  ? \"border-brand-border bg-brand-panel-alt text-brand-muted\"\n                  : \"border-brand-red/45 bg-brand-red/15 text-brand-cream\",\n              ].join",
+          "lineNumber": 58
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    }
+  ]
+}

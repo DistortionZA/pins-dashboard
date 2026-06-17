@@ -1,14 +1,23 @@
 "use client"
 
+import { toast } from "sonner"
 import { useMemo, useState } from "react"
 
-import type { Garment } from "@prisma/client"
-
+import {
+  CUSTOMER_QUOTE_COPY_LABEL,
+  formatBreakdownAmount,
+  formatPrintBreakdownLabel,
+  formatBreakdownUnitAmount,
+  formatSubtotalBreakdownLabel,
+  getBreakdownItemLabel,
+} from "../../displayStandards"
+import { formatUkTradeQuoteCopy } from "../../copyFormatters"
 import {
   getUkTradeScreenPrintPrice,
   UK_TRADE_SCREEN_SETUP_PER_COLOUR,
 } from "../tradeScreenPrintData"
 import UkTradeDesignCard, { type UkTradeDesign } from "./UkTradeDesignCard"
+import type { UkTradeGarment } from "./types"
 
 type UkTradeItemBreakdown = {
   garmentCost: number
@@ -22,6 +31,8 @@ type UkTradeItemBreakdown = {
   missingReasons: string[]
 }
 
+const CURRENCY = "£"
+
 function createDefaultDesign(): UkTradeDesign {
   return {
     quantity: 50,
@@ -29,15 +40,11 @@ function createDefaultDesign(): UkTradeDesign {
   }
 }
 
-function formatCurrency(value: number) {
-  return `£${value.toFixed(2)}`
-}
-
 function getSelectedPositionEntries(positions: Record<string, number>) {
   return Object.entries(positions).filter(([, colorCount]) => colorCount > 0)
 }
 
-function getGarmentDisplayName(garment?: Garment) {
+function getGarmentDisplayName(garment?: UkTradeGarment) {
   if (!garment) return "No garment"
 
   return [garment.brandName, garment.name, garment.color].filter(Boolean).join(" - ")
@@ -45,20 +52,20 @@ function getGarmentDisplayName(garment?: Garment) {
 
 function calculateUkTradeItemBreakdown(
   design: UkTradeDesign,
-  garments: Garment[],
+  garments: UkTradeGarment[],
 ): UkTradeItemBreakdown {
   const garment = garments.find((item) => item.id === design.garmentId)
   const selectedPositions = getSelectedPositionEntries(design.positions)
   const missingReasons: string[] = []
 
   if (!garment) {
-    missingReasons.push("Select a garment.")
+    missingReasons.push("Select garment.")
   } else if (typeof garment.gbpPrice !== "number") {
-    missingReasons.push("Selected garment is missing a GBP price.")
+    missingReasons.push("Selected garment missing GBP price.")
   }
 
   if (design.quantity < 50) {
-    missingReasons.push("Minimum quantity is 50.")
+    missingReasons.push("Minimum quantity 50.")
   }
 
   if (selectedPositions.length === 0) {
@@ -70,23 +77,12 @@ function calculateUkTradeItemBreakdown(
 
   for (const [, colorCount] of selectedPositions) {
     const price = getUkTradeScreenPrintPrice(design.quantity, colorCount)
-
-    if (typeof price.unitPrice !== "number") {
-      missingReasons.push(
-        `No UK trade screen print price for quantity ${design.quantity} and ${colorCount} colour${colorCount === 1 ? "" : "s"}.`,
-      )
-      continue
-    }
-
-    printCost += price.unitPrice * design.quantity
+    printCost += (price.unitPrice ?? 0) * design.quantity
     setupCost += colorCount * UK_TRADE_SCREEN_SETUP_PER_COLOUR
   }
 
   const garmentCost =
-    garment && typeof garment.gbpPrice === "number"
-      ? garment.gbpPrice * design.quantity
-      : 0
-
+    garment && typeof garment.gbpPrice === "number" ? garment.gbpPrice * design.quantity : 0
   const totalCost = garmentCost + printCost + setupCost
   const hasValidPrice = missingReasons.length === 0
 
@@ -103,10 +99,28 @@ function calculateUkTradeItemBreakdown(
   }
 }
 
+async function copyToClipboard(text: string) {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    await navigator.clipboard.writeText(text)
+    return
+  }
+
+  const textArea = document.createElement("textarea")
+  textArea.value = text
+  textArea.style.position = "fixed"
+  textArea.style.left = "-9999px"
+  textArea.style.top = "-9999px"
+  document.body.appendChild(textArea)
+  textArea.focus()
+  textArea.select()
+  document.execCommand("copy")
+  document.body.removeChild(textArea)
+}
+
 export default function UkTradeCalculatorClient({
   garments,
 }: {
-  garments: Garment[]
+  garments: UkTradeGarment[]
 }) {
   const [designs, setDesigns] = useState<UkTradeDesign[]>([createDefaultDesign()])
 
@@ -164,6 +178,22 @@ export default function UkTradeCalculatorClient({
     }
   }, [breakdowns])
 
+  async function handleCopyClick() {
+    if (!hasAnyGarmentSelected) return
+
+    const body = formatUkTradeQuoteCopy({
+      designs,
+      breakdowns,
+      garments,
+      currency: CURRENCY,
+    })
+
+    if (!body.trim()) return
+
+    await copyToClipboard(body)
+    toast.success("Quote copied to clipboard")
+  }
+
   return (
     <div className="grid w-full min-w-0 gap-5 overflow-x-hidden xl:grid-cols-[minmax(0,1fr)_minmax(420px,0.9fr)]">
       <div className="max-w-[900px] space-y-4">
@@ -214,18 +244,32 @@ export default function UkTradeCalculatorClient({
                 Garment Cost
               </p>
               <p className="mt-3 text-4xl font-black tabular-nums text-brand-cream/90">
-                {formatCurrency(totals.garmentCost)}
+                {formatBreakdownAmount(CURRENCY, totals.garmentCost)}
               </p>
             </div>
 
-            <div className="rounded-2xl border border-blue-500/30 bg-brand-panel p-6 shadow-[0_0_20px_rgba(59,130,246,0.06)]">
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-muted/80">
-                Total Cost
-              </p>
-              <p className="mt-3 text-4xl font-black tabular-nums text-sky-400">
-                {formatCurrency(totals.totalCost)}
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={handleCopyClick}
+              className="hub-info-card bg-brand-panel rounded-2xl flex flex-col overflow-hidden text-left transition-all duration-300 cursor-pointer"
+              aria-label="Copy UK trade quote"
+            >
+              <div className="p-6 flex-grow">
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="text-brand-muted/80 text-xs font-bold uppercase tracking-widest">
+                    Total Cost
+                  </p>
+                  <span className="hub-info-pill text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
+                    {CUSTOMER_QUOTE_COPY_LABEL}
+                  </span>
+                </div>
+                <div className="mb-6">
+                  <span className="hub-info-text text-4xl md:text-5xl font-black tabular-nums">
+                    {formatBreakdownAmount(CURRENCY, totals.totalCost)}
+                  </span>
+                </div>
+              </div>
+            </button>
           </div>
 
           <div className="mt-6 rounded-2xl border border-brand-border bg-brand-panel shadow-[0_0_15px_rgba(0,0,0,0.2)]">
@@ -241,28 +285,37 @@ export default function UkTradeCalculatorClient({
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
                   <span>Print Cost</span>
                   <span className="font-mono text-brand-cream/90">
-                    {formatCurrency(totals.printCost)}
+                    {formatBreakdownAmount(CURRENCY, totals.printCost)}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
                   <span>Setup Cost</span>
                   <span className="font-mono text-brand-cream/90">
-                    {formatCurrency(totals.setupCost)}
+                    {formatBreakdownAmount(CURRENCY, totals.setupCost)}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                  <span>Cost Per Unit</span>
+                  <span>Total Unit Cost (excl VAT)</span>
                   <span className="font-mono text-brand-cream/90">
-                    {formatCurrency(totals.costPerUnit)}
+                    {formatBreakdownUnitAmount(CURRENCY, totals.costPerUnit)}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-cream/90">
+                  <span className="font-semibold">
+                    {formatSubtotalBreakdownLabel(totals.totalQuantity)}
+                  </span>
+                  <span className="font-mono font-semibold text-sky-300">
+                    {formatBreakdownAmount(CURRENCY, totals.totalCost)}
                   </span>
                 </div>
 
                 <p className="text-xs text-brand-muted">
                   Based on {totals.totalQuantity} valid unit
-                  {totals.totalQuantity === 1 ? "" : "s"} across{" "}
-                  {totals.validItemCount} valid item
+                  {totals.totalQuantity === 1 ? "" : "s"} across {totals.validItemCount} valid
+                  {" "}item
                   {totals.validItemCount === 1 ? "" : "s"}.
                 </p>
               </div>
@@ -273,67 +326,87 @@ export default function UkTradeCalculatorClient({
                 </h3>
 
                 <div className="space-y-4">
-                  {breakdowns.map((breakdown, index) => (
-                    <div
-                      key={index}
-                      className="space-y-3 border-b border-brand-border/80 pb-4 last:border-0 last:pb-0"
-                    >
-                      <div className="flex items-center justify-between gap-4 text-[10px] font-bold uppercase tracking-wider text-brand-muted/80">
-                        <span>
-                          {designs[index]?.itemLabel?.trim() || `Item #${index + 1}`} -{" "}
-                          {breakdown.garmentName}
-                        </span>
-                        <span className="shrink-0 whitespace-nowrap font-mono text-brand-muted">
-                          {breakdown.quantity} units
-                        </span>
-                      </div>
+                  {breakdowns.map((breakdown, index) => {
+                    const design = designs[index]
+                    const garment = garments.find((item) => item.id === design?.garmentId)
 
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                        <span>Garment Cost</span>
-                        <span className="font-mono text-brand-cream/90">
-                          {formatCurrency(breakdown.garmentCost)}
-                        </span>
-                      </div>
+                    if (!design) return null
 
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                        <span>Print Cost</span>
-                        <span className="font-mono text-brand-cream/90">
-                          {formatCurrency(breakdown.printCost)}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                        <span>Setup Cost</span>
-                        <span className="font-mono text-brand-cream/90">
-                          {formatCurrency(breakdown.setupCost)}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-cream/90">
-                        <span className="font-semibold">Total Cost</span>
-                        <span className="font-mono font-semibold text-sky-300">
-                          {formatCurrency(breakdown.totalCost)}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                        <span>Cost Per Unit</span>
-                        <span className="font-mono text-brand-cream/90">
-                          {formatCurrency(breakdown.costPerUnit)}
-                        </span>
-                      </div>
-
-                      {!breakdown.hasValidPrice ? (
-                        <div className="rounded-xl border border-brand-red/35 bg-brand-red/10 p-3">
-                          <ul className="space-y-1 text-sm text-brand-cream/90">
-                            {breakdown.missingReasons.map((reason) => (
-                              <li key={reason}>{reason}</li>
-                            ))}
-                          </ul>
+                    return (
+                      <div
+                        key={index}
+                        className="space-y-3 border-b border-brand-border/80 pb-4 last:border-0 last:pb-0"
+                      >
+                        <div className="flex items-center justify-between gap-4 text-[10px] font-bold uppercase tracking-wider text-brand-muted/80">
+                          <span>
+                            {getBreakdownItemLabel(design.itemLabel, index)} -{" "}
+                            {breakdown.garmentName}
+                          </span>
+                          <span className="shrink-0 whitespace-nowrap font-mono text-brand-muted">
+                            {breakdown.quantity} units
+                          </span>
                         </div>
-                      ) : null}
-                    </div>
-                  ))}
+
+                        {garment && typeof garment.gbpPrice === "number" ? (
+                          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                            <span>Garment Base Price</span>
+                            <span className="font-mono text-brand-cream/90">
+                              {formatBreakdownUnitAmount(CURRENCY, garment.gbpPrice)}
+                            </span>
+                          </div>
+                        ) : null}
+
+                        {getSelectedPositionEntries(design.positions).map(([position, colorCount]) => {
+                          const unitPrice = getUkTradeScreenPrintPrice(design.quantity, colorCount)
+
+                          return (
+                            <div
+                              key={position}
+                              className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted"
+                            >
+                              <span>{formatPrintBreakdownLabel(position, colorCount)}</span>
+                              <span className="font-mono text-brand-cream/90">
+                                {formatBreakdownUnitAmount(CURRENCY, unitPrice.unitPrice ?? 0)}
+                              </span>
+                            </div>
+                          )
+                        })}
+
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                          <span>Setup Cost</span>
+                          <span className="font-mono text-brand-cream/90">
+                            {formatBreakdownAmount(CURRENCY, breakdown.setupCost)}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                          <span>Total Unit Cost (excl VAT)</span>
+                          <span className="font-mono text-brand-cream/90">
+                            {formatBreakdownUnitAmount(CURRENCY, breakdown.costPerUnit)}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-cream/90">
+                          <span className="font-semibold">
+                            {formatSubtotalBreakdownLabel(breakdown.quantity)}
+                          </span>
+                          <span className="font-mono font-semibold text-sky-300">
+                            {formatBreakdownAmount(CURRENCY, breakdown.totalCost)}
+                          </span>
+                        </div>
+
+                        {!breakdown.hasValidPrice ? (
+                          <div className="rounded-xl border border-brand-red/35 bg-brand-red/10 p-3">
+                            <ul className="space-y-1 text-sm text-brand-cream/90">
+                              {breakdown.missingReasons.map((reason) => (
+                                <li key={reason}>{reason}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>

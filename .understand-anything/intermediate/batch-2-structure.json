@@ -1,0 +1,1250 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 11,
+  "filesSkipped": [],
+  "results": [
+    {
+      "path": "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 42,
+      "nonEmptyLines": 35,
+      "functions": [
+        {
+          "name": "CalculatorPageContent",
+          "startLine": 15,
+          "endLine": 42,
+          "params": [
+            "{\n  calculatorCode,\n  title,\n  backHref,\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "CalculatorPageContent",
+          "line": 15,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "CalculatorPageContent",
+          "callee": "connection",
+          "lineNumber": 20
+        },
+        {
+          "caller": "CalculatorPageContent",
+          "callee": "getCalculatorReferenceData",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/calculators/data.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 43,
+      "nonEmptyLines": 36,
+      "functions": [
+        {
+          "name": "loadCalculatorReferenceData",
+          "startLine": 8,
+          "endLine": 31,
+          "params": [
+            "calculatorCode"
+          ]
+        },
+        {
+          "name": "getCalculatorReferenceTag",
+          "startLine": 41,
+          "endLine": 43,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getCalculatorReferenceData",
+          "line": 33,
+          "isDefault": false
+        },
+        {
+          "name": "getCalculatorReferenceTag",
+          "line": 41,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "loadCalculatorReferenceData",
+          "callee": "Promise.all",
+          "lineNumber": 9
+        },
+        {
+          "caller": "loadCalculatorReferenceData",
+          "callee": "prisma.garment.findMany",
+          "lineNumber": 10
+        },
+        {
+          "caller": "loadCalculatorReferenceData",
+          "callee": "prisma.printPrice.findMany",
+          "lineNumber": 13
+        },
+        {
+          "caller": "loadCalculatorReferenceData",
+          "callee": "prisma.calculatorProfile.findUnique",
+          "lineNumber": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/calculators/eu/standard/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 20,
+      "nonEmptyLines": 17,
+      "functions": [
+        {
+          "name": "StandardEuCalculatorPage",
+          "startLine": 12,
+          "endLine": 20,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "metadata",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "StandardEuCalculatorPage",
+          "line": 12,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/calculators/eu/us-clients/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 20,
+      "nonEmptyLines": 17,
+      "functions": [
+        {
+          "name": "UsClientsCalculatorPage",
+          "startLine": 12,
+          "endLine": 20,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "metadata",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "UsClientsCalculatorPage",
+          "line": 12,
+          "isDefault": true
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/garments/GarmentDirectoryClient.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 513,
+      "nonEmptyLines": 472,
+      "functions": [
+        {
+          "name": "getTagList",
+          "startLine": 8,
+          "endLine": 13,
+          "params": [
+            "tags"
+          ]
+        },
+        {
+          "name": "normalizeSearch",
+          "startLine": 15,
+          "endLine": 17,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "getGbpPriceDisplay",
+          "startLine": 19,
+          "endLine": 21,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "normalizeGarmentDirectoryItem",
+          "startLine": 23,
+          "endLine": 30,
+          "params": [
+            "garment"
+          ]
+        },
+        {
+          "name": "GarmentDirectoryClient",
+          "startLine": 32,
+          "endLine": 513,
+          "params": [
+            "{\n  initialGarments\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "GarmentDirectoryClient",
+          "line": 32,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getTagList",
+          "callee": "(tags ?? \"\")\n    .split(\",\")\n    .map((tag) => tag.trim())\n    .filter",
+          "lineNumber": 9
+        },
+        {
+          "caller": "getTagList",
+          "callee": "(tags ?? \"\")\n    .split(\",\")\n    .map",
+          "lineNumber": 9
+        },
+        {
+          "caller": "getTagList",
+          "callee": "(tags ?? \"\")\n    .split",
+          "lineNumber": 9
+        },
+        {
+          "caller": "getTagList",
+          "callee": "tag.trim",
+          "lineNumber": 11
+        },
+        {
+          "caller": "normalizeSearch",
+          "callee": "value.toLowerCase().replace(/[^a-z0-9]+/g, \" \").trim",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeSearch",
+          "callee": "value.toLowerCase().replace",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeSearch",
+          "callee": "value.toLowerCase",
+          "lineNumber": 16
+        },
+        {
+          "caller": "getGbpPriceDisplay",
+          "callee": "value.toFixed",
+          "lineNumber": 20
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useRouter",
+          "lineNumber": 37
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useState",
+          "lineNumber": 38
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useState",
+          "lineNumber": 39
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useState",
+          "lineNumber": 40
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useState",
+          "lineNumber": 41
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useState",
+          "lineNumber": 42
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useState",
+          "lineNumber": 43
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useMemo",
+          "lineNumber": 47
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "initialGarments.map",
+          "lineNumber": 48
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "useMemo",
+          "lineNumber": 53
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "normalizeSearch(search).split(\" \").filter",
+          "lineNumber": 54
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "normalizeSearch(search).split",
+          "lineNumber": 54
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "normalizeSearch",
+          "lineNumber": 54
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "garments.filter",
+          "lineNumber": 60
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "normalizeSearch",
+          "lineNumber": 61
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "[\n        g.name,\n        g.code,\n        g.altCode,\n        g.brandName,\n        g.color,\n        g.tags\n      ].filter(Boolean).join",
+          "lineNumber": 61
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "[\n        g.name,\n        g.code,\n        g.altCode,\n        g.brandName,\n        g.color,\n        g.tags\n      ].filter",
+          "lineNumber": 61
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "queryParts.every",
+          "lineNumber": 70
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "searchableText.includes",
+          "lineNumber": 70
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "e.preventDefault",
+          "lineNumber": 75
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "setIsSubmitting",
+          "lineNumber": 76
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "addGarment",
+          "lineNumber": 80
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "setIsModalOpen",
+          "lineNumber": 81
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "router.refresh",
+          "lineNumber": 82
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "console.error",
+          "lineNumber": 85
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "alert",
+          "lineNumber": 86
+        },
+        {
+          "caller": "handleAddGarment",
+          "callee": "setIsSubmitting",
+          "lineNumber": 88
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "e.preventDefault",
+          "lineNumber": 93
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "setIsUpdatingDetails",
+          "lineNumber": 94
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "updateGarmentDetails",
+          "lineNumber": 98
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "setEditingGarment",
+          "lineNumber": 99
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "router.refresh",
+          "lineNumber": 100
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "console.error",
+          "lineNumber": 102
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "alert",
+          "lineNumber": 103
+        },
+        {
+          "caller": "handleUpdateDetails",
+          "callee": "setIsUpdatingDetails",
+          "lineNumber": 105
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "confirm",
+          "lineNumber": 111
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setIsDeleting",
+          "lineNumber": 113
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "deleteGarment",
+          "lineNumber": 115
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setEditingGarment",
+          "lineNumber": 116
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "router.refresh",
+          "lineNumber": 117
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "console.error",
+          "lineNumber": 119
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "alert",
+          "lineNumber": 120
+        },
+        {
+          "caller": "handleDelete",
+          "callee": "setIsDeleting",
+          "lineNumber": 122
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setSearch",
+          "lineNumber": 138
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setIsModalOpen",
+          "lineNumber": 145
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "filtered.map",
+          "lineNumber": 184
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setEditingGarment",
+          "lineNumber": 190
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "normalizeGarmentDirectoryItem",
+          "lineNumber": 190
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "g.connectedMarkupValue.toFixed",
+          "lineNumber": 209
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "getTagList",
+          "lineNumber": 214
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "getTagList(g.tags).map",
+          "lineNumber": 215
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "getTagList",
+          "lineNumber": 215
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "g.basePrice.toFixed",
+          "lineNumber": 226
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "getGbpPriceDisplay",
+          "lineNumber": 228
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "g.extraSizeCost.toFixed",
+          "lineNumber": 231
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setIsModalOpen",
+          "lineNumber": 248
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setIsModalOpen",
+          "lineNumber": 315
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setEditingGarment",
+          "lineNumber": 343
+        },
+        {
+          "caller": "GarmentDirectoryClient",
+          "callee": "setEditingGarment",
+          "lineNumber": 491
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/garments/actions.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 127,
+      "nonEmptyLines": 107,
+      "functions": [
+        {
+          "name": "normalizeTags",
+          "startLine": 9,
+          "endLine": 31,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "normalizeText",
+          "startLine": 33,
+          "endLine": 35,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "normalizeCode",
+          "startLine": 37,
+          "endLine": 39,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "normalizeOptionalFloat",
+          "startLine": 41,
+          "endLine": 47,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "addGarment",
+          "startLine": 49,
+          "endLine": 81,
+          "params": [
+            "formData"
+          ]
+        },
+        {
+          "name": "updateGarmentDetails",
+          "startLine": 83,
+          "endLine": 111,
+          "params": [
+            "formData"
+          ]
+        },
+        {
+          "name": "deleteGarment",
+          "startLine": 113,
+          "endLine": 127,
+          "params": [
+            "id"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "addGarment",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "updateGarmentDetails",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "deleteGarment",
+          "line": 113,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "normalizeTags",
+          "callee": "value\n    .split(/[,\\n]/)\n    .map((tag) => tag.trim())\n    .filter(Boolean)\n    .filter((tag) => {\n      const key = tag.toLowerCase()\n\n      if (seen.has(key)) {\n        return false\n      }\n\n      seen.add(key)\n      return true\n    })\n    .join",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "value\n    .split(/[,\\n]/)\n    .map((tag) => tag.trim())\n    .filter(Boolean)\n    .filter",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "value\n    .split(/[,\\n]/)\n    .map((tag) => tag.trim())\n    .filter",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "value\n    .split(/[,\\n]/)\n    .map",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "value\n    .split",
+          "lineNumber": 16
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "tag.trim",
+          "lineNumber": 18
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "tag.toLowerCase",
+          "lineNumber": 21
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "seen.has",
+          "lineNumber": 23
+        },
+        {
+          "caller": "normalizeTags",
+          "callee": "seen.add",
+          "lineNumber": 27
+        },
+        {
+          "caller": "normalizeText",
+          "callee": "value.trim",
+          "lineNumber": 34
+        },
+        {
+          "caller": "normalizeCode",
+          "callee": "normalizeText(value).replace",
+          "lineNumber": 38
+        },
+        {
+          "caller": "normalizeCode",
+          "callee": "normalizeText",
+          "lineNumber": 38
+        },
+        {
+          "caller": "normalizeOptionalFloat",
+          "callee": "value.trim",
+          "lineNumber": 42
+        },
+        {
+          "caller": "normalizeOptionalFloat",
+          "callee": "parseFloat",
+          "lineNumber": 46
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeCode",
+          "lineNumber": 50
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 50
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeText",
+          "lineNumber": 51
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 51
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeText",
+          "lineNumber": 52
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 52
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeText",
+          "lineNumber": 53
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 53
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeText",
+          "lineNumber": 54
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 54
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 55
+        },
+        {
+          "caller": "addGarment",
+          "callee": "parseFloat",
+          "lineNumber": 56
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 56
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeOptionalFloat",
+          "lineNumber": 57
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 57
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeOptionalFloat",
+          "lineNumber": 58
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 58
+        },
+        {
+          "caller": "addGarment",
+          "callee": "normalizeTags",
+          "lineNumber": 59
+        },
+        {
+          "caller": "addGarment",
+          "callee": "formData.get",
+          "lineNumber": 59
+        },
+        {
+          "caller": "addGarment",
+          "callee": "prisma.garment.create",
+          "lineNumber": 61
+        },
+        {
+          "caller": "addGarment",
+          "callee": "revalidateTag",
+          "lineNumber": 76
+        },
+        {
+          "caller": "addGarment",
+          "callee": "getGarmentDirectoryTag",
+          "lineNumber": 76
+        },
+        {
+          "caller": "addGarment",
+          "callee": "revalidateTag",
+          "lineNumber": 77
+        },
+        {
+          "caller": "addGarment",
+          "callee": "getCalculatorReferenceTag",
+          "lineNumber": 77
+        },
+        {
+          "caller": "addGarment",
+          "callee": "revalidatePath",
+          "lineNumber": 78
+        },
+        {
+          "caller": "addGarment",
+          "callee": "revalidatePath",
+          "lineNumber": 79
+        },
+        {
+          "caller": "addGarment",
+          "callee": "revalidatePath",
+          "lineNumber": 80
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 84
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "prisma.garment.update",
+          "lineNumber": 90
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeCode",
+          "lineNumber": 93
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 93
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeText",
+          "lineNumber": 94
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 94
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeText",
+          "lineNumber": 95
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 95
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeText",
+          "lineNumber": 96
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 96
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeText",
+          "lineNumber": 97
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 97
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 98
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "parseFloat",
+          "lineNumber": 99
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 99
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeOptionalFloat",
+          "lineNumber": 100
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 100
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeOptionalFloat",
+          "lineNumber": 101
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 101
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "normalizeTags",
+          "lineNumber": 102
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "formData.get",
+          "lineNumber": 102
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "revalidateTag",
+          "lineNumber": 106
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "getGarmentDirectoryTag",
+          "lineNumber": 106
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "revalidateTag",
+          "lineNumber": 107
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "getCalculatorReferenceTag",
+          "lineNumber": 107
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "revalidatePath",
+          "lineNumber": 108
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "revalidatePath",
+          "lineNumber": 109
+        },
+        {
+          "caller": "updateGarmentDetails",
+          "callee": "revalidatePath",
+          "lineNumber": 110
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "prisma.garment.delete",
+          "lineNumber": 118
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "revalidateTag",
+          "lineNumber": 122
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "getGarmentDirectoryTag",
+          "lineNumber": 122
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "revalidateTag",
+          "lineNumber": 123
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "getCalculatorReferenceTag",
+          "lineNumber": 123
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "revalidatePath",
+          "lineNumber": 124
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "revalidatePath",
+          "lineNumber": 125
+        },
+        {
+          "caller": "deleteGarment",
+          "callee": "revalidatePath",
+          "lineNumber": 126
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 3,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/garments/data.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 46,
+      "nonEmptyLines": 38,
+      "functions": [
+        {
+          "name": "loadGarmentDirectoryData",
+          "startLine": 13,
+          "endLine": 36,
+          "params": []
+        },
+        {
+          "name": "getGarmentDirectoryTag",
+          "startLine": 44,
+          "endLine": 46,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getGarmentDirectoryData",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "getGarmentDirectoryTag",
+          "line": 44,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "loadGarmentDirectoryData",
+          "callee": "Promise.all",
+          "lineNumber": 14
+        },
+        {
+          "caller": "loadGarmentDirectoryData",
+          "callee": "prisma.garment.findMany",
+          "lineNumber": 15
+        },
+        {
+          "caller": "loadGarmentDirectoryData",
+          "callee": "prisma.garmentMarkup.findMany",
+          "lineNumber": 18
+        },
+        {
+          "caller": "loadGarmentDirectoryData",
+          "callee": "garmentMarkups.map",
+          "lineNumber": 28
+        },
+        {
+          "caller": "loadGarmentDirectoryData",
+          "callee": "garments.map",
+          "lineNumber": 31
+        },
+        {
+          "caller": "loadGarmentDirectoryData",
+          "callee": "markupByType.get",
+          "lineNumber": 34
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/hub/garments/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 20,
+      "functions": [
+        {
+          "name": "GarmentDirectoryPage",
+          "startLine": 8,
+          "endLine": 26,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "GarmentDirectoryPage",
+          "line": 8,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "GarmentDirectoryPage",
+          "callee": "connection",
+          "lineNumber": 9
+        },
+        {
+          "caller": "GarmentDirectoryPage",
+          "callee": "getGarmentDirectoryData",
+          "lineNumber": 10
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/app/ref/[code]/page.tsx",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 70,
+      "nonEmptyLines": 65,
+      "functions": [
+        {
+          "name": "ReferralLandingPage",
+          "startLine": 5,
+          "endLine": 70,
+          "params": [
+            "{\n  params\n}"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ReferralLandingPage",
+          "line": 5,
+          "isDefault": true
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ReferralLandingPage",
+          "callee": "connection",
+          "lineNumber": 10
+        },
+        {
+          "caller": "ReferralLandingPage",
+          "callee": "code.toUpperCase",
+          "lineNumber": 12
+        },
+        {
+          "caller": "ReferralLandingPage",
+          "callee": "prisma.customer.findUnique",
+          "lineNumber": 13
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/lib/calculator-profiles.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 7,
+      "nonEmptyLines": 6,
+      "exports": [
+        {
+          "name": "CALCULATOR_PROFILE_CODES",
+          "line": 1,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "src/lib/db.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 51,
+      "nonEmptyLines": 42,
+      "exports": [
+        {
+          "name": "prisma",
+          "line": 41,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

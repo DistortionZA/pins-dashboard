@@ -884,7 +884,7 @@ export default function PkTaxCalculatorClient() {
         </div>
 
         {hasZeroMetricTotal ? (
-          <div className="mt-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100/90">
+        <div className="hub-warning-panel mt-4 rounded-2xl px-4 py-3 text-sm">
             One or more report totals are zero, so that metric weighting cannot be distributed.
           </div>
         ) : null}

@@ -1,0 +1,795 @@
+{
+  "scriptCompleted": true,
+  "files": [
+    {
+      "path": ".agents/skills/neon-postgres/SKILL.md",
+      "language": "markdown",
+      "sizeLines": 276,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".env.example",
+      "language": "config",
+      "sizeLines": 2,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".serena/memories/memory_maintenance.md",
+      "language": "markdown",
+      "sizeLines": 32,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".serena/memories/project_context/current_state.md",
+      "language": "markdown",
+      "sizeLines": 56,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".serena/project.yml",
+      "language": "yaml",
+      "sizeLines": 133,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/config.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "AGENTS.md",
+      "language": "markdown",
+      "sizeLines": 103,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "CLAUDE.md",
+      "language": "markdown",
+      "sizeLines": 1,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/ai-context/PROJECT_CONTEXT.md",
+      "language": "markdown",
+      "sizeLines": 201,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/ai-context/UI_MANUAL_UPDATE_GUIDE.md",
+      "language": "markdown",
+      "sizeLines": 668,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "language": "javascript",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "next.config.ts",
+      "language": "typescript",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "package.json",
+      "language": "json",
+      "sizeLines": 36,
+      "fileCategory": "config"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "language": "javascript",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma.config.ts",
+      "language": "typescript",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma/migrations/0_init/migration.sql",
+      "language": "sql",
+      "sizeLines": 83,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260608143000_add_referral_models/migration.sql",
+      "language": "sql",
+      "sizeLines": 72,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260610120000_add_calculator_profiles/migration.sql",
+      "language": "sql",
+      "sizeLines": 35,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260611101832_add_referral_scenarios/migration.sql",
+      "language": "sql",
+      "sizeLines": 19,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260616120000_add_garment_gbp_price/migration.sql",
+      "language": "sql",
+      "sizeLines": 2,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/migration_lock.toml",
+      "language": "toml",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "prisma/schema.prisma",
+      "language": "prisma",
+      "sizeLines": 160,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/seed-data.ts",
+      "language": "typescript",
+      "sizeLines": 128,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma/seed.ts",
+      "language": "typescript",
+      "sizeLines": 76,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260602151830_init/migration.sql",
+      "language": "sql",
+      "sizeLines": 51,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260602155246_add_garments/migration.sql",
+      "language": "sql",
+      "sizeLines": 2,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260604120000_add_garment_tags/migration.sql",
+      "language": "sql",
+      "sizeLines": 2,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260604130000_add_garment_detail_fields/migration.sql",
+      "language": "sql",
+      "sizeLines": 4,
+      "fileCategory": "data"
+    },
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "sizeLines": 90,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "skills-lock.json",
+      "language": "json",
+      "sizeLines": 11,
+      "fileCategory": "config"
+    },
+    {
+      "path": "src/app/globals.css",
+      "language": "css",
+      "sizeLines": 515,
+      "fileCategory": "markup"
+    },
+    {
+      "path": "src/app/hub/calculators/CalculatorClient.tsx",
+      "language": "typescript",
+      "sizeLines": 799,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/CalculatorLoading.tsx",
+      "language": "typescript",
+      "sizeLines": 34,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "language": "typescript",
+      "sizeLines": 42,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/copyFormatters.ts",
+      "language": "typescript",
+      "sizeLines": 133,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/data.ts",
+      "language": "typescript",
+      "sizeLines": 43,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/page.tsx",
+      "language": "typescript",
+      "sizeLines": 73,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/standard/loading.tsx",
+      "language": "typescript",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/standard/page.tsx",
+      "language": "typescript",
+      "sizeLines": 20,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/us-clients/loading.tsx",
+      "language": "typescript",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/eu/us-clients/page.tsx",
+      "language": "typescript",
+      "sizeLines": 20,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/page.tsx",
+      "language": "typescript",
+      "sizeLines": 69,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/page.tsx",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/trade/data.ts",
+      "language": "typescript",
+      "sizeLines": 23,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/trade/page.tsx",
+      "language": "typescript",
+      "sizeLines": 37,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/trade/UkTradeCalculatorClient.tsx",
+      "language": "typescript",
+      "sizeLines": 344,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/trade/UkTradeDesignCard.tsx",
+      "language": "typescript",
+      "sizeLines": 368,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/calculators/uk/tradeScreenPrintData.ts",
+      "language": "typescript",
+      "sizeLines": 210,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/actions.ts",
+      "language": "typescript",
+      "sizeLines": 127,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/data.ts",
+      "language": "typescript",
+      "sizeLines": 46,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/GarmentDirectoryClient.tsx",
+      "language": "typescript",
+      "sizeLines": 513,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/loading.tsx",
+      "language": "typescript",
+      "sizeLines": 36,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/garments/page.tsx",
+      "language": "typescript",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/loading.tsx",
+      "language": "typescript",
+      "sizeLines": 26,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/pk-tax/page.tsx",
+      "language": "typescript",
+      "sizeLines": 21,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx",
+      "language": "typescript",
+      "sizeLines": 1271,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/reference/page.tsx",
+      "language": "typescript",
+      "sizeLines": 5,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/reference/ReferenceClient.tsx",
+      "language": "typescript",
+      "sizeLines": 727,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/reference/referenceData.ts",
+      "language": "typescript",
+      "sizeLines": 77,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/AccordionSection.tsx",
+      "language": "typescript",
+      "sizeLines": 53,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/actions.ts",
+      "language": "typescript",
+      "sizeLines": 533,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/constants.ts",
+      "language": "typescript",
+      "sizeLines": 1,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/data.ts",
+      "language": "typescript",
+      "sizeLines": 98,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/loading.tsx",
+      "language": "typescript",
+      "sizeLines": 41,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/page.tsx",
+      "language": "typescript",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralRuleCard.tsx",
+      "language": "typescript",
+      "sizeLines": 204,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralScenarioComparison.tsx",
+      "language": "typescript",
+      "sizeLines": 121,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralScenarioManager.tsx",
+      "language": "typescript",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralsClient.tsx",
+      "language": "typescript",
+      "sizeLines": 670,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralSimulationSummary.tsx",
+      "language": "typescript",
+      "sizeLines": 242,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralTabs.tsx",
+      "language": "typescript",
+      "sizeLines": 33,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/ReferralTestCaseCard.tsx",
+      "language": "typescript",
+      "sizeLines": 245,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/hub/referrals/simulator.ts",
+      "language": "typescript",
+      "sizeLines": 624,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "language": "typescript",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/ref/[code]/page.tsx",
+      "language": "typescript",
+      "sizeLines": 70,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/BackLink.tsx",
+      "language": "typescript",
+      "sizeLines": 27,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/BrandLogo.tsx",
+      "language": "typescript",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/DesignCard.tsx",
+      "language": "typescript",
+      "sizeLines": 482,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/HubSidebar.tsx",
+      "language": "typescript",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/NavigationCard.tsx",
+      "language": "typescript",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/theme/HubThemeProvider.tsx",
+      "language": "typescript",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/theme/ThemeToggle.tsx",
+      "language": "typescript",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/lib/calculator-profiles.ts",
+      "language": "typescript",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/lib/db.ts",
+      "language": "typescript",
+      "sizeLines": 51,
+      "fileCategory": "code"
+    },
+    {
+      "path": "start.sh",
+      "language": "shell",
+      "sizeLines": 3,
+      "fileCategory": "script"
+    },
+    {
+      "path": "tsconfig.json",
+      "language": "json",
+      "sizeLines": 34,
+      "fileCategory": "config"
+    },
+    {
+      "path": "tsconfig.seed.json",
+      "language": "json",
+      "sizeLines": 7,
+      "fileCategory": "config"
+    },
+    {
+      "path": "vercel.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    }
+  ],
+  "totalFiles": 90,
+  "filteredByIgnore": 0,
+  "estimatedComplexity": "moderate",
+  "stats": {
+    "filesScanned": 90,
+    "byCategory": {
+      "docs": 8,
+      "config": 9,
+      "code": 61,
+      "data": 10,
+      "markup": 1,
+      "script": 1
+    },
+    "byLanguage": {
+      "markdown": 8,
+      "config": 1,
+      "yaml": 1,
+      "json": 6,
+      "javascript": 2,
+      "typescript": 59,
+      "sql": 9,
+      "toml": 1,
+      "prisma": 1,
+      "css": 1,
+      "shell": 1
+    }
+  },
+  "projectName": "pins-hub",
+  "projectDescription": "Internal Next.js dashboard for calculators, garments, referrals, PK Tax, and sales reference workflows.",
+  "languages": [
+    "typescript",
+    "javascript",
+    "css",
+    "prisma",
+    "markdown",
+    "json"
+  ],
+  "frameworks": [
+    "Next.js 16 App Router",
+    "React",
+    "Tailwind CSS 4",
+    "Prisma",
+    "PostgreSQL/Neon"
+  ],
+  "importMap": {
+    ".agents/skills/neon-postgres/SKILL.md": [],
+    ".env.example": [],
+    ".serena/memories/memory_maintenance.md": [],
+    ".serena/memories/project_context/current_state.md": [],
+    ".serena/project.yml": [],
+    ".understand-anything/config.json": [],
+    "AGENTS.md": [],
+    "CLAUDE.md": [],
+    "docs/ai-context/PROJECT_CONTEXT.md": [],
+    "docs/ai-context/UI_MANUAL_UPDATE_GUIDE.md": [],
+    "eslint.config.mjs": [],
+    "next.config.ts": [],
+    "package.json": [],
+    "postcss.config.mjs": [],
+    "prisma.config.ts": [],
+    "prisma/migrations/0_init/migration.sql": [],
+    "prisma/migrations/20260608143000_add_referral_models/migration.sql": [],
+    "prisma/migrations/20260610120000_add_calculator_profiles/migration.sql": [],
+    "prisma/migrations/20260611101832_add_referral_scenarios/migration.sql": [],
+    "prisma/migrations/20260616120000_add_garment_gbp_price/migration.sql": [],
+    "prisma/migrations/migration_lock.toml": [],
+    "prisma/schema.prisma": [],
+    "prisma/seed-data.ts": [],
+    "prisma/seed.ts": [
+      "prisma/seed-data.ts"
+    ],
+    "prisma/sqlite-migrations-archive/20260602151830_init/migration.sql": [],
+    "prisma/sqlite-migrations-archive/20260602155246_add_garments/migration.sql": [],
+    "prisma/sqlite-migrations-archive/20260604120000_add_garment_tags/migration.sql": [],
+    "prisma/sqlite-migrations-archive/20260604130000_add_garment_detail_fields/migration.sql": [],
+    "README.md": [],
+    "skills-lock.json": [],
+    "src/app/globals.css": [],
+    "src/app/hub/calculators/CalculatorClient.tsx": [
+      "src/app/hub/calculators/copyFormatters.ts",
+      "src/components/DesignCard.tsx"
+    ],
+    "src/app/hub/calculators/CalculatorLoading.tsx": [],
+    "src/app/hub/calculators/CalculatorPageContent.tsx": [
+      "src/app/hub/calculators/CalculatorClient.tsx",
+      "src/app/hub/calculators/data.ts",
+      "src/components/BackLink.tsx",
+      "src/lib/calculator-profiles.ts"
+    ],
+    "src/app/hub/calculators/copyFormatters.ts": [
+      "src/components/DesignCard.tsx"
+    ],
+    "src/app/hub/calculators/data.ts": [
+      "src/lib/calculator-profiles.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/calculators/eu/page.tsx": [
+      "src/components/BackLink.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/hub/calculators/eu/standard/loading.tsx": [],
+    "src/app/hub/calculators/eu/standard/page.tsx": [
+      "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "src/lib/calculator-profiles.ts"
+    ],
+    "src/app/hub/calculators/eu/us-clients/loading.tsx": [],
+    "src/app/hub/calculators/eu/us-clients/page.tsx": [
+      "src/app/hub/calculators/CalculatorPageContent.tsx",
+      "src/lib/calculator-profiles.ts"
+    ],
+    "src/app/hub/calculators/page.tsx": [
+      "src/components/BackLink.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/hub/calculators/uk/page.tsx": [
+      "src/components/BackLink.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/hub/calculators/uk/trade/data.ts": [
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/calculators/uk/trade/page.tsx": [
+      "src/app/hub/calculators/uk/trade/data.ts",
+      "src/app/hub/calculators/uk/trade/UkTradeCalculatorClient.tsx",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/calculators/uk/trade/UkTradeCalculatorClient.tsx": [
+      "src/app/hub/calculators/uk/trade/UkTradeDesignCard.tsx",
+      "src/app/hub/calculators/uk/tradeScreenPrintData.ts"
+    ],
+    "src/app/hub/calculators/uk/trade/UkTradeDesignCard.tsx": [
+      "src/components/DesignCard.tsx"
+    ],
+    "src/app/hub/calculators/uk/tradeScreenPrintData.ts": [],
+    "src/app/hub/garments/actions.ts": [
+      "src/app/hub/calculators/data.ts",
+      "src/app/hub/garments/data.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/garments/data.ts": [
+      "src/lib/calculator-profiles.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/garments/GarmentDirectoryClient.tsx": [
+      "src/app/hub/garments/actions.ts",
+      "src/app/hub/garments/data.ts"
+    ],
+    "src/app/hub/garments/loading.tsx": [],
+    "src/app/hub/garments/page.tsx": [
+      "src/app/hub/garments/data.ts",
+      "src/app/hub/garments/GarmentDirectoryClient.tsx",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/layout.tsx": [
+      "src/components/HubSidebar.tsx"
+    ],
+    "src/app/hub/loading.tsx": [
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/pk-tax/page.tsx": [
+      "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/pk-tax/PkTaxCalculatorClient.tsx": [],
+    "src/app/hub/reference/page.tsx": [
+      "src/app/hub/reference/ReferenceClient.tsx"
+    ],
+    "src/app/hub/reference/ReferenceClient.tsx": [
+      "src/app/hub/reference/referenceData.ts",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/reference/referenceData.ts": [],
+    "src/app/hub/referrals/AccordionSection.tsx": [],
+    "src/app/hub/referrals/actions.ts": [
+      "src/app/hub/referrals/constants.ts",
+      "src/app/hub/referrals/data.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/referrals/constants.ts": [],
+    "src/app/hub/referrals/data.ts": [
+      "src/app/hub/referrals/simulator.ts",
+      "src/lib/db.ts"
+    ],
+    "src/app/hub/referrals/loading.tsx": [],
+    "src/app/hub/referrals/page.tsx": [
+      "src/app/hub/referrals/data.ts",
+      "src/app/hub/referrals/ReferralsClient.tsx",
+      "src/components/BackLink.tsx"
+    ],
+    "src/app/hub/referrals/ReferralRuleCard.tsx": [
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/ReferralScenarioComparison.tsx": [
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/ReferralScenarioManager.tsx": [
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/ReferralsClient.tsx": [
+      "src/app/hub/referrals/AccordionSection.tsx",
+      "src/app/hub/referrals/actions.ts",
+      "src/app/hub/referrals/data.ts",
+      "src/app/hub/referrals/ReferralRuleCard.tsx",
+      "src/app/hub/referrals/ReferralScenarioManager.tsx",
+      "src/app/hub/referrals/ReferralSimulationSummary.tsx",
+      "src/app/hub/referrals/ReferralTabs.tsx",
+      "src/app/hub/referrals/ReferralTestCaseCard.tsx",
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/ReferralSimulationSummary.tsx": [
+      "src/app/hub/referrals/AccordionSection.tsx",
+      "src/app/hub/referrals/ReferralScenarioComparison.tsx",
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/ReferralTabs.tsx": [
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/ReferralTestCaseCard.tsx": [
+      "src/app/hub/referrals/simulator.ts"
+    ],
+    "src/app/hub/referrals/simulator.ts": [],
+    "src/app/layout.tsx": [
+      "src/app/globals.css",
+      "src/components/theme/HubThemeProvider.tsx"
+    ],
+    "src/app/page.tsx": [
+      "src/components/HubSidebar.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/app/ref/[code]/page.tsx": [
+      "src/lib/db.ts"
+    ],
+    "src/components/BackLink.tsx": [],
+    "src/components/BrandLogo.tsx": [],
+    "src/components/DesignCard.tsx": [],
+    "src/components/HubSidebar.tsx": [
+      "src/components/theme/ThemeToggle.tsx"
+    ],
+    "src/components/NavigationCard.tsx": [],
+    "src/components/theme/HubThemeProvider.tsx": [],
+    "src/components/theme/ThemeToggle.tsx": [
+      "src/components/theme/HubThemeProvider.tsx"
+    ],
+    "src/lib/calculator-profiles.ts": [],
+    "src/lib/db.ts": [],
+    "start.sh": [],
+    "tsconfig.json": [],
+    "tsconfig.seed.json": [],
+    "vercel.json": []
+  }
+}

@@ -2,9 +2,8 @@
 
 import { useState } from "react"
 
-import type { Garment } from "@prisma/client"
-
 import { PRINT_POSITIONS } from "@/components/DesignCard"
+import type { UkTradeGarment } from "./types"
 
 const MIN_COLOR_COUNT = 1
 const MAX_COLOR_COUNT = 10
@@ -21,7 +20,7 @@ function normalizeSearch(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
 }
 
-function getGarmentLabel(garment: Garment) {
+function getGarmentLabel(garment: UkTradeGarment) {
   return [garment.brandName, garment.name, garment.color].filter(Boolean).join(" - ")
 }
 
@@ -42,7 +41,7 @@ function GarmentSelector({
   value,
   onChange,
 }: {
-  garments: Garment[]
+  garments: UkTradeGarment[]
   value?: string
   onChange: (garmentId: string) => void
 }) {
@@ -133,7 +132,7 @@ export default function UkTradeDesignCard({
   onRemove,
 }: {
   design: UkTradeDesign
-  garments: Garment[]
+  garments: UkTradeGarment[]
   itemNumber?: number
   onChange: (design: UkTradeDesign) => void
   onRemove?: () => void

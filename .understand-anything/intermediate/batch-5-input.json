@@ -1,0 +1,61 @@
+{
+  "projectRoot": "/home/duncan/Documents/pins-dashboard",
+  "batchFiles": [
+    {
+      "path": "src/app/hub/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 14,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "language": "typescript",
+      "sizeLines": 35,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "language": "typescript",
+      "sizeLines": 114,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/HubSidebar.tsx",
+      "language": "typescript",
+      "sizeLines": 150,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/theme/HubThemeProvider.tsx",
+      "language": "typescript",
+      "sizeLines": 104,
+      "fileCategory": "code"
+    },
+    {
+      "path": "src/components/theme/ThemeToggle.tsx",
+      "language": "typescript",
+      "sizeLines": 31,
+      "fileCategory": "code"
+    }
+  ],
+  "batchImportData": {
+    "src/app/hub/layout.tsx": [
+      "src/components/HubSidebar.tsx"
+    ],
+    "src/app/layout.tsx": [
+      "src/app/globals.css",
+      "src/components/theme/HubThemeProvider.tsx"
+    ],
+    "src/app/page.tsx": [
+      "src/components/HubSidebar.tsx",
+      "src/components/NavigationCard.tsx"
+    ],
+    "src/components/HubSidebar.tsx": [
+      "src/components/theme/ThemeToggle.tsx"
+    ],
+    "src/components/theme/HubThemeProvider.tsx": [],
+    "src/components/theme/ThemeToggle.tsx": [
+      "src/components/theme/HubThemeProvider.tsx"
+    ]
+  }
+}

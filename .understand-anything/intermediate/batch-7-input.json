@@ -1,0 +1,184 @@
+{
+  "projectRoot": "/home/duncan/Documents/pins-dashboard",
+  "batchFiles": [
+    {
+      "path": ".agents/skills/neon-postgres/SKILL.md",
+      "language": "markdown",
+      "sizeLines": 276,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".serena/memories/memory_maintenance.md",
+      "language": "markdown",
+      "sizeLines": 32,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".serena/memories/project_context/current_state.md",
+      "language": "markdown",
+      "sizeLines": 56,
+      "fileCategory": "docs"
+    },
+    {
+      "path": ".serena/project.yml",
+      "language": "yaml",
+      "sizeLines": 133,
+      "fileCategory": "config"
+    },
+    {
+      "path": ".understand-anything/config.json",
+      "language": "json",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "docs/ai-context/PROJECT_CONTEXT.md",
+      "language": "markdown",
+      "sizeLines": 201,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "docs/ai-context/UI_MANUAL_UPDATE_GUIDE.md",
+      "language": "markdown",
+      "sizeLines": 668,
+      "fileCategory": "docs"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "language": "javascript",
+      "sizeLines": 18,
+      "fileCategory": "code"
+    },
+    {
+      "path": "next.config.ts",
+      "language": "typescript",
+      "sizeLines": 11,
+      "fileCategory": "code"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "language": "javascript",
+      "sizeLines": 7,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma.config.ts",
+      "language": "typescript",
+      "sizeLines": 49,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma/migrations/0_init/migration.sql",
+      "language": "sql",
+      "sizeLines": 83,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260608143000_add_referral_models/migration.sql",
+      "language": "sql",
+      "sizeLines": 72,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260610120000_add_calculator_profiles/migration.sql",
+      "language": "sql",
+      "sizeLines": 35,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260611101832_add_referral_scenarios/migration.sql",
+      "language": "sql",
+      "sizeLines": 19,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/20260616120000_add_garment_gbp_price/migration.sql",
+      "language": "sql",
+      "sizeLines": 2,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/migrations/migration_lock.toml",
+      "language": "toml",
+      "sizeLines": 3,
+      "fileCategory": "config"
+    },
+    {
+      "path": "prisma/schema.prisma",
+      "language": "prisma",
+      "sizeLines": 160,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/seed-data.ts",
+      "language": "typescript",
+      "sizeLines": 128,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma/seed.ts",
+      "language": "typescript",
+      "sizeLines": 76,
+      "fileCategory": "code"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260602151830_init/migration.sql",
+      "language": "sql",
+      "sizeLines": 51,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260602155246_add_garments/migration.sql",
+      "language": "sql",
+      "sizeLines": 2,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260604120000_add_garment_tags/migration.sql",
+      "language": "sql",
+      "sizeLines": 2,
+      "fileCategory": "data"
+    },
+    {
+      "path": "prisma/sqlite-migrations-archive/20260604130000_add_garment_detail_fields/migration.sql",
+      "language": "sql",
+      "sizeLines": 4,
+      "fileCategory": "data"
+    },
+    {
+      "path": "src/app/globals.css",
+      "language": "css",
+      "sizeLines": 515,
+      "fileCategory": "markup"
+    }
+  ],
+  "batchImportData": {
+    ".agents/skills/neon-postgres/SKILL.md": [],
+    ".serena/memories/memory_maintenance.md": [],
+    ".serena/memories/project_context/current_state.md": [],
+    ".serena/project.yml": [],
+    ".understand-anything/config.json": [],
+    "docs/ai-context/PROJECT_CONTEXT.md": [],
+    "docs/ai-context/UI_MANUAL_UPDATE_GUIDE.md": [],
+    "eslint.config.mjs": [],
+    "next.config.ts": [],
+    "postcss.config.mjs": [],
+    "prisma.config.ts": [],
+    "prisma/migrations/0_init/migration.sql": [],
+    "prisma/migrations/20260608143000_add_referral_models/migration.sql": [],
+    "prisma/migrations/20260610120000_add_calculator_profiles/migration.sql": [],
+    "prisma/migrations/20260611101832_add_referral_scenarios/migration.sql": [],
+    "prisma/migrations/20260616120000_add_garment_gbp_price/migration.sql": [],
+    "prisma/migrations/migration_lock.toml": [],
+    "prisma/schema.prisma": [],
+    "prisma/seed-data.ts": [],
+    "prisma/seed.ts": [
+      "prisma/seed-data.ts"
+    ],
+    "prisma/sqlite-migrations-archive/20260602151830_init/migration.sql": [],
+    "prisma/sqlite-migrations-archive/20260602155246_add_garments/migration.sql": [],
+    "prisma/sqlite-migrations-archive/20260604120000_add_garment_tags/migration.sql": [],
+    "prisma/sqlite-migrations-archive/20260604130000_add_garment_detail_fields/migration.sql": [],
+    "src/app/globals.css": []
+  }
+}
