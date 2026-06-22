@@ -839,7 +839,7 @@ const posLabel = getPrintPositionLabel(pos)
                     {getSelectedDesignEmbroideryEntries(d).map((embroidery) => (
                       <div key={`${embroidery.key}-embroidery-production`} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
                         <span className="min-w-0 leading-snug">
-                          {embroidery.label}: {embroidery.sizeLabel} Production Cost
+                          {embroidery.label}: {embroidery.sizeLabel}
                         </span>
                         <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">
                           {formatBreakdownUnitAmount(CURRENCY, DESIGN_EMBROIDERY_SIZE_PRICING[embroidery.size].productionUnitCost)}
@@ -849,7 +849,7 @@ const posLabel = getPrintPositionLabel(pos)
 
                     {b.digitizingProductionCost > 0 && (
                       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                        <span className="min-w-0 leading-snug">Digitizing Production Cost</span>
+                        <span className="min-w-0 leading-snug">Digitizing Fee</span>
                         <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">
                           {CURRENCY}{b.digitizingProductionCost.toFixed(2)}
                         </span>
@@ -861,7 +861,16 @@ const posLabel = getPrintPositionLabel(pos)
                             </div>
                             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm font-semibold">
 <span className="min-w-0 text-brand-muted/80 leading-snug">{formatSubtotalBreakdownLabel(d.quantity)}</span>
-                              <span className="font-mono text-brand-cream">{CURRENCY}{(b.baseCost + b.productionCost).toFixed(2)}</span>
+                              <span className="font-mono text-brand-cream">
+                                {/* DS updated embroidery calcs */}
+                                {/* {CURRENCY}{(b.baseCost + b.productionCost).toFixed(2)} */}
+                                {CURRENCY}{(
+                                    b.baseCost +
+                                    b.productionCost +
+                                    b.embroideryProductionCost +
+                                    b.digitizingProductionCost
+                                  ).toFixed(2)}
+                                </span>
                             </div>
                           </div>
                         )

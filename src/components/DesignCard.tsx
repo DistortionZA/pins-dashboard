@@ -541,120 +541,85 @@ export default function DesignCard({
     })}
   </div>
 </div>
-{/* 
-        {Object.keys(design.positions).some(p => design.positions[p] > 0) && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-brand-border/60 bg-brand-panel-alt/50 rounded-xl">
-            {PRINT_POSITIONS.filter(pos => (design.positions[pos.value] || 0) > 0).map((pos) => (
-              <div key={pos.value} className="flex flex-col">
-                <label className="text-xs font-bold text-brand-red/90 mb-2 uppercase tracking-wider">{pos.label} Colors</label>
-                <input
-                  type="number"
-                  min={1}
-                  max={9}
-                  value={colorInputs[pos.value] ?? ""}
-                  onChange={(e) => updatePositionColorInput(pos.value, e.target.value)}
-                  onBlur={() => normalizePositionColorInput(pos.value)}
-                  className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
-                />
+
+<div className="min-h-[120px] space-y-4 rounded-xl border border-brand-border/60 bg-brand-panel-alt/50 p-4">
+  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+    {activePositionRows.map((pos) => {
+      const hasPrint = (design.positions[pos.value] || 0) > 0
+
+      return (
+        <div key={pos.value} className="flex min-h-[104px] flex-col rounded-lg border border-brand-border/60 bg-brand-panel/60 p-3">
+          <div className="flex items-start justify-between gap-3">
+            <label className="mb-2 text-xs font-bold uppercase tracking-wider text-brand-red/90">
+              {pos.label}
+            </label>
+          </div>
+
+          {hasPrint ? (
+            <>
+              <span className="mb-1 text-[11px] font-semibold text-brand-muted/80">Print Colours</span>
+              <input
+                type="number"
+                min={1}
+                max={9}
+                value={colorInputs[pos.value] ?? ""}
+                onChange={(e) => updatePositionColorInput(pos.value, e.target.value)}
+                onBlur={() => normalizePositionColorInput(pos.value)}
+                className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
+              />
+
+              <div className="min-h-[18px]">
                 {colorError && (
                   <p className="text-xs text-brand-red/90 mt-1">{colorError}</p>
                 )}
               </div>
-            ))}
-          </div>
-        )} */}
-        <div className="min-h-[120px] grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 p-4 border border-brand-border/60 bg-brand-panel-alt/50 rounded-xl">
-          {activePositionRows.map((pos) => {
-            const hasPrint = (design.positions[pos.value] || 0) > 0
-
-            return (
-              <div key={pos.value} className="flex min-h-[104px] flex-col rounded-lg border border-brand-border/60 bg-brand-panel/60 p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <label className="mb-2 text-xs font-bold uppercase tracking-wider text-brand-red/90">
-                    {pos.label}
-                  </label>
-                </div>
-
-                {hasPrint ? (
-                  <>
-                    <span className="mb-1 text-[11px] font-semibold text-brand-muted/80">Print Colours</span>
-                    <input
-                      type="number"
-                      min={1}
-                      max={9}
-                      value={colorInputs[pos.value] ?? ""}
-                      onChange={(e) => updatePositionColorInput(pos.value, e.target.value)}
-                      onBlur={() => normalizePositionColorInput(pos.value)}
-                      className="w-full border border-brand-border rounded-lg p-2.5 bg-brand-panel text-brand-cream focus:ring-2 focus:ring-brand-red/40 focus:border-brand-red/60 outline-none transition-shadow"
-                    />
-
-                    <div className="min-h-[18px]">
-                      {colorError && (
-                        <p className="text-xs text-brand-red/90 mt-1">{colorError}</p>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <div className="min-h-[58px] rounded-lg border border-brand-border/60 bg-brand-panel-alt/50 px-3 py-2 text-xs text-brand-muted/80">
-                    No print selected
-                  </div>
-                )}
-
-              </div>
-            )
-          })}
-          {selectedEmbroideryItems.map((item) => {
-            const selectedSize = design.embroideryItems?.[item.key]
-
-            if (!selectedSize) {
-              return null
-            }
-
-            return (
-              <div key={item.key} className="flex min-h-[104px] flex-col rounded-lg border border-brand-red/40 bg-brand-red/10 p-3 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
-                <label className="mb-2 text-xs font-bold uppercase tracking-wider text-brand-red/90">
-                  {item.label}
-                </label>
-
-                <span className="mb-1 text-[11px] font-semibold text-brand-muted/80">Embroidery Size</span>
-                <select
-                  value={selectedSize}
-                  onChange={(e) =>
-                    updateDesignEmbroiderySize(item.key, e.target.value as DesignEmbroiderySize)
-                  }
-                  className="w-full rounded-lg border border-brand-border bg-brand-panel-alt p-2.5 text-sm text-brand-cream outline-none transition-shadow focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/40"
-                >
-                  {DESIGN_EMBROIDERY_SIZE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )
-          })}
-        </div>
-
-          {selectedEmbroideryItems.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {selectedEmbroideryItems.map((item) => {
-                const selectedSize = design.embroideryItems?.[item.key]
-
-                if (!selectedSize) {
-                  return null
-                }
-
-                return (
-                  <span
-                    key={item.key}
-                    className="rounded-full border border-brand-border/70 bg-brand-panel-alt px-3 py-1 text-xs font-medium text-brand-muted"
-                  >
-                    {item.label}: {formatDesignEmbroiderySizeLabel(selectedSize)}
-                  </span>
-                )
-              })}
+            </>
+          ) : (
+            <div className="min-h-[58px] rounded-lg border border-brand-border/60 bg-brand-panel-alt/50 px-3 py-2 text-xs text-brand-muted/80">
+              No print selected
             </div>
           )}
+        </div>
+      )
+    })}
+  </div>
+
+  {selectedEmbroideryItems.length > 0 && (
+    <div className="grid grid-cols-1 gap-4 border-t border-brand-border/60 pt-4 md:grid-cols-2 xl:grid-cols-3">
+      {selectedEmbroideryItems.map((item) => {
+        const selectedSize = design.embroideryItems?.[item.key]
+
+        if (!selectedSize) {
+          return null
+        }
+
+        return (
+          <div key={item.key} className="flex min-h-[104px] flex-col rounded-lg border border-brand-red/40 bg-brand-red/10 p-3 shadow-[0_0_15px_rgba(239,68,68,0.08)]">
+            <label className="mb-2 text-xs font-bold uppercase tracking-wider text-brand-red/90">
+              {item.label}
+            </label>
+
+            <span className="mb-1 text-[11px] font-semibold text-brand-muted/80">Embroidery Size</span>
+            <select
+              value={selectedSize}
+              onChange={(e) =>
+                updateDesignEmbroiderySize(item.key, e.target.value as DesignEmbroiderySize)
+              }
+              className="w-full rounded-lg border border-brand-border bg-brand-panel-alt p-2.5 text-sm text-brand-cream outline-none transition-shadow focus:border-brand-red/60 focus:ring-2 focus:ring-brand-red/40"
+            >
+              {DESIGN_EMBROIDERY_SIZE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )
+      })}
+    </div>
+  )}
+</div>
+        
 
         <div className="mt-4 space-y-2">
         <label className="flex items-center gap-2 text-sm font-medium text-brand-muted">
