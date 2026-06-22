@@ -498,44 +498,49 @@ export default function DesignCard({
           <h4 className="text-sm font-medium text-brand-muted">Print / Embroidery Positions</h4>
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-4">
-            {PRINT_POSITIONS.map((pos) => {
-              const isSelected = (design.positions[pos.value] || 0) > 0
-              return (
-                <button
-                key={pos.value}
-                type="button"
-                onClick={() => togglePosition(pos.value, isSelected)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-brand-red/16 text-brand-red/90 border-brand-red/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
-                    : "bg-brand-panel-alt text-brand-muted border-brand-border hover:border-brand-border/80 hover:bg-brand-surface"
-                }`}
-              >
-                {pos.label}
-                </button>
-              )
-            })}
+   <div className="mb-4 space-y-3">
+  <div className="flex flex-wrap gap-3">
+    {PRINT_POSITIONS.map((pos) => {
+      const isSelected = (design.positions[pos.value] || 0) > 0
 
-            {DESIGN_EMBROIDERY_ITEMS.map((item) => {
-              const isSelected = Boolean(design.embroideryItems?.[item.key])
+      return (
+        <button
+          key={pos.value}
+          type="button"
+          onClick={() => togglePosition(pos.value, isSelected)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all cursor-pointer ${
+            isSelected
+              ? "bg-brand-red/16 text-brand-red/90 border-brand-red/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
+              : "bg-brand-panel-alt text-brand-muted border-brand-border hover:border-brand-border/80 hover:bg-brand-surface"
+          }`}
+        >
+          {pos.label}
+        </button>
+      )
+    })}
+  </div>
 
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => toggleDesignEmbroideryItem(item.key, isSelected)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all cursor-pointer ${
-                    isSelected
-                      ? "bg-brand-red/16 text-brand-red/90 border-brand-red/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
-                      : "bg-brand-panel-alt text-brand-muted border-brand-border hover:border-brand-border/80 hover:bg-brand-surface"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              )
-            })}
-          </div>
+  <div className="flex flex-wrap gap-3">
+    {DESIGN_EMBROIDERY_ITEMS.map((item) => {
+      const isSelected = Boolean(design.embroideryItems?.[item.key])
+
+      return (
+        <button
+          key={item.key}
+          type="button"
+          onClick={() => toggleDesignEmbroideryItem(item.key, isSelected)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all cursor-pointer ${
+            isSelected
+              ? "bg-brand-red/16 text-brand-red/90 border-brand-red/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
+              : "bg-brand-panel-alt text-brand-muted border-brand-border hover:border-brand-border/80 hover:bg-brand-surface"
+          }`}
+        >
+          {item.label}
+        </button>
+      )
+    })}
+  </div>
+</div>
 {/* 
         {Object.keys(design.positions).some(p => design.positions[p] > 0) && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 border border-brand-border/60 bg-brand-panel-alt/50 rounded-xl">
