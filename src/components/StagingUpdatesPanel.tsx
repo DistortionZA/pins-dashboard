@@ -13,9 +13,9 @@ export default function StagingUpdatesPanel() {
         EU embroidery calculator update is ready for review.
       </p>
       <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-brand-muted">
-        <li>Embroidery 1, 2, and 3 now sit with the print/embroidery position selector.</li>
+        {/* <li>Embroidery 1, 2, and 3 now sit with the print/embroidery position selector.</li>
         <li>Selected embroidery items support Small, Medium, and Large sizing.</li>
-        <li>Embroidery pricing includes unit cost and digitizing fee.</li>
+        <li>Embroidery pricing includes unit cost and digitizing fee.</li> */}
         <li>Please test copied quote output, VAT totals, and breakdown display.</li>
       </ul>
     </div>

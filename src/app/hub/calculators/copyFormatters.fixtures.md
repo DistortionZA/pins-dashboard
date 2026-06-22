@@ -11,7 +11,7 @@ Do not rewrite the layout unless the requested change explicitly targets quote c
 Test dEsg:
 
 JH001 AWDis College hoodie (1 Col Front, Embroidery 1, Embroidery 2)
-Digitizing fee = €50 (incl vat)
+Digitizing fee = €63.50 (incl. VAT)
 50 x €17.58 (excl vat) ea = €1116.33
 ```
 
@@ -32,7 +32,7 @@ JH001 AWDis College hoodie (1 Col Front)
 Test dEsg:
 
 JH001 AWDis AWDis College hoodie colours (1c front, 1c left sleeve, Embroidery 1, Embroidery 2 + base)
-Digitizing Fee = €50 ex vat
+Digitizing fee = €63.50 (incl. VAT)
 50 x €18.58 each (€929.00 ex vat)
 VAT = €250.83
 TOTAL = €1179.83

@@ -54,12 +54,12 @@ function getCustomerSubtotalExclVat(breakdown: DesignCostBreakdown) {
   )
 }
 
-function formatDigitizingFeeLine(breakdown: DesignCostBreakdown, currency: string) {
+function formatDigitizingFeeLine(breakdown: DesignCostBreakdown, currency: string, vatRate: number) {
   if (breakdown.digitizingFee <= 0) {
     return null
   }
 
-  return `Digitizing Fee = ${currency}${formatCompactAmount(breakdown.digitizingFee)} ex vat`
+  return `Digitizing fee = ${formatDigitizingFeeInclVatText(currency, breakdown.digitizingFee, vatRate)}`
 }
 
 function formatEuDigitizingFeeLine(breakdown: DesignCostBreakdown, currency: string) {
@@ -67,11 +67,12 @@ function formatEuDigitizingFeeLine(breakdown: DesignCostBreakdown, currency: str
     return null
   }
 
-  return `Digitizing fee = ${currency}${formatCompactAmount(breakdown.digitizingFee)} (incl vat)`
+  return `Digitizing fee = ${formatDigitizingFeeInclVatText(currency, breakdown.digitizingFee, 27)}`
 }
 
-function formatCompactAmount(value: number) {
-  return Number.isInteger(value) ? value.toFixed(0) : value.toFixed(2)
+function formatDigitizingFeeInclVatText(currency: string, valueExclVat: number, vatRate: number) {
+  const valueInclVat = valueExclVat * (1 + vatRate / 100)
+  return `${currency}${valueInclVat.toFixed(2)} (incl. VAT)`
 }
 
 function formatEmbroiderySummary(design: Pick<Design, "embroideryItems">) {
@@ -164,7 +165,7 @@ export function formatUsClientQuoteCopy({
       const garment = garments.find((item) => item.id === design.garmentId)
       const positionsText = formatPositionSummary(design, "us")
       const subtotalExclVat = getCustomerSubtotalExclVat(breakdown)
-      const digitizingFeeLine = formatDigitizingFeeLine(breakdown, currency)
+      const digitizingFeeLine = formatDigitizingFeeLine(breakdown, currency, vatRate)
       const unitExclVat = design.quantity > 0 ? subtotalExclVat / design.quantity : 0
       const totalInclVat = subtotalExclVat * (1 + vatRate / 100)
       const vatAmount = totalInclVat - subtotalExclVat

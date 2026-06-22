@@ -57,6 +57,11 @@ const BOX_CAPACITY_GUIDE_ITEMS = [
   { label: "Tote Bags", capacity: "100-150 per box" }
 ]
 
+function formatDigitizingFeeVatDisplay(currency: string, valueExclVat: number, vatRate: number) {
+  const valueInclVat = valueExclVat * (1 + vatRate / 100)
+  return `${currency}${valueInclVat.toFixed(2)} incl. VAT`
+}
+
 export default function CalculatorClient({
   garments,
   printPrices,
@@ -763,12 +768,12 @@ const posLabel = getPrintPositionLabel(pos)
 
                     {b.digitizingFee > 0 && (
                       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                        <span className="min-w-0 leading-snug">Digitizing Fee</span>
-                        <span className="shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">
-                          {CURRENCY}{b.digitizingFee.toFixed(2)}
-                        </span>
-                      </div>
-                    )}
+                    <span className="min-w-0 leading-snug">Digitizing Fee</span>
+                    <span className="shrink-0 text-right text-xs md:text-sm font-mono text-brand-cream/90">
+                      {formatDigitizingFeeVatDisplay(CURRENCY, b.digitizingFee, vatRate)}
+                    </span>
+                  </div>
+                )}
 
                     {d.pkMarkupEnabled && (
                       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
@@ -849,7 +854,7 @@ const posLabel = getPrintPositionLabel(pos)
 
                     {b.digitizingProductionCost > 0 && (
                       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 text-sm text-brand-muted">
-                        <span className="min-w-0 leading-snug">Digitizing Fee</span>
+                        <span className="min-w-0 leading-snug">Digitizing Production Cost</span>
                         <span className="font-mono shrink-0 whitespace-nowrap text-xs md:text-sm font-mono text-brand-cream/90">
                           {CURRENCY}{b.digitizingProductionCost.toFixed(2)}
                         </span>
