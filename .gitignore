@@ -46,3 +46,6 @@ next-env.d.ts
 
 # Local AI/tool generated files
 .understand-anything/intermediate/
+
+# Local Impeccable runtime files
+.impeccable/
