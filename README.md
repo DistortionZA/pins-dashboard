@@ -1,90 +1,83 @@
 # Pins Hub
 
-Internal Pins Hub app for calculators, garment reference data, referral planning, PK Tax, and quick sales reference copy.
+Pins Hub is an internal operations app for Pins & Knuckles. It is a compact SaaS-style tool for quote calculators, garment reference data, PK Tax allocation, referral and loyalty planning, and reusable operational reference copy.
 
-## Stack
+This is not a marketing site.
+
+## Features
+
+- Hub home
+- EU Standard Calculator
+- EU US Clients Calculator
+- UK Trade Calculator
+- Garment Directory
+- PK Tax Calculator
+- Referrals / Loyalty Planning
+- Quick Reference
+
+## Tech Stack
 
 - Next.js 16 App Router
+- React 19
 - TypeScript
 - Tailwind CSS 4
-- Prisma
+- Prisma 7 with `@prisma/adapter-pg`
 - PostgreSQL / Neon
+- Sonner toasts
 
-## Current Hub Routes
+## Active Routes
 
 - `/` - Hub home
-- `/hub/calculators`
-- `/hub/calculators/eu`
-- `/hub/calculators/eu/standard`
-- `/hub/calculators/eu/us-clients`
-- `/hub/calculators/uk`
-- `/hub/garments`
-- `/hub/pk-tax`
-- `/hub/referrals`
-- `/hub/reference`
-- `/ref/[code]`
+- `/hub/calculators` - calculator index
+- `/hub/calculators/eu` - EU calculator index
+- `/hub/calculators/eu/standard` - EU Standard Calculator
+- `/hub/calculators/eu/us-clients` - EU US Clients Calculator
+- `/hub/calculators/uk` - UK calculator index
+- `/hub/calculators/uk/trade` - UK Trade Calculator
+- `/hub/garments` - Garment Directory
+- `/hub/pk-tax` - PK Tax Calculator
+- `/hub/referrals` - Referrals / Loyalty Planning
+- `/hub/reference` - Quick Reference
+- `/ref/[code]` - referral-code landing route
 
-## UI Notes
+## Local Setup
 
-- The hub supports two persistent local themes:
-  - `Brand` theme is the official Pins & Knuckles brand-guidelines theme
-  - `Classic` theme preserves the previous internal dashboard look
-- Theme selection is stored in browser `localStorage`.
-- Hub navigation uses a compact sidebar with only usable routes shown.
-- Spacing was tightened globally to keep the app denser and more SaaS-like without reducing control hit areas.
-
-## Quick Reference
-
-`/hub/reference` includes:
-
-- Static billing, delivery, and import reference items
-- Local browser-only saved custom messages using `localStorage`
-- Supplier and logistics email reference with per-email copy and copy-all support
-
-Saved message storage key:
-
-```ts
-pins-hub-reference-saved-messages
-```
-
-## Database Setup
-
-Pins Hub uses Prisma with PostgreSQL only.
-
-1. Create a PostgreSQL or Neon database.
-2. Set `DATABASE_URL` in `.env`.
-3. For Neon/Vercel:
-   - use the pooled Neon URL for `DATABASE_URL`
-   - use the direct Neon URL for `DIRECT_DATABASE_URL` when running Prisma migrations
-4. Apply schema:
+Install dependencies:
 
 ```bash
-npx prisma migrate deploy
+npm install
 ```
 
-5. Seed reference data:
-
-```bash
-npx prisma db seed
-```
-
-## Common Commands
+Run the app locally:
 
 ```bash
 npm run dev
+```
+
+Useful checks:
+
+```bash
 npm run lint
 npx tsc --noEmit
 npm run vercel-build
+./node_modules/.bin/prisma validate
 ```
 
-## Important Constraints
+## Environment Notes
 
-- Do not reintroduce SQLite.
-- `src/lib/db.ts` rejects `file:` database URLs.
-- Do not change calculator pricing logic unless explicitly requested.
-- `VAT` is currently hardcoded at `27%`.
-- `PK Markup` is per-unit and feeds customer pricing before VAT.
-- Keep wording consistent:
-  - `Back to Hub`
-  - `Back to Calculators`
-  - `Back to Regions`
+- `DATABASE_URL` is required.
+- `DATABASE_URL` must point to PostgreSQL / Neon. Do not use or reintroduce `file:` SQLite URLs.
+- Use `DIRECT_DATABASE_URL` for direct migration access where available.
+- Never commit `.env` values, secrets, database credentials, or production URLs.
+
+## Deployment Notes
+
+- Vercel uses Neon for PostgreSQL.
+- `npm run vercel-build` should generate Prisma, deploy migrations, and build the Next.js app.
+- Seed scripts are destructive for catalog and calculator data. Do not run them against production unless that reset is intentional.
+
+## Safety Notes
+
+- During README-only work, do not change pricing, VAT, PK Tax, referral, loyalty, Prisma models, or database behavior.
+- Do not edit staging update notes unless explicitly requested.
+- Keep language practical and internal-tool focused. Do not add marketing-style copy.
