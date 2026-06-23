@@ -16,7 +16,7 @@ export default function StagingUpdatesPanel() {
         {/* <li>Embroidery 1, 2, and 3 now sit with the print/embroidery position selector.</li>
         <li>Selected embroidery items support Small, Medium, and Large sizing.</li>
         <li>Embroidery pricing includes unit cost and digitizing fee.</li> */}
-        <li>Please test copied quote output, VAT totals, and breakdown display.</li>
+        <li>Updated Digitization fee </li>
       </ul>
     </div>
   )
