@@ -32,7 +32,7 @@ This is not a marketing site.
 - `/hub/calculators/eu` - EU calculator index
 - `/hub/calculators/eu/standard` - EU Standard Calculator
 - `/hub/calculators/eu/us-clients` - EU US Clients Calculator
-- `/hub/calculators/uk` - UK calculator index
+- `/hub/calculators/uk` - UK Trade Calculator index
 - `/hub/calculators/uk/trade` - UK Trade Calculator
 - `/hub/garments` - Garment Directory
 - `/hub/pk-tax` - PK Tax Calculator

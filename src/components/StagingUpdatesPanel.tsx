@@ -15,8 +15,8 @@ export default function StagingUpdatesPanel() {
       <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-brand-muted">
         {/* <li>Embroidery 1, 2, and 3 now sit with the print/embroidery position selector.</li>
         <li>Selected embroidery items support Small, Medium, and Large sizing.</li>
-        <li>Embroidery pricing includes unit cost and digitizing fee.</li> */}
-        <li>Updated Digitization fee </li>
+        <li>Embroidery pricing includes unit cost and digitizing fee.</li> 
+        <li>Updated Digitization fee </li>*/}
       </ul>
     </div>
   )

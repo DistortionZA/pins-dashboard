@@ -358,7 +358,7 @@ Change these files for:
 
 Preserve pricing math. Breakdown label formatting and customer quote copy can be standardized through the shared display and formatter helpers.
 
-### UK Trade calculator
+### UK Trade Calculator
 
 Main files:
 

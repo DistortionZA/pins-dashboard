@@ -18,7 +18,7 @@ export default function Home() {
                     <BrandLogo className="mt-2 h-8 w-auto max-w-full opacity-90" />
                   </div>
                   <span className="rounded-full border border-brand-border bg-brand-panel-alt/70 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-brand-muted">
-                    5 Live Tools
+              4 Live Tools
                   </span>
                 </div>
                 <p className="max-w-3xl text-sm leading-6 text-brand-muted md:text-[0.95rem]">
@@ -92,21 +92,7 @@ export default function Home() {
                 }
               />
 
-              <NavigationCard
-                title="Order Management"
-                description="Reserved for upcoming order workflow surface."
-                badge="Coming Soon"
-                disabled
-                compact
-                icon={
-                  <>
-                    <circle cx="8" cy="21" r="1" />
-                    <circle cx="19" cy="21" r="1" />
-                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h8.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                  </>
-                }
-              />
-            </section>
+          </section>
           </div>
         </main>
       </div>

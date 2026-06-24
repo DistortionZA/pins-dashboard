@@ -90,7 +90,7 @@
   - `src/app/hub/calculators/uk/trade/data.ts`
   - `src/app/hub/calculators/uk/tradeScreenPrintData.ts`
 - Current behavior:
-  - Screen print trade pricing in GBP
+  - UK trade screen-print pricing in GBP
   - Uses UK quantity tiers per-colour setup charges
   - Minimum quantity `50`
   - Summary shows garment cost, print cost, setup cost, total cost, cost per unit

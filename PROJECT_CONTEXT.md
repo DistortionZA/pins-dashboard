@@ -27,8 +27,8 @@ This root `PROJECT_CONTEXT.md` is the canonical AI/project context file. An olde
 - `/hub/calculators/eu` - EU calculator menu.
 - `/hub/calculators/eu/standard` - Standard EU quote calculator.
 - `/hub/calculators/eu/us-clients` - EU pricing flow for US clients.
-- `/hub/calculators/uk` - UK calculator menu.
-- `/hub/calculators/uk/trade` - UK screen-print trade calculator.
+- `/hub/calculators/uk` - UK Trade Calculator menu.
+- `/hub/calculators/uk/trade` - UK trade screen-print calculator.
 - `/hub/garments` - Garment directory with search, add/edit/delete, EUR/GBP price fields, tags, and connected markup visibility.
 - `/hub/pk-tax` - Manual-entry PK Tax and Snuggle pooled payout calculator.
 - `/hub/referrals` - Referral reward simulator/planner and shared scenario manager.

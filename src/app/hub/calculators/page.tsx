@@ -41,7 +41,7 @@ export default function CalculatorsPage() {
         <NavigationCard
           href="/hub/calculators/uk"
           title="UK"
-          description="Reserved area for future UK calculator flows."
+          description="UK Trade Calculator plus reserved space for the future Standard UK Calculator."
           badge="Reserved"
           icon={
             <svg
