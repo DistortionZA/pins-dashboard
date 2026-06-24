@@ -3,6 +3,7 @@
 import { toast } from "sonner"
 import { useMemo, useState } from "react"
 
+import { PRINT_POSITIONS } from "@/components/DesignCard"
 import {
   CUSTOMER_QUOTE_COPY_LABEL,
   formatBreakdownAmount,
@@ -11,17 +12,38 @@ import {
   formatSubtotalBreakdownLabel,
   getBreakdownItemLabel,
 } from "../../displayStandards"
-import { formatUkTradeQuoteCopy } from "../../copyFormatters"
 import {
   getUkTradeScreenPrintPrice,
   UK_TRADE_SCREEN_SETUP_PER_COLOUR,
 } from "../tradeScreenPrintData"
-import UkTradeDesignCard, { type UkTradeDesign } from "./UkTradeDesignCard"
+import {
+  getUkTradeEmbroideryPrice,
+  UK_TRADE_EMBROIDERY_SETUP_PER_ITEM,
+} from "../tradeEmbroideryData"
+import UkTradeDesignCard, {
+  UK_TRADE_EMBROIDERY_ITEMS,
+  type UkTradeDesign,
+  type UkTradeEmbroideryKey,
+} from "./UkTradeDesignCard"
 import type { UkTradeGarment } from "./types"
+
+type UkTradeEmbroideryBreakdown = {
+  key: UkTradeEmbroideryKey
+  label: string
+  stitchCount: number
+  pricingStitchCount: number | null
+  extraStitchBlocks: number
+  unitPrice: number
+  cost: number
+  setupCost: number
+}
 
 type UkTradeItemBreakdown = {
   garmentCost: number
   printCost: number
+  screenSetupCost: number
+  embroideryCost: number
+  embroiderySetupCost: number
   setupCost: number
   totalCost: number
   costPerUnit: number
@@ -29,6 +51,7 @@ type UkTradeItemBreakdown = {
   garmentName?: string
   hasValidPrice: boolean
   missingReasons: string[]
+  embroideryBreakdowns: UkTradeEmbroideryBreakdown[]
 }
 
 const CURRENCY = "£"
@@ -44,10 +67,86 @@ function getSelectedPositionEntries(positions: Record<string, number>) {
   return Object.entries(positions).filter(([, colorCount]) => colorCount > 0)
 }
 
+function getSelectedEmbroideryEntries(design: UkTradeDesign) {
+  return UK_TRADE_EMBROIDERY_ITEMS.flatMap((item) => {
+    const stitchCount = design.embroideryItems?.[item.key]
+
+    if (typeof stitchCount !== "number") {
+      return []
+    }
+
+    return [{ ...item, stitchCount }]
+  })
+}
+
 function getGarmentDisplayName(garment?: UkTradeGarment) {
   if (!garment) return "No garment"
 
   return [garment.brandName, garment.name, garment.color].filter(Boolean).join(" - ")
+}
+
+function getGarmentQuoteSummary(garment?: UkTradeGarment) {
+  if (!garment) return "No garment"
+
+  return [garment.code, garment.brandName, garment.name, garment.color]
+    .filter(Boolean)
+    .join(" ")
+}
+
+function getPrintPositionLabel(position: string) {
+  return PRINT_POSITIONS.find((item) => item.value === position)?.label ?? position
+}
+
+function formatEmbroideryQuoteLabel(embroidery: UkTradeEmbroideryBreakdown) {
+  const extraText =
+    embroidery.extraStitchBlocks > 0
+      ? ` + ${embroidery.extraStitchBlocks} extra 1k`
+      : ""
+
+  return `${embroidery.label} ${embroidery.stitchCount.toLocaleString()} stitches${extraText}`
+}
+
+function formatUkTradeQuoteCopy({
+  designs,
+  breakdowns,
+  garments,
+  currency,
+}: {
+  designs: UkTradeDesign[]
+  breakdowns: UkTradeItemBreakdown[]
+  garments: UkTradeGarment[]
+  currency: string
+}) {
+  return breakdowns
+    .map((breakdown, index) => {
+      const design = designs[index]
+      if (!design || !breakdown.hasValidPrice) return null
+
+      const garment = garments.find((item) => item.id === design.garmentId)
+      const printSummary = getSelectedPositionEntries(design.positions).map(
+        ([position, colorCount]) =>
+          `${colorCount} Col ${getPrintPositionLabel(position)}`,
+      )
+      const embroiderySummary = breakdown.embroideryBreakdowns.map(
+        formatEmbroideryQuoteLabel,
+      )
+      const workSummary = [...printSummary, ...embroiderySummary]
+        .filter(Boolean)
+        .join(", ")
+      const unitExclVat =
+        design.quantity > 0 ? breakdown.totalCost / design.quantity : 0
+
+      return [
+        `${getBreakdownItemLabel(design.itemLabel, index)}:`,
+        "",
+        `${getGarmentQuoteSummary(garment)}${
+          workSummary ? ` (${workSummary})` : ""
+        }`,
+        `${design.quantity} x ${currency}${unitExclVat.toFixed(2)} each (${currency}${breakdown.totalCost.toFixed(2)} ex vat)`,
+      ].join("\n")
+    })
+    .filter((entry): entry is string => Boolean(entry))
+    .join("\n\n")
 }
 
 function calculateUkTradeItemBreakdown(
@@ -56,39 +155,72 @@ function calculateUkTradeItemBreakdown(
 ): UkTradeItemBreakdown {
   const garment = garments.find((item) => item.id === design.garmentId)
   const selectedPositions = getSelectedPositionEntries(design.positions)
+  const selectedEmbroideryEntries = getSelectedEmbroideryEntries(design)
   const missingReasons: string[] = []
 
   if (!garment) {
     missingReasons.push("Select garment.")
-  } else if (typeof garment.gbpPrice !== "number") {
-    missingReasons.push("Selected garment missing GBP price.")
   }
 
   if (design.quantity < 50) {
     missingReasons.push("Minimum quantity 50.")
   }
 
-  if (selectedPositions.length === 0) {
-    missingReasons.push("Select at least one print position.")
+  if (selectedPositions.length === 0 && selectedEmbroideryEntries.length === 0) {
+    missingReasons.push("Select at least one print position or embroidery item.")
   }
 
   let printCost = 0
-  let setupCost = 0
+  let screenSetupCost = 0
 
   for (const [, colorCount] of selectedPositions) {
     const price = getUkTradeScreenPrintPrice(design.quantity, colorCount)
     printCost += (price.unitPrice ?? 0) * design.quantity
-    setupCost += colorCount * UK_TRADE_SCREEN_SETUP_PER_COLOUR
+    screenSetupCost += colorCount * UK_TRADE_SCREEN_SETUP_PER_COLOUR
   }
 
+  const embroideryBreakdowns = selectedEmbroideryEntries.map((embroidery) => {
+    const price = getUkTradeEmbroideryPrice(
+      design.quantity,
+      embroidery.stitchCount,
+    )
+    const unitPrice = price.unitPrice ?? 0
+    const cost = unitPrice * design.quantity
+
+    return {
+      key: embroidery.key,
+      label: embroidery.label,
+      stitchCount: embroidery.stitchCount,
+      pricingStitchCount: price.pricingStitchCount,
+      extraStitchBlocks: price.extraStitchBlocks,
+      unitPrice,
+      cost,
+      setupCost: UK_TRADE_EMBROIDERY_SETUP_PER_ITEM,
+    }
+  })
+
+  const embroideryCost = embroideryBreakdowns.reduce(
+    (sum, embroidery) => sum + embroidery.cost,
+    0,
+  )
+  const embroiderySetupCost = embroideryBreakdowns.reduce(
+    (sum, embroidery) => sum + embroidery.setupCost,
+    0,
+  )
   const garmentCost =
-    garment && typeof garment.gbpPrice === "number" ? garment.gbpPrice * design.quantity : 0
-  const totalCost = garmentCost + printCost + setupCost
+    garment && typeof garment.gbpPrice === "number"
+      ? garment.gbpPrice * design.quantity
+      : 0
+  const setupCost = screenSetupCost + embroiderySetupCost
+  const totalCost = garmentCost + printCost + embroideryCost + setupCost
   const hasValidPrice = missingReasons.length === 0
 
   return {
     garmentCost,
     printCost,
+    screenSetupCost,
+    embroideryCost,
+    embroiderySetupCost,
     setupCost,
     totalCost,
     costPerUnit: hasValidPrice && design.quantity > 0 ? totalCost / design.quantity : 0,
@@ -96,6 +228,7 @@ function calculateUkTradeItemBreakdown(
     garmentName: getGarmentDisplayName(garment),
     hasValidPrice,
     missingReasons,
+    embroideryBreakdowns,
   }
 }
 
@@ -150,6 +283,9 @@ export default function UkTradeCalculatorClient({
   const totals = useMemo(() => {
     let garmentCost = 0
     let printCost = 0
+    let screenSetupCost = 0
+    let embroideryCost = 0
+    let embroiderySetupCost = 0
     let setupCost = 0
     let totalCost = 0
     let totalQuantity = 0
@@ -158,6 +294,9 @@ export default function UkTradeCalculatorClient({
     for (const breakdown of breakdowns) {
       garmentCost += breakdown.garmentCost
       printCost += breakdown.printCost
+      screenSetupCost += breakdown.screenSetupCost
+      embroideryCost += breakdown.embroideryCost
+      embroiderySetupCost += breakdown.embroiderySetupCost
       setupCost += breakdown.setupCost
       totalCost += breakdown.totalCost
 
@@ -170,6 +309,9 @@ export default function UkTradeCalculatorClient({
     return {
       garmentCost,
       printCost,
+      screenSetupCost,
+      embroideryCost,
+      embroiderySetupCost,
       setupCost,
       totalCost,
       totalQuantity,
@@ -251,20 +393,20 @@ export default function UkTradeCalculatorClient({
             <button
               type="button"
               onClick={handleCopyClick}
-              className="hub-info-card bg-brand-panel rounded-2xl flex flex-col overflow-hidden text-left transition-all duration-300 cursor-pointer"
+              className="hub-info-card flex cursor-pointer flex-col overflow-hidden rounded-2xl bg-brand-panel text-left transition-all duration-300"
               aria-label="Copy UK trade quote"
             >
-              <div className="p-6 flex-grow">
+              <div className="flex-grow p-6">
                 <div className="mb-2 flex items-center justify-between">
-                  <p className="text-brand-muted/80 text-xs font-bold uppercase tracking-widest">
+                  <p className="text-xs font-bold uppercase tracking-widest text-brand-muted/80">
                     Total Cost
                   </p>
-                  <span className="hub-info-pill text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
+                  <span className="hub-info-pill rounded px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider">
                     {CUSTOMER_QUOTE_COPY_LABEL}
                   </span>
                 </div>
                 <div className="mb-6">
-                  <span className="hub-info-text text-4xl md:text-5xl font-black tabular-nums">
+                  <span className="hub-info-text text-4xl font-black tabular-nums md:text-5xl">
                     {formatBreakdownAmount(CURRENCY, totals.totalCost)}
                   </span>
                 </div>
@@ -290,9 +432,23 @@ export default function UkTradeCalculatorClient({
                 </div>
 
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                  <span>Setup Cost</span>
+                  <span>Screen Setup</span>
                   <span className="font-mono text-brand-cream/90">
-                    {formatBreakdownAmount(CURRENCY, totals.setupCost)}
+                    {formatBreakdownAmount(CURRENCY, totals.screenSetupCost)}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                  <span>Embroidery Cost</span>
+                  <span className="font-mono text-brand-cream/90">
+                    {formatBreakdownAmount(CURRENCY, totals.embroideryCost)}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                  <span>Embroidery setup</span>
+                  <span className="font-mono text-brand-cream/90">
+                    {formatBreakdownAmount(CURRENCY, totals.embroiderySetupCost)}
                   </span>
                 </div>
 
@@ -314,8 +470,8 @@ export default function UkTradeCalculatorClient({
 
                 <p className="text-xs text-brand-muted">
                   Based on {totals.totalQuantity} valid unit
-                  {totals.totalQuantity === 1 ? "" : "s"} across {totals.validItemCount} valid
-                  {" "}item
+                  {totals.totalQuantity === 1 ? "" : "s"} across{" "}
+                  {totals.validItemCount} valid item
                   {totals.validItemCount === 1 ? "" : "s"}.
                 </p>
               </div>
@@ -328,7 +484,9 @@ export default function UkTradeCalculatorClient({
                 <div className="space-y-4">
                   {breakdowns.map((breakdown, index) => {
                     const design = designs[index]
-                    const garment = garments.find((item) => item.id === design?.garmentId)
+                    const garment = garments.find(
+                      (item) => item.id === design?.garmentId,
+                    )
 
                     if (!design) return null
 
@@ -347,49 +505,104 @@ export default function UkTradeCalculatorClient({
                           </span>
                         </div>
 
-                        {garment && typeof garment.gbpPrice === "number" ? (
+                        {garment ? (
                           <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
                             <span>Garment Base Price</span>
                             <span className="font-mono text-brand-cream/90">
-                              {formatBreakdownUnitAmount(CURRENCY, garment.gbpPrice)}
+                              {formatBreakdownUnitAmount(
+                                CURRENCY,
+                                typeof garment.gbpPrice === "number"
+                                  ? garment.gbpPrice
+                                  : 0,
+                              )}
                             </span>
                           </div>
                         ) : null}
 
-                        {getSelectedPositionEntries(design.positions).map(([position, colorCount]) => {
-                          const unitPrice = getUkTradeScreenPrintPrice(design.quantity, colorCount)
+                        {getSelectedPositionEntries(design.positions).map(
+                          ([position, colorCount]) => {
+                            const unitPrice = getUkTradeScreenPrintPrice(
+                              design.quantity,
+                              colorCount,
+                            )
 
-                          return (
-                            <div
-                              key={position}
-                              className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted"
-                            >
-                              <span>{formatPrintBreakdownLabel(position, colorCount)}</span>
+                            return (
+                              <div
+                                key={position}
+                                className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted"
+                              >
+                                <span>
+                                  {formatPrintBreakdownLabel(position, colorCount)}
+                                </span>
+                                <span className="font-mono text-brand-cream/90">
+                                  {formatBreakdownUnitAmount(
+                                    CURRENCY,
+                                    unitPrice.unitPrice ?? 0,
+                                  )}
+                                </span>
+                              </div>
+                            )
+                          },
+                        )}
+
+                        {breakdown.embroideryBreakdowns.map((embroidery) => (
+                          <div key={embroidery.key} className="space-y-2">
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                              <span>
+                                {embroidery.label} -{" "}
+                                {embroidery.stitchCount.toLocaleString()} stitches
+                              </span>
                               <span className="font-mono text-brand-cream/90">
-                                {formatBreakdownUnitAmount(CURRENCY, unitPrice.unitPrice ?? 0)}
+                                {formatBreakdownUnitAmount(
+                                  CURRENCY,
+                                  embroidery.unitPrice,
+                                )}
                               </span>
                             </div>
-                          )
-                        })}
+                            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-xs text-brand-muted/85">
+                              <span>Embroidery setup</span>
+                              <span className="font-mono text-brand-cream/90">
+                                {formatBreakdownAmount(
+                                  CURRENCY,
+                                  embroidery.setupCost,
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
 
                         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
-                          <span>Setup Cost</span>
+                          <span>Screen Setup</span>
                           <span className="font-mono text-brand-cream/90">
-                            {formatBreakdownAmount(CURRENCY, breakdown.setupCost)}
+                            {formatBreakdownAmount(
+                              CURRENCY,
+                              breakdown.screenSetupCost,
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
+                          <span>Embroidery setup</span>
+                          <span className="font-mono text-brand-cream/90">
+                            {formatBreakdownAmount(
+                              CURRENCY,
+                              breakdown.embroiderySetupCost,
+                            )}
                           </span>
                         </div>
 
                         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
                           <span>Total Unit Cost (excl VAT)</span>
                           <span className="font-mono text-brand-cream/90">
-                            {formatBreakdownUnitAmount(CURRENCY, breakdown.costPerUnit)}
+                            {formatBreakdownUnitAmount(
+                              CURRENCY,
+                              breakdown.costPerUnit,
+                            )}
                           </span>
                         </div>
 
                         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-cream/90">
-                          <span className="font-semibold">
-                            {formatSubtotalBreakdownLabel(breakdown.quantity)}
-                          </span>
+                          <span className="font-semibold">Item Total</span>
                           <span className="font-mono font-semibold text-sky-300">
                             {formatBreakdownAmount(CURRENCY, breakdown.totalCost)}
                           </span>
