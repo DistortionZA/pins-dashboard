@@ -42,6 +42,23 @@ type LineItem = {
   countryOfOrigin: string
 }
 
+type ExportLineItem = LineItem & {
+  costValue: number
+  quantityValue: number
+  totalValue: number
+}
+
+type ExportData = {
+  details: InvoiceDetails & { dutiesPayableBy: "Sender" | "Receiver" }
+  sender: Address
+  receiver: Address
+  lineItems: ExportLineItem[]
+  summary: {
+    quantity: number
+    total: number
+  }
+}
+
 const EMPTY_ADDRESS: Address = {
   id: "",
   label: "",
@@ -107,12 +124,39 @@ const INITIAL_DETAILS: InvoiceDetails = {
   dutiesPayableBy: "",
 }
 
+const LINE_ITEM_HEADERS = [
+  "Product",
+  "Design Name",
+  "Type",
+  "Description",
+  "Cost",
+  "Qty",
+  "Total",
+  "Commodity Code",
+  "Country of Origin",
+]
+
 function getId() {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID()
   }
 
   return `${Date.now()}-${Math.random()}`
+}
+
+function normalizeAddress(address?: Partial<Address>): Address {
+  return {
+    id: address?.id ?? "",
+    label: address?.label ?? "",
+    companyName: address?.companyName ?? "",
+    contactName: address?.contactName ?? "",
+    address: address?.address ?? "",
+    country: address?.country ?? "",
+    eori: address?.eori ?? "",
+    vat: address?.vat ?? "",
+    ein: address?.ein ?? "",
+    telephone: address?.telephone ?? "",
+  }
 }
 
 function createLineItem(): LineItem {
@@ -140,6 +184,10 @@ function getQuantity(item: LineItem) {
   return Number.parseFloat(item.quantity) || 0
 }
 
+function getCost(item: LineItem) {
+  return Number.parseFloat(item.cost) || 0
+}
+
 function hasLineItemContent(item: LineItem) {
   return [
     item.product,
@@ -153,6 +201,10 @@ function hasLineItemContent(item: LineItem) {
   ].some((value) => value.trim())
 }
 
+function hasValidLineItem(item: LineItem) {
+  return Boolean(item.product.trim()) && getQuantity(item) > 0 && Number.isFinite(getCost(item))
+}
+
 function formatMoney(value: number, currency: Currency) {
   return new Intl.NumberFormat("en-GB", {
     style: "currency",
@@ -162,8 +214,26 @@ function formatMoney(value: number, currency: Currency) {
   }).format(value)
 }
 
+function getCurrencyFormat(currency: Currency) {
+  return currency === "GBP" ? "£#,##0.00" : "€#,##0.00"
+}
+
 function fieldId(prefix: string, field: keyof Address) {
   return `${prefix}-${field}`
+}
+
+function sanitizeFilenamePart(value: string) {
+  const cleaned = value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+  return cleaned || today
+}
+
+function getBaseFilename(details: InvoiceDetails) {
+  return `commercial-invoice-${sanitizeFilenamePart(details.reference || details.date)}`
 }
 
 function validateInvoice(details: InvoiceDetails, sender: Address, receiver: Address, lineItems: LineItem[]) {
@@ -174,8 +244,65 @@ function validateInvoice(details: InvoiceDetails, sender: Address, receiver: Add
   if (!sender.companyName.trim() || !sender.address.trim()) errors.push("Sender company name and address are required.")
   if (!receiver.companyName.trim() || !receiver.address.trim()) errors.push("Receiver company name and address are required.")
   if (!lineItems.some(hasLineItemContent)) errors.push("At least one line item is required.")
+  else if (!lineItems.some(hasValidLineItem)) errors.push("At least one line item needs product, cost, and quantity.")
 
   return errors
+}
+
+function getAddressRows(address: Address) {
+  return [
+    ["Company", address.companyName],
+    ["Contact", address.contactName],
+    ["Address", address.address],
+    ["Country", address.country],
+    ["EORI", address.eori],
+    ["VAT", address.vat],
+    ["EIN", address.ein],
+    ["Telephone", address.telephone],
+  ]
+}
+
+function getAddressBlock(address: Address) {
+  return getAddressRows(address)
+    .filter(([, value]) => value.trim())
+    .map(([label, value]) => `${label}: ${value}`)
+}
+
+function getExportData(
+  details: InvoiceDetails,
+  sender: Address,
+  receiver: Address,
+  lineItems: LineItem[],
+  summary: ExportData["summary"],
+): ExportData | null {
+  if (!details.dutiesPayableBy) return null
+
+  const exportLineItems = lineItems.filter(hasLineItemContent).map((item) => ({
+    ...item,
+    costValue: getCost(item),
+    quantityValue: getQuantity(item),
+    totalValue: getLineTotal(item),
+  }))
+
+  return {
+    details: {
+      ...details,
+      dutiesPayableBy: details.dutiesPayableBy,
+    },
+    sender,
+    receiver,
+    lineItems: exportLineItems,
+    summary,
+  }
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
 }
 
 function AddressSection({
@@ -194,20 +321,20 @@ function AddressSection({
   const prefix = title.toLowerCase()
 
   return (
-    <section className="hub-panel grid gap-4 p-4">
+    <section className="hub-panel grid min-w-0 gap-4 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <h2 className="text-lg font-semibold text-brand-cream">{title}</h2>
           <p className="mt-1 text-sm text-brand-muted">
             Select a saved address or enter the {title.toLowerCase()} details manually.
           </p>
         </div>
-        <label className="grid min-w-[220px] gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted">
+        <label className="grid w-full min-w-0 gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted sm:max-w-xs sm:flex-1">
           Saved Address
           <select
             value={selectedAddressId}
             onChange={(event) => onSelectAddress(event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm normal-case tracking-normal outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm normal-case tracking-normal outline-none"
           >
             <option value="">Manual / unselected</option>
             {STARTER_ADDRESSES.map((savedAddress) => (
@@ -219,85 +346,85 @@ function AddressSection({
         </label>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "companyName")}>
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2">
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "companyName")}>
           Company Name
           <input
             id={fieldId(prefix, "companyName")}
             value={address.companyName}
             onChange={(event) => onChangeAddress("companyName", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "contactName")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "contactName")}>
           Contact Name
           <input
             id={fieldId(prefix, "contactName")}
             value={address.contactName}
             onChange={(event) => onChangeAddress("contactName", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "country")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "country")}>
           Country
           <input
             id={fieldId(prefix, "country")}
             value={address.country}
             onChange={(event) => onChangeAddress("country", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "telephone")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "telephone")}>
           Telephone
           <input
             id={fieldId(prefix, "telephone")}
             value={address.telephone}
             onChange={(event) => onChangeAddress("telephone", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream md:col-span-2" htmlFor={fieldId(prefix, "address")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream sm:col-span-2" htmlFor={fieldId(prefix, "address")}>
           Address
           <textarea
             id={fieldId(prefix, "address")}
             value={address.address}
             onChange={(event) => onChangeAddress("address", event.target.value)}
             rows={3}
-            className="hub-input rounded-xl px-3 py-2 text-sm leading-5 outline-none"
+            className="hub-input w-full min-w-0 resize-y rounded-xl px-3 py-2 text-sm leading-5 outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "eori")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "eori")}>
           EORI
           <input
             id={fieldId(prefix, "eori")}
             value={address.eori}
             onChange={(event) => onChangeAddress("eori", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "vat")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "vat")}>
           VAT
           <input
             id={fieldId(prefix, "vat")}
             value={address.vat}
             onChange={(event) => onChangeAddress("vat", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
 
-        <label className="grid gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "ein")}>
+        <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor={fieldId(prefix, "ein")}>
           EIN
           <input
             id={fieldId(prefix, "ein")}
             value={address.ein}
             onChange={(event) => onChangeAddress("ein", event.target.value)}
-            className="hub-input rounded-xl px-3 py-2 text-sm outline-none"
+            className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
           />
         </label>
       </div>
@@ -324,21 +451,208 @@ export default function CommercialInvoiceClient() {
     )
   }, [lineItems])
 
+  function getValidatedExportData() {
+    const errors = validateInvoice(details, sender, receiver, lineItems)
+    setValidationErrors(errors)
+
+    if (errors.length) {
+      toast.error("Complete required invoice fields before export.")
+      return null
+    }
+
+    return getExportData(details, sender, receiver, lineItems, summary)
+  }
+
+  async function handleExportExcel() {
+    const exportData = getValidatedExportData()
+    if (!exportData) return
+
+    try {
+      const ExcelJS = await import("exceljs")
+      const workbook = new ExcelJS.Workbook()
+      const worksheet = workbook.addWorksheet("Commercial Invoice")
+      const currencyFormat = getCurrencyFormat(exportData.details.currency)
+
+      worksheet.columns = [
+        { width: 20 },
+        { width: 24 },
+        { width: 18 },
+        { width: 28 },
+        { width: 14 },
+        { width: 10 },
+        { width: 14 },
+        { width: 22 },
+        { width: 22 },
+      ]
+
+      worksheet.mergeCells("A1:I1")
+      worksheet.getCell("A1").value = "Commercial Invoice"
+      worksheet.getCell("A1").font = { bold: true, size: 16 }
+
+      const detailRows = [
+        ["Invoice No / Reference", exportData.details.reference],
+        ["Date", exportData.details.date],
+        ["Ship Date", exportData.details.shipDate],
+        ["Tracking", exportData.details.tracking],
+        ["Box Count", exportData.details.boxCount],
+        ["Weight", exportData.details.weight],
+        ["Currency", exportData.details.currency],
+        ["Duties Payable By", exportData.details.dutiesPayableBy],
+      ]
+
+      detailRows.forEach((row, index) => {
+        const excelRow = worksheet.getRow(index + 3)
+        excelRow.values = row
+        excelRow.getCell(1).font = { bold: true }
+      })
+
+      const senderStart = 13
+      worksheet.getCell(`A${senderStart}`).value = "Sender"
+      worksheet.getCell(`A${senderStart}`).font = { bold: true }
+      getAddressRows(exportData.sender).forEach((row, index) => {
+        const excelRow = worksheet.getRow(senderStart + index + 1)
+        excelRow.values = row
+        excelRow.getCell(1).font = { bold: true }
+      })
+
+      worksheet.getCell(`D${senderStart}`).value = "Receiver"
+      worksheet.getCell(`D${senderStart}`).font = { bold: true }
+      getAddressRows(exportData.receiver).forEach((row, index) => {
+        const excelRow = worksheet.getRow(senderStart + index + 1)
+        excelRow.getCell(4).value = row[0]
+        excelRow.getCell(5).value = row[1]
+        excelRow.getCell(4).font = { bold: true }
+      })
+
+      const tableHeaderRowNumber = senderStart + 11
+      const tableHeaderRow = worksheet.getRow(tableHeaderRowNumber)
+      tableHeaderRow.values = LINE_ITEM_HEADERS
+      tableHeaderRow.font = { bold: true }
+
+      exportData.lineItems.forEach((item, index) => {
+        const row = worksheet.getRow(tableHeaderRowNumber + index + 1)
+        row.values = [
+          item.product,
+          item.designName,
+          item.type,
+          item.description,
+          item.costValue,
+          item.quantityValue,
+          item.totalValue,
+          item.commodityCode,
+          item.countryOfOrigin,
+        ]
+        row.getCell(5).numFmt = currencyFormat
+        row.getCell(7).numFmt = currencyFormat
+      })
+
+      const totalRowNumber = tableHeaderRowNumber + exportData.lineItems.length + 2
+      worksheet.getCell(`A${totalRowNumber}`).value = "Total Quantity"
+      worksheet.getCell(`B${totalRowNumber}`).value = exportData.summary.quantity
+      worksheet.getCell(`A${totalRowNumber + 1}`).value = "Final Invoice Total"
+      worksheet.getCell(`B${totalRowNumber + 1}`).value = exportData.summary.total
+      worksheet.getCell(`B${totalRowNumber + 1}`).numFmt = currencyFormat
+      worksheet.getCell(`A${totalRowNumber}`).font = { bold: true }
+      worksheet.getCell(`A${totalRowNumber + 1}`).font = { bold: true }
+
+      const buffer = await workbook.xlsx.writeBuffer()
+      downloadBlob(
+        new Blob([buffer as BlobPart], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        }),
+        `${getBaseFilename(exportData.details)}.xlsx`,
+      )
+      toast.success("Editable Excel invoice exported.")
+    } catch {
+      toast.error("Failed to export Excel invoice.")
+    }
+  }
+
+  async function handleExportPdf() {
+    const exportData = getValidatedExportData()
+    if (!exportData) return
+
+    try {
+      const { jsPDF } = await import("jspdf")
+      const autoTable = (await import("jspdf-autotable")).default
+      const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "a4" })
+
+      doc.setFontSize(16)
+      doc.setFont("helvetica", "bold")
+      doc.text("Commercial Invoice", 40, 36)
+
+      doc.setFontSize(9)
+      doc.setFont("helvetica", "normal")
+      const detailRows = [
+        `Invoice No / Reference: ${exportData.details.reference}`,
+        `Date: ${exportData.details.date}`,
+        `Ship Date: ${exportData.details.shipDate}`,
+        `Tracking: ${exportData.details.tracking}`,
+        `Box Count: ${exportData.details.boxCount}`,
+        `Weight: ${exportData.details.weight}`,
+        `Currency: ${exportData.details.currency}`,
+        `Duties Payable By: ${exportData.details.dutiesPayableBy}`,
+      ]
+      detailRows.forEach((row, index) => doc.text(row, 40, 58 + index * 13))
+
+      doc.setFont("helvetica", "bold")
+      doc.text("Sender", 330, 58)
+      doc.text("Receiver", 570, 58)
+      doc.setFont("helvetica", "normal")
+      doc.text(getAddressBlock(exportData.sender), 330, 74, { maxWidth: 210 })
+      doc.text(getAddressBlock(exportData.receiver), 570, 74, { maxWidth: 220 })
+
+      autoTable(doc, {
+        startY: 178,
+        head: [LINE_ITEM_HEADERS],
+        body: exportData.lineItems.map((item) => [
+          item.product,
+          item.designName,
+          item.type,
+          item.description,
+          formatMoney(item.costValue, exportData.details.currency),
+          item.quantityValue.toLocaleString("en-GB"),
+          formatMoney(item.totalValue, exportData.details.currency),
+          item.commodityCode,
+          item.countryOfOrigin,
+        ]),
+        styles: { fontSize: 7, cellPadding: 3, overflow: "linebreak" },
+        headStyles: { fillColor: [32, 32, 32], textColor: [255, 255, 255] },
+        columnStyles: {
+          3: { cellWidth: 120 },
+          7: { cellWidth: 82 },
+          8: { cellWidth: 88 },
+        },
+        margin: { left: 40, right: 40 },
+      })
+
+      const finalY = (doc as unknown as { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY ?? 420
+      doc.setFont("helvetica", "bold")
+      doc.text(`Total Quantity: ${exportData.summary.quantity.toLocaleString("en-GB")}`, 40, finalY + 24)
+      doc.text(`Final Invoice Total: ${formatMoney(exportData.summary.total, exportData.details.currency)}`, 40, finalY + 40)
+
+      doc.save(`${getBaseFilename(exportData.details)}.pdf`)
+      toast.success("PDF invoice exported.")
+    } catch {
+      toast.error("Failed to export PDF invoice.")
+    }
+  }
+
   function updateDetails<Field extends keyof InvoiceDetails>(field: Field, value: InvoiceDetails[Field]) {
     setDetails((current) => ({ ...current, [field]: value }))
   }
 
   function selectAddress(addressId: string, target: "sender" | "receiver") {
-    const selectedAddress = STARTER_ADDRESSES.find((address) => address.id === addressId)
+    const selectedAddress = normalizeAddress(STARTER_ADDRESSES.find((address) => address.id === addressId))
 
     if (target === "sender") {
       setSenderAddressId(addressId)
-      if (selectedAddress) setSender(selectedAddress)
+      setSender(selectedAddress)
       return
     }
 
     setReceiverAddressId(addressId)
-    if (selectedAddress) setReceiver(selectedAddress)
+    setReceiver(selectedAddress)
   }
 
   function updateLineItem(id: string, field: keyof LineItem, value: string) {
@@ -347,18 +661,6 @@ export default function CommercialInvoiceClient() {
 
   function removeLineItem(id: string) {
     setLineItems((current) => (current.length > 1 ? current.filter((item) => item.id !== id) : current))
-  }
-
-  function handleExport() {
-    const errors = validateInvoice(details, sender, receiver, lineItems)
-    setValidationErrors(errors)
-
-    if (errors.length) {
-      toast.error("Complete required invoice fields before export.")
-      return
-    }
-
-    toast.info("Excel export will be added next.")
   }
 
   function handleSavePlaceholder() {
@@ -475,7 +777,7 @@ export default function CommercialInvoiceClient() {
         </div>
       </section>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid min-w-0 gap-4 xl:grid-cols-2">
         <AddressSection
           title="Sender"
           address={sender}
@@ -497,8 +799,9 @@ export default function CommercialInvoiceClient() {
           <div>
             <h2 className="text-lg font-semibold text-brand-cream">Line Items</h2>
             <p className="mt-1 max-w-4xl text-sm text-brand-muted">
-              Commodity code follows the product, material, and type. Country of origin follows the actual garment or product
-              and where it was made. Keep both editable because they may come from different sources.
+              Commodity code follows product type/material, not brand. Example: a 100% cotton T-shirt uses 6109100010 whether
+              it is Gildan, AS Colour, or another brand. Country of origin follows the actual garment/product and where it was
+              made. Keep both editable because they may come from different sources.
             </p>
           </div>
           <button
@@ -624,7 +927,8 @@ export default function CommercialInvoiceClient() {
           <div>
             <h2 className="text-lg font-semibold text-brand-cream">Saved Invoices</h2>
             <p className="mt-1 text-sm text-brand-muted">
-              Planned: save invoice drafts and load previous invoices for reuse. Database-backed saving is not active in V1.
+              Planned for reuse later: save invoice drafts and load previous invoices. Database-backed saving is not active in
+              V1.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -649,9 +953,14 @@ export default function CommercialInvoiceClient() {
       <section className="hub-panel grid gap-4 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold text-brand-cream">Summary / Export</h2>
-          <button type="button" onClick={handleExport} className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold">
-            Export Excel
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={handleExportExcel} className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold">
+              Export Editable Excel
+            </button>
+            <button type="button" onClick={handleExportPdf} className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold">
+              Export PDF
+            </button>
+          </div>
         </div>
 
         {validationErrors.length ? (
