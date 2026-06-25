@@ -2,6 +2,18 @@
 
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
+import {
+  deleteCommercialInvoice,
+  getCommercialInvoice,
+  saveCommercialInvoice,
+  updateCommercialInvoice,
+} from "./actions"
+import type {
+  CommercialInvoicePayload,
+  CommercialInvoicesData,
+  SavedCommercialInvoiceRecord,
+  SavedCommercialInvoiceSummary,
+} from "./types"
 
 type Currency = "GBP" | "EUR"
 type DutiesPayableBy = "" | "Sender" | "Receiver"
@@ -202,7 +214,10 @@ function hasLineItemContent(item: LineItem) {
 }
 
 function hasValidLineItem(item: LineItem) {
-  return Boolean(item.product.trim()) && getQuantity(item) > 0 && Number.isFinite(getCost(item))
+  const cost = Number.parseFloat(item.cost)
+  const quantity = Number.parseFloat(item.quantity)
+
+  return Boolean(item.product.trim()) && Number.isFinite(cost) && Number.isInteger(quantity) && quantity > 0
 }
 
 function formatMoney(value: number, currency: Currency) {
@@ -244,7 +259,9 @@ function validateInvoice(details: InvoiceDetails, sender: Address, receiver: Add
   if (!sender.companyName.trim() || !sender.address.trim()) errors.push("Sender company name and address are required.")
   if (!receiver.companyName.trim() || !receiver.address.trim()) errors.push("Receiver company name and address are required.")
   if (!lineItems.some(hasLineItemContent)) errors.push("At least one line item is required.")
-  else if (!lineItems.some(hasValidLineItem)) errors.push("At least one line item needs product, cost, and quantity.")
+  else if (lineItems.filter(hasLineItemContent).some((item) => !hasValidLineItem(item))) {
+    errors.push("Every line item needs product, cost, and whole-number quantity.")
+  }
 
   return errors
 }
@@ -303,6 +320,13 @@ function downloadBlob(blob: Blob, filename: string) {
   link.download = filename
   link.click()
   URL.revokeObjectURL(url)
+}
+
+function getSavedInvoiceLabel(invoice: SavedCommercialInvoiceSummary) {
+  const base = invoice.title || invoice.invoiceNumber || invoice.reference || "Untitled invoice"
+  const date = invoice.invoiceDate ? ` · ${invoice.invoiceDate}` : ""
+
+  return `${base}${date}`
 }
 
 function AddressSection({
@@ -432,7 +456,7 @@ function AddressSection({
   )
 }
 
-export default function CommercialInvoiceClient() {
+export default function CommercialInvoiceClient({ initialData }: { initialData: CommercialInvoicesData }) {
   const [details, setDetails] = useState<InvoiceDetails>(INITIAL_DETAILS)
   const [senderAddressId, setSenderAddressId] = useState("")
   const [receiverAddressId, setReceiverAddressId] = useState("")
@@ -440,6 +464,11 @@ export default function CommercialInvoiceClient() {
   const [receiver, setReceiver] = useState<Address>(EMPTY_ADDRESS)
   const [lineItems, setLineItems] = useState<LineItem[]>([createLineItem()])
   const [validationErrors, setValidationErrors] = useState<string[]>([])
+  const [savedInvoices, setSavedInvoices] = useState<SavedCommercialInvoiceSummary[]>(initialData.invoices)
+  const [selectedSavedInvoiceId, setSelectedSavedInvoiceId] = useState("")
+  const [currentInvoiceId, setCurrentInvoiceId] = useState("")
+  const [pendingDeleteId, setPendingDeleteId] = useState("")
+  const [isPersisting, setIsPersisting] = useState(false)
 
   const summary = useMemo(() => {
     return lineItems.reduce(
@@ -450,6 +479,151 @@ export default function CommercialInvoiceClient() {
       { quantity: 0, total: 0 },
     )
   }, [lineItems])
+
+  function getInvoicePayload(): CommercialInvoicePayload {
+    return {
+      details,
+      sender,
+      receiver,
+      lineItems,
+    }
+  }
+
+  function validateForSave() {
+    const errors = validateInvoice(details, sender, receiver, lineItems)
+    setValidationErrors(errors)
+
+    if (errors.length) {
+      toast.error("Complete required invoice fields before saving.")
+      return false
+    }
+
+    return true
+  }
+
+  function applySavedInvoice(invoice: SavedCommercialInvoiceRecord) {
+    setDetails(invoice.details)
+    setSender(normalizeAddress(invoice.sender))
+    setReceiver(normalizeAddress(invoice.receiver))
+    setSenderAddressId("")
+    setReceiverAddressId("")
+    setLineItems(invoice.lineItems.length ? invoice.lineItems : [createLineItem()])
+    setCurrentInvoiceId(invoice.id)
+    setSelectedSavedInvoiceId(invoice.id)
+    setPendingDeleteId("")
+    setValidationErrors([])
+  }
+
+  function applySavedInvoices(invoices: SavedCommercialInvoiceSummary[] | undefined) {
+    if (invoices) setSavedInvoices(invoices)
+  }
+
+  async function handleSaveInvoice() {
+    if (!validateForSave()) return
+
+    setIsPersisting(true)
+    try {
+      const result = currentInvoiceId
+        ? await updateCommercialInvoice(currentInvoiceId, getInvoicePayload())
+        : await saveCommercialInvoice(getInvoicePayload())
+
+      if (!result.ok) {
+        toast.error(result.message)
+        return
+      }
+
+      applySavedInvoices(result.invoices)
+      if (result.invoice) {
+        setCurrentInvoiceId(result.invoice.id)
+        setSelectedSavedInvoiceId(result.invoice.id)
+      }
+      toast.success(result.message)
+    } catch {
+      toast.error("Failed to save commercial invoice.")
+    } finally {
+      setIsPersisting(false)
+    }
+  }
+
+  async function handleSaveAsNewInvoice() {
+    if (!validateForSave()) return
+
+    setIsPersisting(true)
+    try {
+      const result = await saveCommercialInvoice(getInvoicePayload())
+
+      if (!result.ok) {
+        toast.error(result.message)
+        return
+      }
+
+      applySavedInvoices(result.invoices)
+      if (result.invoice) {
+        setCurrentInvoiceId(result.invoice.id)
+        setSelectedSavedInvoiceId(result.invoice.id)
+      }
+      toast.success("Commercial invoice saved as new.")
+    } catch {
+      toast.error("Failed to save commercial invoice as new.")
+    } finally {
+      setIsPersisting(false)
+    }
+  }
+
+  async function handleLoadSavedInvoice() {
+    if (!selectedSavedInvoiceId) {
+      toast.error("Choose a saved invoice to load.")
+      return
+    }
+
+    setIsPersisting(true)
+    try {
+      const invoice = await getCommercialInvoice(selectedSavedInvoiceId)
+      if (!invoice) {
+        toast.error("Saved invoice could not be loaded.")
+        return
+      }
+
+      applySavedInvoice(invoice)
+      toast.success("Commercial invoice loaded.")
+    } catch {
+      toast.error("Failed to load commercial invoice.")
+    } finally {
+      setIsPersisting(false)
+    }
+  }
+
+  async function handleDeleteSavedInvoice() {
+    if (!selectedSavedInvoiceId) {
+      toast.error("Choose a saved invoice to delete.")
+      return
+    }
+
+    if (pendingDeleteId !== selectedSavedInvoiceId) {
+      setPendingDeleteId(selectedSavedInvoiceId)
+      toast.info("Press Confirm Delete to remove the selected saved invoice.")
+      return
+    }
+
+    setIsPersisting(true)
+    try {
+      const result = await deleteCommercialInvoice(selectedSavedInvoiceId)
+      if (!result.ok) {
+        toast.error(result.message)
+        return
+      }
+
+      applySavedInvoices(result.invoices)
+      if (currentInvoiceId === selectedSavedInvoiceId) setCurrentInvoiceId("")
+      setSelectedSavedInvoiceId("")
+      setPendingDeleteId("")
+      toast.success(result.message)
+    } catch {
+      toast.error("Failed to delete commercial invoice.")
+    } finally {
+      setIsPersisting(false)
+    }
+  }
 
   function getValidatedExportData() {
     const errors = validateInvoice(details, sender, receiver, lineItems)
@@ -661,10 +835,6 @@ export default function CommercialInvoiceClient() {
 
   function removeLineItem(id: string) {
     setLineItems((current) => (current.length > 1 ? current.filter((item) => item.id !== id) : current))
-  }
-
-  function handleSavePlaceholder() {
-    toast.info("Invoice saving/loading is planned for a later database-backed stage.")
   }
 
   return (
@@ -923,28 +1093,74 @@ export default function CommercialInvoiceClient() {
       </section>
 
       <section className="hub-panel grid gap-4 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div className="min-w-0">
             <h2 className="text-lg font-semibold text-brand-cream">Saved Invoices</h2>
             <p className="mt-1 text-sm text-brand-muted">
-              Planned for reuse later: save invoice drafts and load previous invoices. Database-backed saving is not active in
-              V1.
+              Save invoice snapshots for reuse later. Sender and receiver details are stored with each saved invoice.
             </p>
+            {initialData.setupIssue ? <p className="mt-2 text-sm text-brand-red/90">{initialData.setupIssue}</p> : null}
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 lg:justify-end">
             <button
               type="button"
-              onClick={handleSavePlaceholder}
-              className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold"
+              onClick={handleSaveInvoice}
+              disabled={isPersisting || Boolean(initialData.setupIssue)}
+              className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Save Draft Later
+              {currentInvoiceId ? "Save Invoice" : "Save Invoice"}
+            </button>
+            {currentInvoiceId ? (
+              <button
+                type="button"
+                onClick={handleSaveAsNewInvoice}
+                disabled={isPersisting || Boolean(initialData.setupIssue)}
+                className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Save as New
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <label className="grid min-w-0 gap-1.5 text-sm font-medium text-brand-cream" htmlFor="saved-commercial-invoice">
+            Saved Invoice
+            <select
+              id="saved-commercial-invoice"
+              value={selectedSavedInvoiceId}
+              onChange={(event) => {
+                setSelectedSavedInvoiceId(event.target.value)
+                setPendingDeleteId("")
+              }}
+              disabled={isPersisting || !savedInvoices.length}
+              className="hub-input w-full min-w-0 rounded-xl px-3 py-2 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="">{savedInvoices.length ? "Choose saved invoice" : "No saved invoices yet"}</option>
+              {savedInvoices.map((invoice) => (
+                <option key={invoice.id} value={invoice.id}>
+                  {getSavedInvoiceLabel(invoice)}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="flex flex-wrap gap-2 lg:justify-end">
+            <button
+              type="button"
+              onClick={handleLoadSavedInvoice}
+              disabled={isPersisting || !selectedSavedInvoiceId}
+              className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Load Invoice
             </button>
             <button
               type="button"
-              onClick={handleSavePlaceholder}
-              className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold"
+              onClick={handleDeleteSavedInvoice}
+              disabled={isPersisting || !selectedSavedInvoiceId}
+              className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Load Saved Later
+              {pendingDeleteId && pendingDeleteId === selectedSavedInvoiceId ? "Confirm Delete" : "Delete"}
             </button>
           </div>
         </div>
