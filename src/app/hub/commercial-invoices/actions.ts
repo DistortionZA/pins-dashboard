@@ -3,12 +3,24 @@
 import { Prisma } from "@prisma/client"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { prisma } from "@/lib/db"
-import { getCommercialInvoice, getCommercialInvoicesTag, listCommercialInvoices } from "./data"
+import {
+  getCommercialInvoice,
+  getCommercialInvoiceCommodityCodesTag,
+  getCommercialInvoicesTag,
+  getSavedInvoiceAddressesTag,
+  listCommercialInvoiceCommodityCodes,
+  listCommercialInvoices,
+  listSavedInvoiceAddresses,
+} from "./data"
 import type {
   CommercialInvoiceActionResult,
   CommercialInvoiceAddressSnapshot,
+  CommercialInvoiceCommodityCodeActionResult,
+  CommercialInvoiceCommodityCodePayload,
   CommercialInvoiceLinePayload,
   CommercialInvoicePayload,
+  SavedInvoiceAddressActionResult,
+  SavedInvoiceAddressPayload,
 } from "./types"
 
 function normalizeText(value: string | undefined | null) {
@@ -23,6 +35,7 @@ function parseOptionalDate(value: string) {
 function parseOptionalInt(value: string) {
   const normalized = normalizeText(value)
   if (!normalized) return null
+
   const parsed = Number.parseInt(normalized, 10)
   return Number.isInteger(parsed) ? parsed : null
 }
@@ -67,6 +80,7 @@ function validatePayload(payload: CommercialInvoicePayload) {
   const contentLines = payload.lineItems.filter(hasLineItemContent)
 
   if (!normalizeText(payload.details.reference)) errors.push("Invoice No / Reference is required.")
+  if (!payload.details.printLocation) errors.push("Print Location is required.")
   if (!payload.details.dutiesPayableBy) errors.push("Duties Payable By must be selected.")
 
   const senderError = validateAddress(payload.sender, "Sender")
@@ -119,6 +133,7 @@ function getInvoiceData(payload: CommercialInvoicePayload) {
     boxCount: parseOptionalInt(payload.details.boxCount),
     weight: normalizeText(payload.details.weight) || null,
     currency: payload.details.currency,
+    printLocation: normalizeText(payload.details.printLocation) || null,
     dutiesPayableBy: payload.details.dutiesPayableBy || null,
     senderJson: payload.sender as unknown as Prisma.InputJsonValue,
     receiverJson: payload.receiver as unknown as Prisma.InputJsonValue,
@@ -128,7 +143,63 @@ function getInvoiceData(payload: CommercialInvoicePayload) {
   }
 }
 
+function getAddressData(payload: SavedInvoiceAddressPayload) {
+  return {
+    label: normalizeText(payload.label),
+    companyName: normalizeText(payload.companyName),
+    contactName: normalizeText(payload.contactName) || null,
+    address: normalizeText(payload.address),
+    country: normalizeText(payload.country),
+    eoriNumber: normalizeText(payload.eori) || null,
+    vatNumber: normalizeText(payload.vat) || null,
+    einNumber: normalizeText(payload.ein) || null,
+    telephone: normalizeText(payload.telephone) || null,
+    email: normalizeText(payload.email) || null,
+    notes: normalizeText(payload.notes) || null,
+  }
+}
+
+function validateSavedAddressPayload(payload: SavedInvoiceAddressPayload) {
+  const errors: string[] = []
+  if (!normalizeText(payload.label)) errors.push("Address label is required.")
+  if (!normalizeText(payload.companyName)) errors.push("Company name is required.")
+  if (!normalizeText(payload.address)) errors.push("Address is required.")
+  if (!normalizeText(payload.country)) errors.push("Country is required.")
+  return errors
+}
+
+function getCommodityCodeData(payload: CommercialInvoiceCommodityCodePayload) {
+  return {
+    label: normalizeText(payload.label),
+    productType: normalizeText(payload.productType),
+    material: normalizeText(payload.material) || null,
+    commodityCode: normalizeText(payload.commodityCode),
+    description: normalizeText(payload.description) || null,
+    notes: normalizeText(payload.notes) || null,
+  }
+}
+
+function validateCommodityCodePayload(payload: CommercialInvoiceCommodityCodePayload) {
+  const errors: string[] = []
+  if (!normalizeText(payload.label)) errors.push("Commodity label is required.")
+  if (!normalizeText(payload.productType)) errors.push("Product type is required.")
+  if (!normalizeText(payload.commodityCode)) errors.push("Commodity code is required.")
+  return errors
+}
+
 async function revalidateCommercialInvoices() {
+  revalidateTag(getCommercialInvoicesTag(), "max")
+  revalidatePath("/hub/commercial-invoices")
+}
+
+async function revalidateSavedInvoiceAddresses() {
+  revalidateTag(getSavedInvoiceAddressesTag(), "max")
+  revalidateTag(getCommercialInvoicesTag(), "max")
+  revalidatePath("/hub/commercial-invoices")
+}
+
+async function revalidateCommercialInvoiceCommodityCodes() {
+  revalidateTag(getCommercialInvoiceCommodityCodesTag(), "max")
   revalidateTag(getCommercialInvoicesTag(), "max")
   revalidatePath("/hub/commercial-invoices")
 }
@@ -144,7 +215,12 @@ async function buildSuccessResult(message: string, invoiceId: string): Promise<C
   }
 }
 
-export { listCommercialInvoices, getCommercialInvoice }
+export {
+  getCommercialInvoice,
+  listCommercialInvoiceCommodityCodes,
+  listCommercialInvoices,
+  listSavedInvoiceAddresses,
+}
 
 export async function saveCommercialInvoice(payload: CommercialInvoicePayload): Promise<CommercialInvoiceActionResult> {
   const errors = validatePayload(payload)
@@ -209,5 +285,123 @@ export async function deleteCommercialInvoice(id: string): Promise<CommercialInv
   } catch (error) {
     console.error(error)
     return { ok: false, message: error instanceof Error ? error.message : "Failed to delete commercial invoice." }
+  }
+}
+
+export async function createSavedInvoiceAddress(
+  payload: SavedInvoiceAddressPayload,
+): Promise<SavedInvoiceAddressActionResult> {
+  const errors = validateSavedAddressPayload(payload)
+  if (errors.length) return { ok: false, message: errors.join(" ") }
+
+  try {
+    await prisma.savedInvoiceAddress.create({ data: getAddressData(payload) })
+    await revalidateSavedInvoiceAddresses()
+    return {
+      ok: true,
+      message: "Saved address created.",
+      addresses: await listSavedInvoiceAddresses(),
+    }
+  } catch (error) {
+    console.error(error)
+    return { ok: false, message: error instanceof Error ? error.message : "Failed to create saved address." }
+  }
+}
+
+export async function updateSavedInvoiceAddress(
+  id: string,
+  payload: SavedInvoiceAddressPayload,
+): Promise<SavedInvoiceAddressActionResult> {
+  const errors = validateSavedAddressPayload(payload)
+  if (errors.length) return { ok: false, message: errors.join(" ") }
+
+  try {
+    await prisma.savedInvoiceAddress.update({ where: { id }, data: getAddressData(payload) })
+    await revalidateSavedInvoiceAddresses()
+    return {
+      ok: true,
+      message: "Saved address updated.",
+      addresses: await listSavedInvoiceAddresses(),
+    }
+  } catch (error) {
+    console.error(error)
+    return { ok: false, message: error instanceof Error ? error.message : "Failed to update saved address." }
+  }
+}
+
+export async function deleteSavedInvoiceAddress(id: string): Promise<SavedInvoiceAddressActionResult> {
+  if (!id) return { ok: false, message: "Saved address is required." }
+
+  try {
+    await prisma.savedInvoiceAddress.delete({ where: { id } })
+    await revalidateSavedInvoiceAddresses()
+    return {
+      ok: true,
+      message: "Saved address deleted.",
+      addresses: await listSavedInvoiceAddresses(),
+    }
+  } catch (error) {
+    console.error(error)
+    return { ok: false, message: error instanceof Error ? error.message : "Failed to delete saved address." }
+  }
+}
+
+export async function createCommercialInvoiceCommodityCode(
+  payload: CommercialInvoiceCommodityCodePayload,
+): Promise<CommercialInvoiceCommodityCodeActionResult> {
+  const errors = validateCommodityCodePayload(payload)
+  if (errors.length) return { ok: false, message: errors.join(" ") }
+
+  try {
+    await prisma.commercialInvoiceCommodityCode.create({ data: getCommodityCodeData(payload) })
+    await revalidateCommercialInvoiceCommodityCodes()
+    return {
+      ok: true,
+      message: "Commodity code created.",
+      commodityCodes: await listCommercialInvoiceCommodityCodes(),
+    }
+  } catch (error) {
+    console.error(error)
+    return { ok: false, message: error instanceof Error ? error.message : "Failed to create commodity code." }
+  }
+}
+
+export async function updateCommercialInvoiceCommodityCode(
+  id: string,
+  payload: CommercialInvoiceCommodityCodePayload,
+): Promise<CommercialInvoiceCommodityCodeActionResult> {
+  const errors = validateCommodityCodePayload(payload)
+  if (errors.length) return { ok: false, message: errors.join(" ") }
+
+  try {
+    await prisma.commercialInvoiceCommodityCode.update({ where: { id }, data: getCommodityCodeData(payload) })
+    await revalidateCommercialInvoiceCommodityCodes()
+    return {
+      ok: true,
+      message: "Commodity code updated.",
+      commodityCodes: await listCommercialInvoiceCommodityCodes(),
+    }
+  } catch (error) {
+    console.error(error)
+    return { ok: false, message: error instanceof Error ? error.message : "Failed to update commodity code." }
+  }
+}
+
+export async function deleteCommercialInvoiceCommodityCode(
+  id: string,
+): Promise<CommercialInvoiceCommodityCodeActionResult> {
+  if (!id) return { ok: false, message: "Commodity code is required." }
+
+  try {
+    await prisma.commercialInvoiceCommodityCode.delete({ where: { id } })
+    await revalidateCommercialInvoiceCommodityCodes()
+    return {
+      ok: true,
+      message: "Commodity code deleted.",
+      commodityCodes: await listCommercialInvoiceCommodityCodes(),
+    }
+  } catch (error) {
+    console.error(error)
+    return { ok: false, message: error instanceof Error ? error.message : "Failed to delete commodity code." }
   }
 }

@@ -142,6 +142,7 @@ model CommercialInvoice {
   boxCount        Int?
   weight          String?
   currency        String
+  printLocation   String?
   dutiesPayableBy String?
   senderJson      Json
   receiverJson    Json
@@ -171,6 +172,42 @@ model CommercialInvoiceLine {
   sortOrder           Int
 
   @@index([commercialInvoiceId])
+}
+
+model SavedInvoiceAddress {
+  id          String   @id @default(cuid())
+  label       String
+  companyName String
+  contactName String?
+  address     String
+  country     String
+  eoriNumber  String?
+  vatNumber   String?
+  einNumber   String?
+  telephone   String?
+  email       String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([label])
+  @@index([updatedAt])
+}
+
+model CommercialInvoiceCommodityCode {
+  id            String   @id @default(cuid())
+  label         String
+  productType   String
+  material      String?
+  commodityCode String
+  description   String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([label])
+  @@index([productType])
+  @@index([commodityCode])
 }
 
 enum PrintPosition {

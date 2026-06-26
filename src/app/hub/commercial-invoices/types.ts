@@ -9,6 +9,8 @@ export type CommercialInvoiceAddressSnapshot = {
   vat: string
   ein: string
   telephone: string
+  email: string
+  notes: string
 }
 
 export type CommercialInvoiceDetailsPayload = {
@@ -19,6 +21,7 @@ export type CommercialInvoiceDetailsPayload = {
   boxCount: string
   weight: string
   currency: "GBP" | "EUR"
+  printLocation: "" | "United Kingdom" | "Hungary"
   dutiesPayableBy: "" | "Sender" | "Receiver"
 }
 
@@ -62,6 +65,8 @@ export type SavedCommercialInvoiceRecord = SavedCommercialInvoiceSummary & {
 
 export type CommercialInvoicesData = {
   invoices: SavedCommercialInvoiceSummary[]
+  addresses: SavedInvoiceAddressRecord[]
+  commodityCodes: CommercialInvoiceCommodityCodeRecord[]
   setupIssue?: string
 }
 
@@ -70,4 +75,49 @@ export type CommercialInvoiceActionResult = {
   message: string
   invoice?: SavedCommercialInvoiceRecord
   invoices?: SavedCommercialInvoiceSummary[]
+}
+
+export type SavedInvoiceAddressPayload = {
+  label: string
+  companyName: string
+  contactName: string
+  address: string
+  country: string
+  eori: string
+  vat: string
+  ein: string
+  telephone: string
+  email: string
+  notes: string
+}
+
+export type SavedInvoiceAddressRecord = SavedInvoiceAddressPayload & {
+  id: string
+  updatedAt: string
+}
+
+export type SavedInvoiceAddressActionResult = {
+  ok: boolean
+  message: string
+  addresses?: SavedInvoiceAddressRecord[]
+}
+
+export type CommercialInvoiceCommodityCodePayload = {
+  label: string
+  productType: string
+  material: string
+  commodityCode: string
+  description: string
+  notes: string
+}
+
+export type CommercialInvoiceCommodityCodeRecord = CommercialInvoiceCommodityCodePayload & {
+  id: string
+  updatedAt: string
+}
+
+export type CommercialInvoiceCommodityCodeActionResult = {
+  ok: boolean
+  message: string
+  commodityCodes?: CommercialInvoiceCommodityCodeRecord[]
 }

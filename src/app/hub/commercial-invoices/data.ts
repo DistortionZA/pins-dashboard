@@ -2,13 +2,17 @@ import { Prisma } from "@prisma/client"
 import { unstable_cache } from "next/cache"
 import { prisma } from "@/lib/db"
 import type {
+  CommercialInvoiceCommodityCodeRecord,
   CommercialInvoiceAddressSnapshot,
   CommercialInvoicesData,
   SavedCommercialInvoiceRecord,
   SavedCommercialInvoiceSummary,
+  SavedInvoiceAddressRecord,
 } from "./types"
 
 const COMMERCIAL_INVOICES_TAG = "commercial-invoices"
+const SAVED_INVOICE_ADDRESSES_TAG = "saved-invoice-addresses"
+const COMMERCIAL_INVOICE_COMMODITY_CODES_TAG = "commercial-invoice-commodity-codes"
 
 type CommercialInvoiceRow = {
   id: string
@@ -21,6 +25,7 @@ type CommercialInvoiceRow = {
   boxCount: number | null
   weight: string | null
   currency: string
+  printLocation: string | null
   dutiesPayableBy: string | null
   senderJson: Prisma.JsonValue
   receiverJson: Prisma.JsonValue
@@ -44,6 +49,33 @@ type CommercialInvoiceLineRow = {
   sortOrder: number
 }
 
+type SavedInvoiceAddressRow = {
+  id: string
+  label: string
+  companyName: string
+  contactName: string | null
+  address: string
+  country: string
+  eoriNumber: string | null
+  vatNumber: string | null
+  einNumber: string | null
+  telephone: string | null
+  email: string | null
+  notes: string | null
+  updatedAt: Date
+}
+
+type CommercialInvoiceCommodityCodeRow = {
+  id: string
+  label: string
+  productType: string
+  material: string | null
+  commodityCode: string
+  description: string | null
+  notes: string | null
+  updatedAt: Date
+}
+
 function hasCommercialInvoiceDelegate() {
   const client = prisma as typeof prisma & {
     commercialInvoice?: { findMany?: (...args: unknown[]) => unknown; findUnique?: (...args: unknown[]) => unknown }
@@ -52,8 +84,32 @@ function hasCommercialInvoiceDelegate() {
   return typeof client.commercialInvoice?.findMany === "function"
 }
 
+function hasSavedInvoiceAddressDelegate() {
+  const client = prisma as typeof prisma & {
+    savedInvoiceAddress?: { findMany?: (...args: unknown[]) => unknown }
+  }
+
+  return typeof client.savedInvoiceAddress?.findMany === "function"
+}
+
+function hasCommercialInvoiceCommodityCodeDelegate() {
+  const client = prisma as typeof prisma & {
+    commercialInvoiceCommodityCode?: { findMany?: (...args: unknown[]) => unknown }
+  }
+
+  return typeof client.commercialInvoiceCommodityCode?.findMany === "function"
+}
+
 export function getCommercialInvoicesTag() {
   return COMMERCIAL_INVOICES_TAG
+}
+
+export function getSavedInvoiceAddressesTag() {
+  return SAVED_INVOICE_ADDRESSES_TAG
+}
+
+export function getCommercialInvoiceCommodityCodesTag() {
+  return COMMERCIAL_INVOICE_COMMODITY_CODES_TAG
 }
 
 function asString(value: unknown) {
@@ -74,6 +130,46 @@ function normalizeAddress(value: Prisma.JsonValue): CommercialInvoiceAddressSnap
     vat: asString(address.vat),
     ein: asString(address.ein),
     telephone: asString(address.telephone),
+    email: asString(address.email),
+    notes: asString(address.notes),
+  }
+}
+
+function normalizeSavedCompanyName(label: string, companyName: string) {
+  const key = `${label} ${companyName}`.trim().toLowerCase()
+  if (key.includes("epcc")) return "The Embroidered & Printed Clothing Company"
+  if (key.includes("sportimadok")) return "Sportimadok.hu kft"
+  return companyName
+}
+
+function serializeAddress(row: SavedInvoiceAddressRow): SavedInvoiceAddressRecord {
+  return {
+    id: row.id,
+    label: row.label,
+    companyName: normalizeSavedCompanyName(row.label, row.companyName),
+    contactName: row.contactName ?? "",
+    address: row.address,
+    country: row.country,
+    eori: row.eoriNumber ?? "",
+    vat: row.vatNumber ?? "",
+    ein: row.einNumber ?? "",
+    telephone: row.telephone ?? "",
+    email: row.email ?? "",
+    notes: row.notes ?? "",
+    updatedAt: row.updatedAt.toISOString(),
+  }
+}
+
+function serializeCommodityCode(row: CommercialInvoiceCommodityCodeRow): CommercialInvoiceCommodityCodeRecord {
+  return {
+    id: row.id,
+    label: row.label,
+    productType: row.productType,
+    material: row.material ?? "",
+    commodityCode: row.commodityCode,
+    description: row.description ?? "",
+    notes: row.notes ?? "",
+    updatedAt: row.updatedAt.toISOString(),
   }
 }
 
@@ -99,9 +195,11 @@ function serializeInvoice(row: CommercialInvoiceRow): SavedCommercialInvoiceReco
       shipDate: row.shipDate?.toISOString().slice(0, 10) ?? "",
       tracking: row.tracking ?? "",
       boxCount: row.boxCount?.toString() ?? "",
-      weight: row.weight ?? "",
-      currency: row.currency === "EUR" ? "EUR" : "GBP",
-      dutiesPayableBy: row.dutiesPayableBy === "Sender" || row.dutiesPayableBy === "Receiver" ? row.dutiesPayableBy : "",
+    weight: row.weight ?? "",
+    currency: row.currency === "EUR" ? "EUR" : "GBP",
+    printLocation:
+      row.printLocation === "United Kingdom" || row.printLocation === "Hungary" ? row.printLocation : "",
+    dutiesPayableBy: row.dutiesPayableBy === "Sender" || row.dutiesPayableBy === "Receiver" ? row.dutiesPayableBy : "",
     },
     sender: normalizeAddress(row.senderJson),
     receiver: normalizeAddress(row.receiverJson),
@@ -126,30 +224,74 @@ async function loadCommercialInvoices(): Promise<CommercialInvoicesData> {
   if (!hasCommercialInvoiceDelegate()) {
     return {
       invoices: [],
+      addresses: [],
+      commodityCodes: [],
       setupIssue:
         "The running Prisma client does not include CommercialInvoice yet. Generate Prisma client and apply the migration before saving invoices.",
     }
   }
 
   try {
-    const invoices = await prisma.commercialInvoice.findMany({
-      orderBy: { updatedAt: "desc" },
-      include: { lines: { orderBy: { sortOrder: "asc" } } },
-    })
+    const [invoices, addresses, commodityCodes] = await Promise.all([
+      prisma.commercialInvoice.findMany({
+        orderBy: { updatedAt: "desc" },
+        include: { lines: { orderBy: { sortOrder: "asc" } } },
+      }),
+      loadSavedInvoiceAddresses(),
+      loadCommercialInvoiceCommodityCodes(),
+    ])
 
-    return { invoices: invoices.map(serializeSummary) }
+    return {
+      invoices: invoices.map(serializeSummary),
+      addresses,
+      commodityCodes,
+    }
   } catch (error) {
     console.error(error)
     return {
       invoices: [],
+      addresses: [],
+      commodityCodes: [],
       setupIssue: "Saved commercial invoices could not be loaded. Check database connection and migrations.",
     }
   }
 }
 
 export const listCommercialInvoices = unstable_cache(loadCommercialInvoices, ["commercial-invoices"], {
-  tags: [COMMERCIAL_INVOICES_TAG],
+  tags: [COMMERCIAL_INVOICES_TAG, SAVED_INVOICE_ADDRESSES_TAG, COMMERCIAL_INVOICE_COMMODITY_CODES_TAG],
 })
+
+async function loadSavedInvoiceAddresses(): Promise<SavedInvoiceAddressRecord[]> {
+  if (!hasSavedInvoiceAddressDelegate()) return []
+
+  const addresses = await prisma.savedInvoiceAddress.findMany({
+    orderBy: [{ label: "asc" }, { updatedAt: "desc" }],
+  })
+
+  return addresses.map(serializeAddress)
+}
+
+export const listSavedInvoiceAddresses = unstable_cache(loadSavedInvoiceAddresses, ["saved-invoice-addresses"], {
+  tags: [SAVED_INVOICE_ADDRESSES_TAG],
+})
+
+async function loadCommercialInvoiceCommodityCodes(): Promise<CommercialInvoiceCommodityCodeRecord[]> {
+  if (!hasCommercialInvoiceCommodityCodeDelegate()) return []
+
+  const commodityCodes = await prisma.commercialInvoiceCommodityCode.findMany({
+    orderBy: [{ label: "asc" }, { productType: "asc" }],
+  })
+
+  return commodityCodes.map(serializeCommodityCode)
+}
+
+export const listCommercialInvoiceCommodityCodes = unstable_cache(
+  loadCommercialInvoiceCommodityCodes,
+  ["commercial-invoice-commodity-codes"],
+  {
+    tags: [COMMERCIAL_INVOICE_COMMODITY_CODES_TAG],
+  },
+)
 
 export async function getCommercialInvoice(id: string): Promise<SavedCommercialInvoiceRecord | null> {
   if (!hasCommercialInvoiceDelegate()) return null
