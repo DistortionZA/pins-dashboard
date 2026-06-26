@@ -1,29 +1,22 @@
 "use client"
 
+import Link from "next/link"
 import { useMemo, useState } from "react"
 import { toast } from "sonner"
 import {
-  createCommercialInvoiceCommodityCode,
-  createSavedInvoiceAddress,
   deleteCommercialInvoice,
-  deleteCommercialInvoiceCommodityCode,
-  deleteSavedInvoiceAddress,
   getCommercialInvoice,
   saveCommercialInvoice,
   updateCommercialInvoice,
-  updateCommercialInvoiceCommodityCode,
-  updateSavedInvoiceAddress,
 } from "./actions"
 import type {
   CommercialInvoiceAddressSnapshot,
-  CommercialInvoiceCommodityCodePayload,
   CommercialInvoiceCommodityCodeRecord,
   CommercialInvoiceLinePayload,
   CommercialInvoicePayload,
   CommercialInvoicesData,
   SavedCommercialInvoiceRecord,
   SavedCommercialInvoiceSummary,
-  SavedInvoiceAddressPayload,
   SavedInvoiceAddressRecord,
 } from "./types"
 
@@ -135,29 +128,6 @@ const INITIAL_DETAILS: InvoiceDetails = {
   dutiesPayableBy: "",
 }
 
-const EMPTY_SAVED_ADDRESS_FORM: SavedInvoiceAddressPayload = {
-  label: "",
-  companyName: "",
-  contactName: "",
-  address: "",
-  country: "",
-  eori: "",
-  vat: "",
-  ein: "",
-  telephone: "",
-  email: "",
-  notes: "",
-}
-
-const EMPTY_COMMODITY_FORM: CommercialInvoiceCommodityCodePayload = {
-  label: "",
-  productType: "",
-  material: "",
-  commodityCode: "",
-  description: "",
-  notes: "",
-}
-
 const LINE_ITEM_HEADERS = [
   "Product",
   "Design Name",
@@ -206,23 +176,6 @@ function normalizeAddress(address?: Partial<Address>): Address {
     telephone: address?.telephone ?? "",
     email: address?.email ?? "",
     notes: address?.notes ?? "",
-  }
-}
-
-function addressToForm(address?: Partial<Address>): SavedInvoiceAddressPayload {
-  const normalized = normalizeAddress(address)
-  return {
-    label: normalized.label,
-    companyName: normalized.companyName,
-    contactName: normalized.contactName,
-    address: normalized.address,
-    country: normalized.country,
-    eori: normalized.eori,
-    vat: normalized.vat,
-    ein: normalized.ein,
-    telephone: normalized.telephone,
-    email: normalized.email,
-    notes: normalized.notes,
   }
 }
 
@@ -433,6 +386,9 @@ function AddressSection({
           <p className="mt-1 text-sm text-brand-muted">
             Select a saved address or enter the {title.toLowerCase()} details manually.
           </p>
+          <Link href="/hub/data/addresses" className="mt-2 inline-flex text-xs font-semibold text-brand-red hover:text-brand-cream">
+            Manage Saved Addresses
+          </Link>
         </div>
         <label className="grid w-full min-w-0 gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-brand-muted sm:max-w-xs sm:flex-1">
           Saved Address
@@ -559,18 +515,13 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
   const [manualCountryOfOriginLines, setManualCountryOfOriginLines] = useState<Record<string, boolean>>({})
   const [validationErrors, setValidationErrors] = useState<string[]>([])
   const [savedInvoices, setSavedInvoices] = useState<SavedCommercialInvoiceSummary[]>(initialData.invoices)
-  const [savedAddresses, setSavedAddresses] = useState<SavedInvoiceAddressRecord[]>(initialData.addresses)
-  const [commodityCodes, setCommodityCodes] = useState<CommercialInvoiceCommodityCodeRecord[]>(initialData.commodityCodes)
+  const savedAddresses = initialData.addresses
+  const commodityCodes = initialData.commodityCodes
   const [selectedSavedInvoiceId, setSelectedSavedInvoiceId] = useState("")
   const [currentInvoiceId, setCurrentInvoiceId] = useState("")
   const [pendingDeleteId, setPendingDeleteId] = useState("")
   const [isPersisting, setIsPersisting] = useState(false)
-  const [managedAddressId, setManagedAddressId] = useState("")
-  const [addressForm, setAddressForm] = useState<SavedInvoiceAddressPayload>(EMPTY_SAVED_ADDRESS_FORM)
-  const [pendingAddressDeleteId, setPendingAddressDeleteId] = useState("")
-  const [managedCommodityId, setManagedCommodityId] = useState("")
-  const [commodityForm, setCommodityForm] = useState<CommercialInvoiceCommodityCodePayload>(EMPTY_COMMODITY_FORM)
-  const [pendingCommodityDeleteId, setPendingCommodityDeleteId] = useState("")
+  const savedAddressOptions = savedAddresses.length ? savedAddresses : STARTER_SAVED_ADDRESSES
 
   const summary = useMemo(() => {
     return lineItems.reduce(
@@ -627,7 +578,7 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
   }
 
   function selectAddress(addressId: string, target: "sender" | "receiver") {
-    const selectedAddress = normalizeAddress(STARTER_SAVED_ADDRESSES.find((address) => address.id === addressId))
+    const selectedAddress = normalizeAddress(savedAddressOptions.find((address) => address.id === addressId))
     if (target === "sender") {
       setSenderAddressId(addressId)
       setSender(selectedAddress)
@@ -775,82 +726,6 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
     } finally {
       setIsPersisting(false)
     }
-  }
-
-  async function handleSaveAddressReference() {
-    const action = managedAddressId
-      ? updateSavedInvoiceAddress(managedAddressId, addressForm)
-      : createSavedInvoiceAddress(addressForm)
-    const result = await action
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-    if (result.addresses) setSavedAddresses(result.addresses)
-    setAddressForm(EMPTY_SAVED_ADDRESS_FORM)
-    setManagedAddressId("")
-    setPendingAddressDeleteId("")
-    toast.success(result.message)
-  }
-
-  async function handleDeleteAddressReference() {
-    if (!managedAddressId) {
-      toast.error("Choose a saved address to delete.")
-      return
-    }
-    if (pendingAddressDeleteId !== managedAddressId) {
-      setPendingAddressDeleteId(managedAddressId)
-      toast.info("Press Confirm Delete Address to remove the saved address.")
-      return
-    }
-    const result = await deleteSavedInvoiceAddress(managedAddressId)
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-    if (result.addresses) setSavedAddresses(result.addresses)
-    setAddressForm(EMPTY_SAVED_ADDRESS_FORM)
-    setManagedAddressId("")
-    setPendingAddressDeleteId("")
-    toast.success(result.message)
-  }
-
-  async function handleSaveCommodityReference() {
-    const action = managedCommodityId
-      ? updateCommercialInvoiceCommodityCode(managedCommodityId, commodityForm)
-      : createCommercialInvoiceCommodityCode(commodityForm)
-    const result = await action
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-    if (result.commodityCodes) setCommodityCodes(result.commodityCodes)
-    setCommodityForm(EMPTY_COMMODITY_FORM)
-    setManagedCommodityId("")
-    setPendingCommodityDeleteId("")
-    toast.success(result.message)
-  }
-
-  async function handleDeleteCommodityReference() {
-    if (!managedCommodityId) {
-      toast.error("Choose a commodity code to delete.")
-      return
-    }
-    if (pendingCommodityDeleteId !== managedCommodityId) {
-      setPendingCommodityDeleteId(managedCommodityId)
-      toast.info("Press Confirm Delete Code to remove the commodity code.")
-      return
-    }
-    const result = await deleteCommercialInvoiceCommodityCode(managedCommodityId)
-    if (!result.ok) {
-      toast.error(result.message)
-      return
-    }
-    if (result.commodityCodes) setCommodityCodes(result.commodityCodes)
-    setCommodityForm(EMPTY_COMMODITY_FORM)
-    setManagedCommodityId("")
-    setPendingCommodityDeleteId("")
-    toast.success(result.message)
   }
 
   async function handleExportExcel() {
@@ -1169,7 +1044,7 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
         <AddressSection
           title="Sender"
           address={sender}
-          savedAddresses={STARTER_SAVED_ADDRESSES}
+          savedAddresses={savedAddressOptions}
           selectedAddressId={senderAddressId}
           onSelectAddress={(addressId) => selectAddress(addressId, "sender")}
           onChangeAddress={(field, value) => setSender((current) => ({ ...current, [field]: value }))}
@@ -1177,7 +1052,7 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
         <AddressSection
           title="Receiver"
           address={receiver}
-          savedAddresses={STARTER_SAVED_ADDRESSES}
+          savedAddresses={savedAddressOptions}
           selectedAddressId={receiverAddressId}
           onSelectAddress={(addressId) => selectAddress(addressId, "receiver")}
           onChangeAddress={(field, value) => setReceiver((current) => ({ ...current, [field]: value }))}
@@ -1193,13 +1068,21 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
               specific; it is not derived from commodity code.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setLineItems((current) => [...current, createLineItem()])}
-            className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold"
-          >
-            Add Line
-          </button>
+          <div className="flex flex-wrap gap-2">
+ <Link
+ href="/hub/data/commodity-codes"
+ className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold"
+ >
+ Manage Commodity Codes
+ </Link>
+ <button
+ type="button"
+ onClick={() => setLineItems((current) => [...current, createLineItem()])}
+ className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold"
+ >
+ Add Line
+ </button>
+ </div>
         </div>
         <div className="overflow-x-auto rounded-2xl border border-brand-border">
           <table className="min-w-[1360px] w-full border-collapse text-left text-sm">
@@ -1375,138 +1258,6 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
               })}
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section className="hub-panel grid gap-4 p-4">
-        <div>
-          <h2 className="text-lg font-semibold text-brand-cream">Reference Data</h2>
-          <p className="mt-1 text-sm text-brand-muted">Manage reusable invoice addresses and product/material commodity codes.</p>
-        </div>
-        <div className="grid gap-4 xl:grid-cols-2">
-          <div className="grid gap-3 rounded-2xl border border-brand-border bg-brand-panel-alt/50 p-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-semibold text-brand-cream">Saved Addresses</h3>
-              <select
-                value={managedAddressId}
-                onChange={(event) => {
-                  const id = event.target.value
-                  const selected = savedAddresses.find((address) => address.id === id)
-                  setManagedAddressId(id)
-                  setAddressForm(selected ? addressToForm(selected) : EMPTY_SAVED_ADDRESS_FORM)
-                  setPendingAddressDeleteId("")
-                }}
-                className="hub-input min-w-[220px] rounded-xl px-3 py-2 text-sm outline-none"
-              >
-                <option value="">New address</option>
-                {savedAddresses.map((address) => (
-                  <option key={address.id} value={address.id}>
-                    {address.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="grid gap-2 md:grid-cols-2">
-              {(["label", "companyName", "contactName", "country", "telephone", "email", "eori", "vat", "ein"] as const).map((field) => (
-                <input
-                  key={field}
-                  value={addressForm[field]}
-                  onChange={(event) => setAddressForm((current) => ({ ...current, [field]: event.target.value }))}
-                  placeholder={field === "companyName" ? "Company name" : field}
-                  className="hub-input min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
-                />
-              ))}
-              <textarea
-                value={addressForm.address}
-                onChange={(event) => setAddressForm((current) => ({ ...current, address: event.target.value }))}
-                placeholder="Address"
-                rows={2}
-                className="hub-input min-w-0 resize-y rounded-xl px-3 py-2 text-sm outline-none md:col-span-2"
-              />
-              <textarea
-                value={addressForm.notes}
-                onChange={(event) => setAddressForm((current) => ({ ...current, notes: event.target.value }))}
-                placeholder="Notes"
-                rows={2}
-                className="hub-input min-w-0 resize-y rounded-xl px-3 py-2 text-sm outline-none md:col-span-2"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={handleSaveAddressReference} className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold">
-                {managedAddressId ? "Update Address" : "Save Address"}
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteAddressReference}
-                disabled={!managedAddressId}
-                className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {pendingAddressDeleteId === managedAddressId ? "Confirm Delete Address" : "Delete Address"}
-              </button>
-            </div>
-          </div>
-
-          <div className="grid gap-3 rounded-2xl border border-brand-border bg-brand-panel-alt/50 p-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-sm font-semibold text-brand-cream">Commodity Codes</h3>
-              <select
-                value={managedCommodityId}
-                onChange={(event) => {
-                  const id = event.target.value
-                  const selected = commodityCodes.find((code) => code.id === id)
-                  setManagedCommodityId(id)
-                  setCommodityForm(selected ? selected : EMPTY_COMMODITY_FORM)
-                  setPendingCommodityDeleteId("")
-                }}
-                className="hub-input min-w-[220px] rounded-xl px-3 py-2 text-sm outline-none"
-              >
-                <option value="">New commodity code</option>
-                {commodityCodes.map((code) => (
-                  <option key={code.id} value={code.id}>
-                    {getCommodityLabel(code)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="grid gap-2 md:grid-cols-2">
-              {(["label", "productType", "material", "commodityCode"] as const).map((field) => (
-                <input
-                  key={field}
-                  value={commodityForm[field]}
-                  onChange={(event) => setCommodityForm((current) => ({ ...current, [field]: event.target.value }))}
-                  placeholder={field === "productType" ? "Product type" : field}
-                  className="hub-input min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
-                />
-              ))}
-              <textarea
-                value={commodityForm.description}
-                onChange={(event) => setCommodityForm((current) => ({ ...current, description: event.target.value }))}
-                placeholder="Description"
-                rows={2}
-                className="hub-input min-w-0 resize-y rounded-xl px-3 py-2 text-sm outline-none md:col-span-2"
-              />
-              <textarea
-                value={commodityForm.notes}
-                onChange={(event) => setCommodityForm((current) => ({ ...current, notes: event.target.value }))}
-                placeholder="Notes"
-                rows={2}
-                className="hub-input min-w-0 resize-y rounded-xl px-3 py-2 text-sm outline-none md:col-span-2"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={handleSaveCommodityReference} className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold">
-                {managedCommodityId ? "Update Code" : "Save Code"}
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteCommodityReference}
-                disabled={!managedCommodityId}
-                className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {pendingCommodityDeleteId === managedCommodityId ? "Confirm Delete Code" : "Delete Code"}
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 

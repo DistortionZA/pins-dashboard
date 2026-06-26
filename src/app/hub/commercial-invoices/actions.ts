@@ -196,12 +196,14 @@ async function revalidateSavedInvoiceAddresses() {
   revalidateTag(getSavedInvoiceAddressesTag(), "max")
   revalidateTag(getCommercialInvoicesTag(), "max")
   revalidatePath("/hub/commercial-invoices")
+  revalidatePath("/hub/data/addresses")
 }
 
 async function revalidateCommercialInvoiceCommodityCodes() {
   revalidateTag(getCommercialInvoiceCommodityCodesTag(), "max")
   revalidateTag(getCommercialInvoicesTag(), "max")
   revalidatePath("/hub/commercial-invoices")
+  revalidatePath("/hub/data/commodity-codes")
 }
 
 async function buildSuccessResult(message: string, invoiceId: string): Promise<CommercialInvoiceActionResult> {
