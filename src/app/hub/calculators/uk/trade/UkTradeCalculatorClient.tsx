@@ -66,6 +66,10 @@ type UkTradeItemBreakdown = {
 
 const CURRENCY = "£"
 
+type DecimalLike = {
+  toNumber: () => number
+}
+
 function createDefaultDesign(): UkTradeDesign {
   return {
     quantity: 50,
@@ -103,6 +107,32 @@ function getGarmentDisplayName(garment?: UkTradeGarment) {
   if (!garment) return "No garment"
 
   return [garment.brandName, garment.name, garment.color].filter(Boolean).join(" - ")
+}
+
+function resolveGbpPrice(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null
+  }
+
+  if (typeof value === "string") {
+    const trimmedValue = value.trim()
+    if (!trimmedValue) return null
+
+    const parsedValue = Number(trimmedValue.replace(/,/g, ""))
+    return Number.isFinite(parsedValue) ? parsedValue : null
+  }
+
+  if (
+    value &&
+    typeof value === "object" &&
+    "toNumber" in value &&
+    typeof value.toNumber === "function"
+  ) {
+    const parsedValue = (value as DecimalLike).toNumber()
+    return Number.isFinite(parsedValue) ? parsedValue : null
+  }
+
+  return null
 }
 
 function getGarmentQuoteSummary(garment?: UkTradeGarment) {
@@ -205,12 +235,15 @@ function calculateUkTradeItemBreakdown(
   garments: UkTradeGarment[],
 ): UkTradeItemBreakdown {
   const garment = garments.find((item) => item.id === design.garmentId)
+  const garmentGbpPrice = resolveGbpPrice(garment?.gbpPrice)
   const selectedPositions = getSelectedPositionEntries(design.positions)
   const selectedEmbroideryEntries = getSelectedEmbroideryEntries(design)
   const missingReasons: string[] = []
 
   if (!garment) {
     missingReasons.push("Select garment.")
+  } else if (garmentGbpPrice === null) {
+    missingReasons.push("Missing GBP price for selected garment.")
   }
 
   if (design.quantity < 50) {
@@ -278,9 +311,7 @@ function calculateUkTradeItemBreakdown(
     0,
   )
   const garmentCost =
-    garment && typeof garment.gbpPrice === "number"
-      ? garment.gbpPrice * design.quantity
-      : 0
+    garmentGbpPrice !== null ? garmentGbpPrice * design.quantity : 0
   const setupCost = screenSetupCost + embroiderySetupCost
   const totalCost = garmentCost + printCost + embroideryCost + setupCost
   const hasValidPrice = missingReasons.length === 0
@@ -594,14 +625,12 @@ export default function UkTradeCalculatorClient({
                         {garment ? (
                           <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 text-sm text-brand-muted">
                             <span>Garment Base Price</span>
-                            <span className="font-mono text-brand-cream/90">
-                              {formatBreakdownUnitAmount(
-                                CURRENCY,
-                                typeof garment.gbpPrice === "number"
-                                  ? garment.gbpPrice
-                                  : 0,
-                              )}
-                            </span>
+                      <span className="font-mono text-brand-cream/90">
+                        {formatBreakdownUnitAmount(
+                          CURRENCY,
+                          resolveGbpPrice(garment.gbpPrice) ?? 0,
+                        )}
+                      </span>
                           </div>
                         ) : null}
 

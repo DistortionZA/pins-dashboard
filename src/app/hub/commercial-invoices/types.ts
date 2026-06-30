@@ -37,6 +37,17 @@ export type CommercialInvoiceLinePayload = {
   countryOfOrigin: string
 }
 
+export type CommercialInvoiceGarmentRecord = {
+  id: string
+  code: string
+  altCode: string
+  brandName: string
+  name: string
+  color: string
+  type: string
+  tags: string
+}
+
 export type CommercialInvoicePayload = {
   title?: string
   details: CommercialInvoiceDetailsPayload
@@ -67,6 +78,7 @@ export type CommercialInvoicesData = {
   invoices: SavedCommercialInvoiceSummary[]
   addresses: SavedInvoiceAddressRecord[]
   commodityCodes: CommercialInvoiceCommodityCodeRecord[]
+  garments: CommercialInvoiceGarmentRecord[]
   setupIssue?: string
 }
 

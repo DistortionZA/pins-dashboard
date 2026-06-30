@@ -12,6 +12,7 @@ import {
 import type {
   CommercialInvoiceAddressSnapshot,
   CommercialInvoiceCommodityCodeRecord,
+  CommercialInvoiceGarmentRecord,
   CommercialInvoiceLinePayload,
   CommercialInvoicePayload,
   CommercialInvoicesData,
@@ -329,6 +330,103 @@ function getCommodityLabel(item: CommercialInvoiceCommodityCodeRecord) {
   return `${item.label} · ${item.commodityCode}${material}`
 }
 
+function normalizeSearch(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+}
+
+function includesSearchWord(value: string, word: string) {
+  return normalizeSearch(value)
+    .split(" ")
+    .some((part) => part === word)
+}
+
+function formatGarmentType(type: string) {
+  if (type === "TSHIRT") return "T-shirt"
+  if (type === "LONGSLEEVE") return "Long sleeve"
+  if (type === "HOODIE") return "Hoodie"
+  return type
+}
+
+function getGarmentMaterial(garment: CommercialInvoiceGarmentRecord) {
+  const text = normalizeSearch([garment.name, garment.type, garment.tags].join(" "))
+  if (text.includes("100 cotton") || text.includes("100pc cotton")) return "100% cotton"
+  if (includesSearchWord(text, "cotton")) return "cotton"
+  if (includesSearchWord(text, "polyester")) return "polyester"
+  if (includesSearchWord(text, "organic")) return "organic cotton"
+  return ""
+}
+
+function getGarmentProductValue(garment: CommercialInvoiceGarmentRecord) {
+  return [garment.code, garment.name].filter(Boolean).join(" · ")
+}
+
+function getGarmentDescription(garment: CommercialInvoiceGarmentRecord) {
+  return [garment.brandName, garment.name, garment.color, formatGarmentType(garment.type)].filter(Boolean).join(" · ")
+}
+
+function getGarmentTypeValue(garment: CommercialInvoiceGarmentRecord) {
+  return [formatGarmentType(garment.type), getGarmentMaterial(garment)].filter(Boolean).join(" / ")
+}
+
+function getGarmentSearchValue(garment: CommercialInvoiceGarmentRecord) {
+  return [
+    garment.code,
+    garment.altCode,
+    garment.brandName,
+    garment.name,
+    garment.color,
+    formatGarmentType(garment.type),
+    garment.tags,
+  ]
+    .filter(Boolean)
+    .join(" · ")
+}
+
+function getCommodityProductWords(garment: CommercialInvoiceGarmentRecord) {
+  if (garment.type === "TSHIRT") return ["tshirt", "shirt", "tee"]
+  if (garment.type === "LONGSLEEVE") return ["longsleeve", "long", "sleeve"]
+  if (garment.type === "HOODIE") return ["hoodie", "sweatshirt"]
+  return normalizeSearch(formatGarmentType(garment.type)).split(" ").filter(Boolean)
+}
+
+function findCommodityForGarment(
+  garment: CommercialInvoiceGarmentRecord,
+  commodityCodes: CommercialInvoiceCommodityCodeRecord[],
+) {
+  const material = normalizeSearch(getGarmentMaterial(garment))
+  const productWords = getCommodityProductWords(garment)
+  const matchedReference = commodityCodes.find((commodity) => {
+    const productText = normalizeSearch([commodity.label, commodity.productType, commodity.description].join(" "))
+    const materialText = normalizeSearch([commodity.material, commodity.description, commodity.notes].join(" "))
+    const productMatches = productWords.some((word) => productText.includes(word))
+    const materialMatches = !material || materialText.includes(material) || material.split(" ").every((word) => materialText.includes(word))
+    return productMatches && materialMatches
+  })
+
+  if (matchedReference) return matchedReference.commodityCode
+  if (garment.type === "TSHIRT" && material.includes("cotton")) return "6109100010"
+  return ""
+}
+
+function getGarmentAutofillValues(
+  garment: CommercialInvoiceGarmentRecord,
+  commodityCodes: CommercialInvoiceCommodityCodeRecord[],
+): Pick<LineItem, "product" | "type" | "description" | "commodityCode" | "countryOfOrigin"> {
+  const product = getGarmentProductValue(garment)
+  const type = getGarmentTypeValue(garment)
+  const description = getGarmentDescription(garment)
+  const commodityCode = findCommodityForGarment(garment, commodityCodes)
+  const metadata = getCountryOfOriginMetadata({ ...createLineItem(), product, type, description })
+
+  return {
+    product,
+    type,
+    description,
+    commodityCode,
+    countryOfOrigin: metadata.mode === "FIXED" && metadata.fixedCountry ? metadata.fixedCountry : "",
+  }
+}
+
 function getExportData(
   details: InvoiceDetails,
   sender: Address,
@@ -512,11 +610,14 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
   const [sender, setSender] = useState<Address>(EMPTY_ADDRESS)
   const [receiver, setReceiver] = useState<Address>(EMPTY_ADDRESS)
   const [lineItems, setLineItems] = useState<LineItem[]>([createLineItem()])
+  const [selectedGarmentInputs, setSelectedGarmentInputs] = useState<Record<string, string>>({})
+  const [selectedGarmentIds, setSelectedGarmentIds] = useState<Record<string, string>>({})
   const [manualCountryOfOriginLines, setManualCountryOfOriginLines] = useState<Record<string, boolean>>({})
   const [validationErrors, setValidationErrors] = useState<string[]>([])
   const [savedInvoices, setSavedInvoices] = useState<SavedCommercialInvoiceSummary[]>(initialData.invoices)
   const savedAddresses = initialData.addresses
   const commodityCodes = initialData.commodityCodes
+  const garments = initialData.garments
   const [selectedSavedInvoiceId, setSelectedSavedInvoiceId] = useState("")
   const [currentInvoiceId, setCurrentInvoiceId] = useState("")
   const [pendingDeleteId, setPendingDeleteId] = useState("")
@@ -532,6 +633,12 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
       { quantity: 0, total: 0 },
     )
   }, [lineItems])
+  const garmentBySearchValue = useMemo(() => {
+    return new Map(garments.map((garment) => [getGarmentSearchValue(garment), garment]))
+  }, [garments])
+  const garmentById = useMemo(() => {
+    return new Map(garments.map((garment) => [garment.id, garment]))
+  }, [garments])
 
   function updateDetails<Field extends keyof InvoiceDetails>(field: Field, value: InvoiceDetails[Field]) {
     setDetails((current) => ({ ...current, [field]: value }))
@@ -568,6 +675,8 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
     setSenderAddressId("")
     setReceiverAddressId("")
     setLineItems(invoice.lineItems.length ? invoice.lineItems : [createLineItem()])
+    setSelectedGarmentInputs({})
+    setSelectedGarmentIds({})
     setManualCountryOfOriginLines(
       Object.fromEntries(invoice.lineItems.filter(hasManualCountryOfOrigin).map((item) => [item.id, true])),
     )
@@ -600,9 +709,54 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
           return { ...nextItem, countryOfOrigin: metadata.fixedCountry }
         }
 
-        return nextItem
+      return nextItem
+    }),
+  )
+}
+
+  function applyGarmentToLine(lineItemId: string, garment: CommercialInvoiceGarmentRecord, mode: "blank" | "replace") {
+    const values = getGarmentAutofillValues(garment, commodityCodes)
+
+    setLineItems((current) =>
+      current.map((item) => {
+        if (item.id !== lineItemId) return item
+
+        return {
+          ...item,
+          product: mode === "replace" || !item.product.trim() ? values.product : item.product,
+          type: mode === "replace" || !item.type.trim() ? values.type : item.type,
+          description: mode === "replace" || !item.description.trim() ? values.description : item.description,
+          commodityCode: mode === "replace" || !item.commodityCode.trim() ? values.commodityCode : item.commodityCode,
+          countryOfOrigin:
+            values.countryOfOrigin && (mode === "replace" || !item.countryOfOrigin.trim())
+              ? values.countryOfOrigin
+              : item.countryOfOrigin,
+        }
       }),
     )
+
+    setManualCountryOfOriginLines((current) => {
+      const next = { ...current }
+      delete next[lineItemId]
+      return next
+    })
+  }
+
+  function selectGarmentForLine(lineItemId: string, value: string) {
+    setSelectedGarmentInputs((current) => ({ ...current, [lineItemId]: value }))
+
+    const garment = garmentBySearchValue.get(value)
+    if (!garment) {
+      setSelectedGarmentIds((current) => {
+        const next = { ...current }
+        delete next[lineItemId]
+        return next
+      })
+      return
+    }
+
+    setSelectedGarmentIds((current) => ({ ...current, [lineItemId]: garment.id }))
+    applyGarmentToLine(lineItemId, garment, "blank")
   }
 
   function applyCommodityReference(lineItemId: string, commodityId: string) {
@@ -625,6 +779,16 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
 
   function removeLineItem(id: string) {
     setLineItems((current) => (current.length > 1 ? current.filter((item) => item.id !== id) : current))
+    setSelectedGarmentInputs((current) => {
+      const next = { ...current }
+      delete next[id]
+      return next
+    })
+    setSelectedGarmentIds((current) => {
+      const next = { ...current }
+      delete next[id]
+      return next
+    })
     setManualCountryOfOriginLines((current) => {
       const next = { ...current }
       delete next[id]
@@ -1069,9 +1233,9 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
- <Link
- href="/hub/data/commodity-codes"
- className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold"
+            <Link
+              href="/hub/data/commodity-codes"
+              className="hub-button-secondary rounded-full px-4 py-2 text-sm font-semibold"
  >
  Manage Commodity Codes
  </Link>
@@ -1081,11 +1245,18 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
  className="hub-button-primary rounded-full px-4 py-2 text-sm font-semibold"
  >
  Add Line
- </button>
- </div>
+            </button>
+          </div>
         </div>
+        {garments.length ? (
+          <datalist id="commercial-invoice-garments">
+            {garments.map((garment) => (
+              <option key={garment.id} value={getGarmentSearchValue(garment)} />
+            ))}
+          </datalist>
+        ) : null}
         <div className="overflow-x-auto rounded-2xl border border-brand-border">
-          <table className="min-w-[1360px] w-full border-collapse text-left text-sm">
+          <table className="min-w-[1450px] w-full border-collapse text-left text-sm">
             <thead className="bg-brand-panel-alt/80 text-xs uppercase tracking-[0.12em] text-brand-muted">
               <tr>
                 <th className="px-3 py-2 font-semibold">Product</th>
@@ -1109,14 +1280,40 @@ export default function CommercialInvoiceClient({ initialData }: { initialData: 
                 const isManualCountryOfOrigin =
                   cooMetadata.mode === "VARIABLE" &&
                   (manualCountryOfOriginLines[item.id] || cooSelectValue === MANUAL_COUNTRY_OF_ORIGIN)
+                const selectedGarment = selectedGarmentIds[item.id] ? garmentById.get(selectedGarmentIds[item.id]) : null
 
                 return (
                   <tr key={item.id} className="border-t border-brand-border/70 align-top">
-                  <td className="min-w-[150px] px-2 py-2">
-                    <input
-                      value={item.product}
-                      onChange={(event) => updateLineItem(item.id, "product", event.target.value)}
-                      placeholder="Example: T-shirt"
+                    <td className="min-w-[240px] px-2 py-2">
+                      {garments.length ? (
+                        <div className="mb-2 grid gap-1">
+                          <input
+                            list="commercial-invoice-garments"
+                            value={selectedGarmentInputs[item.id] ?? ""}
+                            onChange={(event) => selectGarmentForLine(item.id, event.target.value)}
+                            placeholder="Search directory"
+                            className="hub-input w-full rounded-lg px-2.5 py-2 text-xs outline-none"
+                          />
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="truncate text-[11px] leading-4 text-brand-muted">
+                              {selectedGarment ? "Filled blanks from directory." : "Optional. Manual entry still works."}
+                            </span>
+                            {selectedGarment ? (
+                              <button
+                                type="button"
+                                onClick={() => applyGarmentToLine(item.id, selectedGarment, "replace")}
+                                className="hub-button-secondary shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                              >
+                                Replace
+                              </button>
+                            ) : null}
+                          </div>
+                        </div>
+                      ) : null}
+                      <input
+                        value={item.product}
+                        onChange={(event) => updateLineItem(item.id, "product", event.target.value)}
+                        placeholder="Example: T-shirt"
                       className="hub-input w-full rounded-lg px-2.5 py-2 text-sm outline-none"
                     />
                   </td>

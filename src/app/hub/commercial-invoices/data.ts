@@ -226,6 +226,7 @@ async function loadCommercialInvoices(): Promise<CommercialInvoicesData> {
       invoices: [],
       addresses: [],
       commodityCodes: [],
+      garments: [],
       setupIssue:
         "The running Prisma client does not include CommercialInvoice yet. Generate Prisma client and apply the migration before saving invoices.",
     }
@@ -245,6 +246,7 @@ async function loadCommercialInvoices(): Promise<CommercialInvoicesData> {
       invoices: invoices.map(serializeSummary),
       addresses,
       commodityCodes,
+      garments: [],
     }
   } catch (error) {
     console.error(error)
@@ -252,6 +254,7 @@ async function loadCommercialInvoices(): Promise<CommercialInvoicesData> {
       invoices: [],
       addresses: [],
       commodityCodes: [],
+      garments: [],
       setupIssue: "Saved commercial invoices could not be loaded. Check database connection and migrations.",
     }
   }

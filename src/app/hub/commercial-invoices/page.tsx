@@ -1,11 +1,33 @@
 import { connection } from "next/server"
 import BackLink from "@/components/BackLink"
+import { getGarmentDirectoryData } from "../garments/data"
 import CommercialInvoiceClient from "./CommercialInvoiceClient"
 import { listCommercialInvoices } from "./data"
+import type { CommercialInvoiceGarmentRecord } from "./types"
+
+async function listInvoiceGarments(): Promise<CommercialInvoiceGarmentRecord[]> {
+  try {
+    const garments = await getGarmentDirectoryData()
+    return garments.map((garment) => ({
+      id: garment.id,
+      code: garment.code,
+      altCode: garment.altCode,
+      brandName: garment.brandName,
+      name: garment.name,
+      color: garment.color,
+      type: garment.type,
+      tags: garment.tags,
+    }))
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
 
 export default async function CommercialInvoicesPage() {
   await connection()
-  const data = await listCommercialInvoices()
+  const [data, garments] = await Promise.all([listCommercialInvoices(), listInvoiceGarments()])
+  const initialData = { ...data, garments }
 
   return (
     <div className="hub-page-stack">
@@ -19,7 +41,7 @@ export default async function CommercialInvoicesPage() {
         </p>
       </section>
 
-      <CommercialInvoiceClient initialData={data} />
+      <CommercialInvoiceClient initialData={initialData} />
     </div>
   )
 }

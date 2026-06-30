@@ -8,6 +8,7 @@
     "vercel-build": "prisma generate && next build",
     "migrate:deploy": "prisma migrate deploy",
     "postinstall": "prisma generate",
+    "sync:live-garments": "ts-node --project tsconfig.seed.json scripts/sync-live-garments-to-local.ts",
     "start": "next start",
     "lint": "eslint"
   },

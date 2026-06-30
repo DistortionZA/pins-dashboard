@@ -105,7 +105,11 @@ function GarmentSelector({
   const [isOpen, setIsOpen] = useState(false)
 
   const selectedGarment = garments.find((garment) => garment.id === value)
-  const displayValue = selectedGarment ? getGarmentLabel(selectedGarment) : query
+  const displayValue = isOpen
+    ? query
+    : selectedGarment
+      ? getGarmentLabel(selectedGarment)
+      : query
 
   const filtered = garments.filter((garment) => {
     const queryParts = normalizeSearch(query).split(" ").filter(Boolean)
@@ -139,7 +143,10 @@ function GarmentSelector({
           setQuery(event.target.value)
           setIsOpen(true)
         }}
-        onFocus={() => setIsOpen(true)}
+      onFocus={() => {
+        setQuery("")
+        setIsOpen(true)
+      }}
         onBlur={() => {
           window.setTimeout(() => setIsOpen(false), 120)
         }}
